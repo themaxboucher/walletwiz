@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -79,6 +85,6 @@
     @apply font-semibold m-0 text-xs;
   }
   .section-large {
-    @apply mx-auto w-full max-w-[82rem] sm:px-10 px-5 py-16 flex flex-col justify-start items-center gap-8;
+    @apply mx-auto w-full max-w-[82rem] sm:px-10 px-5 py-20;
   }
 }
