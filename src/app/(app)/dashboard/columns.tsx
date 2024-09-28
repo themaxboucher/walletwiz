@@ -2,7 +2,14 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { House, MoreHorizontal } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  CircleArrowUp,
+  Copy,
+  MoreHorizontal,
+  Pencil,
+  Trash,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +21,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -58,6 +72,24 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "description",
     header: "Description",
+    cell: ({ row }) => {
+      return <Input value={row.getValue("category")} />;
+    },
+  },
+  {
+    accessorKey: "category",
+    header: "Category",
+    cell: ({ row }) => {
+      return (
+        <Badge
+          variant="outline"
+          className="border-primary/40 text-primary bg-primary/10 flex justify-center items-center gap-1 w-min rounded-md"
+        >
+          <CircleArrowUp className="size-3" />
+          {row.getValue("category")}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "amount",
@@ -73,50 +105,47 @@ export const columns: ColumnDef<Transaction>[] = [
     },
   },
   {
-    accessorKey: "category",
-    header: "Category",
-    cell: ({ row }) => {
-      return (
-        <Badge
-          variant="outline"
-          className="border-primary text-primary bg-primary/10 flex justify-center items-center gap-1 w-min"
-        >
-          🛍️ 
-          {row.getValue("category")}
-        </Badge>
-      );
-    },
-  },
-  {
-    accessorKey: "note",
-    header: "Note",
-    cell: ({ row }) => {
-      return <div className="max-w-xs truncate">{row.getValue("note")}</div>;
-    },
-  },
-  {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original;
+      const transaction = row.original;
 
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Transaction options</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
+            <DropdownMenuItem>
+              <Copy className="mr-2 h-4 w-4" />
+              <span>Duplicate</span>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => alert("HELLO WORLD")}>
+              <Pencil className="mr-2 h-4 w-4" />
+              <span>Edit</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem>
+              <Trash className="mr-2 h-4 w-4" />
+              <span>Delete</span>
+            </DropdownMenuItem>
+
+            <div className="px-2 py-1.5">
+              <p className="text-xs text-muted-foreground">
+                Transaction last modified <br /> August 18th, 2024
+              </p>
+            </div>
           </DropdownMenuContent>
         </DropdownMenu>
       );

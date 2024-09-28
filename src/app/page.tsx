@@ -1,9 +1,15 @@
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <main className="">
       <Navbar />
@@ -18,7 +24,7 @@ export default function Home() {
             exactly exactly what's happening with your money.
           </p>
           <div className="mt-8 flex justify-start items-center gap-2">
-            {true ? (
+            {!user ? (
               <>
                 <Button asChild>
                   <Link href="/auth/signup">Get started</Link>

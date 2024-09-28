@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ForgotPasswordForm from "./forgot-password-form";
 
 export default function ForgotPasswordPage() {
   return (
@@ -22,20 +23,7 @@ export default function ForgotPasswordPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full">
-            Reset password
-          </Button>
-        </div>
+        <ForgotPasswordForm />
         <div className="mt-4 text-center text-sm">
           <Link href="/auth/signup" className="underline">
             Back to login

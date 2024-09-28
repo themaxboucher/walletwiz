@@ -8,6 +8,17 @@
   box-sizing: border-box;
 }
 
+/* Remove arrows from number inputs */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -86,5 +97,17 @@
   }
   .section-large {
     @apply mx-auto w-full max-w-[82rem] sm:px-10 px-5 py-20;
+  }
+}
+
+@layer utilities {
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }
