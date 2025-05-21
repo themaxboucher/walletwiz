@@ -1,17 +1,38 @@
-import { ModeToggle } from "@/components/ModeToggle";
+import Navbar from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
   return (
-    <div className="p-4">
-      <ModeToggle />
-      <h1 className="heading-2">WalletWiz</h1>
-      <p className="mt-2">
-        This is a blob of text to see if my font is working.
-      </p>
-      <Button variant="default" className="mt-4">
-        Get started
-      </Button>
-    </div>
+    <main className="">
+      <Navbar />
+      <section className="section-large">
+        <div className="max-w-lg">
+          <h1 className="heading-1">
+            The easy way to keep track of your money.
+          </h1>
+          <p className="mt-4">
+            WalletWiz lets you take control of your finances by showing you
+            exactly exactly what's happening with your money.
+          </p>
+          <div className="mt-8 flex justify-start items-center gap-2">
+            {true ? (
+              <>
+                <Button asChild>
+                  <Link href="/signup">Get started</Link>
+                </Button>
+                <Button variant="ghost" asChild>
+                  <Link href="/login">Log in</Link>
+                </Button>
+              </>
+            ) : (
+              <Button asChild>
+                <Link href="/dashboard">View dashboard</Link>
+              </Button>
+            )}
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
