@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
-import { AlertCircleIcon, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -14,8 +14,8 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Alert, AlertDescription } from "../ui/alert";
 import { Button } from "../ui/button";
+import AuthError from "./AuthError";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email" }),
@@ -55,17 +55,7 @@ export default function ForgotPasswordForm() {
             </FormItem>
           )}
         />
-        {error && (
-          <Alert
-            variant="destructive"
-            className="flex items-center justify-center gap-2"
-          >
-            <span>
-              <AlertCircleIcon className="size-4" />
-            </span>
-            <AlertDescription className="font-medium">{error}</AlertDescription>
-          </Alert>
-        )}
+        {error && <AuthError message={error} />}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
           {!loading && "Reset password"}

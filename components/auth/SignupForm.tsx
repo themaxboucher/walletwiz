@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
-import { AlertCircle, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -14,23 +14,26 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Alert, AlertDescription } from "../ui/alert";
 import { Button } from "../ui/button";
+import { signup } from "@/lib/actions/user.actions";
+import AuthError from "./AuthError";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   email: z.string().email({ message: "Invalid email" }),
-  password: z.string().min(6, {
-    message: "Must be 6 or more characters long",
+  password: z.string().min(8, {
+    message: "Must be 8 or more characters long",
   }),
 });
+
+type SignupFormData = z.infer<typeof formSchema>;
 
 export default function SignupForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<SignupFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       firstName: "",
@@ -40,8 +43,35 @@ export default function SignupForm() {
     },
   });
 
-  async function onSubmitHandler(data: z.infer<typeof formSchema>) {
-    console.log(data);
+  async function onSubmitHandler(data: SignupFormData) {
+    setError(null);
+    setLoading(true);
+
+    try {
+      const result = await signup(data);
+
+      if (!result) {
+        throw new Error("Failed to create account");
+      }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "An unexpected error occurred";
+
+      // Handle specific error cases
+      if (errorMessage.includes("already exists")) {
+        setError("An account with this email already exists");
+      } else if (errorMessage.includes("password")) {
+        setError("Password must be at least 6 characters long");
+      } else if (errorMessage.includes("rate limit")) {
+        setError("Too many attempts. Please try again later");
+      } else if (errorMessage.includes("network")) {
+        setError("Network error. Please check your connection");
+      } else {
+        setError(errorMessage);
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -105,17 +135,7 @@ export default function SignupForm() {
             </FormItem>
           )}
         />
-        {error && (
-          <Alert
-            variant="destructive"
-            className="flex items-center justify-center gap-2"
-          >
-            <span>
-              <AlertCircle className="size-4" />
-            </span>
-            <AlertDescription className="font-medium">{error}</AlertDescription>
-          </Alert>
-        )}
+        {error && <AuthError message={error} />}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
           {!loading && "Create an account"}

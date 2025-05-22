@@ -1,12 +1,19 @@
-import { Button } from "@/components/ui/button";
+import { getLoggedInUser } from "@/lib/actions/user.actions";
+import LogoutButton from "@/components/auth/LogoutButton";
+import Greeting from "@/components/dashboard/Greeting";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const user = await getLoggedInUser();
+
   return (
     <>
       <div className="flex justify-between items-center">
-        <h1 className="text-lg font-bold md:text-3xl">Good morning, John</h1>
-        <Button>Logout</Button>
+        <h1 className="text-lg font-bold md:text-3xl">
+          <Greeting />, {user?.firstName}
+        </h1>
+        <LogoutButton />
       </div>
+      <p>{user?.email}</p>
     </>
   );
 }

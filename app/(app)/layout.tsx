@@ -1,10 +1,16 @@
 import Logo from "@/components/Logo";
+import { getLoggedInUser } from "@/lib/actions/user.actions";
+import { redirect } from "next/navigation";
 
-export default function AppLayout({
+export default async function AppLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Block routes if user is not logged in
+  const loggedIn = await getLoggedInUser();
+  if (!loggedIn) redirect("/login");
+
   return (
     <div className="min-h-screen max-w-full">
       <div className="flex flex-col max-w-full">
