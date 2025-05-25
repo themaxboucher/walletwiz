@@ -9,14 +9,16 @@ const client = new Client()
 
 const account = new Account(client);
 
-export async function sendVerificationEmail(redirectUrl: string) {
+export async function sendVerificationEmail() {
   try {
     // Get session from server
     const session = await getSession();
     console.log("Setting session:", session);
     client.setSession(session);
 
-    await account.createVerification(redirectUrl);
+    await account.createVerification(
+      `${process.env.NEXT_PUBLIC_SITE_URL!}/verify`
+    );
     console.log("Verification email sent successfully");
   } catch (error) {
     console.error("Error sending verification email:", error);

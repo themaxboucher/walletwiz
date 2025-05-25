@@ -50,7 +50,7 @@ export default function EmailVerificationDialog({
     setResendStatus("idle");
     try {
       // Use the reusable function to send the verification email
-      await sendVerificationEmail("http://localhost:3000/verify"); // Use the appropriate redirect URL
+      await sendVerificationEmail();
       setResendStatus("success");
     } catch (error) {
       setResendStatus("error");

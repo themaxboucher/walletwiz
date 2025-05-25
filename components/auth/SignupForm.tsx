@@ -56,7 +56,7 @@ export default function SignupForm() {
       }
 
       // Send verification email
-      await sendVerificationEmail("http://localhost:3000/verify");
+      await sendVerificationEmail();
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
