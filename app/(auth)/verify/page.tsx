@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import { LoaderCircle } from "lucide-react";
 import AuthError from "@/components/auth/AuthError";
-import { Client, Account } from "appwrite";
+import { updateVerification } from "@/lib/appwrite/client";
 
 export default function VerifyPage() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
@@ -25,16 +25,7 @@ export default function VerifyPage() {
           throw new Error("Invalid verification link");
         }
 
-        // Initialize client-side Appwrite client
-        const client = new Client()
-          .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
-          .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
-
-        const account = new Account(client);
-
-        // Call updateVerification client-side
-        await account.updateVerification(userId, secret);
-
+        await updateVerification(userId, secret);
         setStatus("success");
         router.refresh(); // Potential fix to "already verified" bug
         // Redirect to login after 3 seconds

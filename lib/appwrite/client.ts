@@ -52,3 +52,13 @@ export async function resetPassword(
     throw error;
   }
 }
+
+export async function updateVerification(userId: string, secret: string) {
+  try {
+    await account.updateVerification(userId, secret);
+    console.log("Email verified successfully");
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    throw error;
+  }
+}
