@@ -17,6 +17,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { signup } from "@/lib/actions/user.actions";
 import AuthError from "./AuthError";
+import { sendVerificationEmail } from "@/lib/appwrite/client";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
@@ -53,6 +54,9 @@ export default function SignupForm() {
       if (!result) {
         throw new Error("Failed to create account");
       }
+
+      // Send verification email
+      await sendVerificationEmail("http://localhost:3000/verify");
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";

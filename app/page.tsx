@@ -1,8 +1,11 @@
 import Navbar from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
+import { getLoggedInUser } from "@/lib/actions/user.actions";
 import Link from "next/link";
 
 export default async function Home() {
+  const loggedIn = await getLoggedInUser();
+
   return (
     <main className="">
       <Navbar />
@@ -16,7 +19,7 @@ export default async function Home() {
             exactly exactly what's happening with your money.
           </p>
           <div className="mt-8 flex justify-start items-center gap-2">
-            {true ? (
+            {!loggedIn ? (
               <>
                 <Button asChild>
                   <Link href="/signup">Get started</Link>

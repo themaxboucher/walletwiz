@@ -2,6 +2,9 @@ import Logo from "@/components/Logo";
 import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 
+// Import the new client component
+import EmailVerificationDialog from "@/components/auth/EmailVerificationDialog";
+
 export default async function AppLayout({
   children,
 }: Readonly<{
@@ -13,6 +16,8 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-screen max-w-full">
+      <EmailVerificationDialog user={loggedIn} />
+
       <div className="flex flex-col max-w-full">
         <header className="flex h-14 justify justify-between items-center gap-4 border-b border-border bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           <Logo />
