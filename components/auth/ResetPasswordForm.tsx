@@ -16,17 +16,27 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import AuthError from "./AuthError";
+import { resetPassword } from "@/lib/appwrite/client";
+import { useSearchParams, useRouter } from "next/navigation";
 
-const formSchema = z.object({
-  password: z.string().min(6, {
-    message: "Must be 6 or more characters long",
-  }),
-  confirmPassword: z.string(),
-});
+const formSchema = z
+  .object({
+    password: z.string().min(8, {
+      message: "Must be 8 or more characters long",
+    }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 export default function ResetPasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,16 +47,41 @@ export default function ResetPasswordForm() {
   });
 
   async function onSubmitHandler(data: z.infer<typeof formSchema>) {
-    // Check if both passwords match
-    if (data.password !== data.confirmPassword) {
-      setError("Passwords do not match.");
-      return;
+    setError(null);
+    setLoading(true);
+    setSuccess(false);
+
+    try {
+      const userId = searchParams.get("userId");
+      const secret = searchParams.get("secret");
+
+      if (!userId || !secret) {
+        throw new Error("Invalid reset link");
+      }
+
+      await resetPassword(userId, secret, data.password);
+      setSuccess(true);
+
+      // Redirect to login after 3 seconds
+      setTimeout(() => {
+        router.push("/login");
+      }, 3000);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "An unexpected error occurred";
+
+      if (errorMessage.includes("Invalid reset link")) {
+        setError("Invalid or expired reset link. Please request a new one.");
+      } else if (errorMessage.includes("rate limit")) {
+        setError("Too many attempts. Please try again later");
+      } else if (errorMessage.includes("network")) {
+        setError("Network error. Please check your connection");
+      } else {
+        setError("Failed to reset password. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
-
-    setError(null); // Reset error before submitting
-    setLoading(true); // Disable sumbit button
-
-    console.log(data);
   }
 
   return (
@@ -82,6 +117,11 @@ export default function ResetPasswordForm() {
           )}
         />
         {error && <AuthError message={error} />}
+        {success && (
+          <p className="text-sm text-primary">
+            Password reset successful! Redirecting to login...
+          </p>
+        )}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
           {!loading && "Reset password"}

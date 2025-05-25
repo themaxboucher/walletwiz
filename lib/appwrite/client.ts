@@ -25,3 +25,30 @@ export async function sendVerificationEmail() {
     throw error;
   }
 }
+
+export async function sendPasswordRecoveryEmail(email: string) {
+  try {
+    await account.createRecovery(
+      email,
+      `${process.env.NEXT_PUBLIC_SITE_URL!}/reset-password`
+    );
+    console.log("Password recovery email sent successfully");
+  } catch (error) {
+    console.error("Error sending password recovery email:", error);
+    throw error;
+  }
+}
+
+export async function resetPassword(
+  userId: string,
+  secret: string,
+  password: string
+) {
+  try {
+    await account.updateRecovery(userId, secret, password);
+    console.log("Password reset successfully");
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    throw error;
+  }
+}

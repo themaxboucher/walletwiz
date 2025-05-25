@@ -16,6 +16,7 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import AuthError from "./AuthError";
+import { sendPasswordRecoveryEmail } from "@/lib/appwrite/client";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email" }),
@@ -24,6 +25,7 @@ const formSchema = z.object({
 export default function ForgotPasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -33,7 +35,27 @@ export default function ForgotPasswordForm() {
   });
 
   async function onSubmitHandler(data: z.infer<typeof formSchema>) {
-    console.log(data);
+    setError(null);
+    setLoading(true);
+    setSuccess(false);
+
+    try {
+      await sendPasswordRecoveryEmail(data.email);
+      setSuccess(true);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "An unexpected error occurred";
+
+      if (errorMessage.includes("rate limit")) {
+        setError("Too many attempts. Please try again later");
+      } else if (errorMessage.includes("network")) {
+        setError("Network error. Please check your connection");
+      } else {
+        setError("Failed to send recovery email. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -56,9 +78,14 @@ export default function ForgotPasswordForm() {
           )}
         />
         {error && <AuthError message={error} />}
+        {success && (
+          <p className="text-sm text-primary">
+            Recovery email sent! Please check your inbox.
+          </p>
+        )}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
-          {!loading && "Reset password"}
+          {!loading && "Send recovery email"}
         </Button>
       </form>
     </Form>
