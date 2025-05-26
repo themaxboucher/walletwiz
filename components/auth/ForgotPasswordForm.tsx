@@ -15,7 +15,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import AuthError from "./AuthError";
+import AuthAlert from "./AuthAlert";
 import { sendPasswordRecoveryEmail } from "@/lib/appwrite/client";
 
 const formSchema = z.object({
@@ -77,11 +77,12 @@ export default function ForgotPasswordForm() {
             </FormItem>
           )}
         />
-        {error && <AuthError message={error} />}
+        {error && <AuthAlert message={error} type="error" />}
         {success && (
-          <p className="text-sm text-primary">
-            Recovery email sent! Please check your inbox.
-          </p>
+          <AuthAlert
+            message="Recovery email sent! Please check your inbox."
+            type="success"
+          />
         )}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}

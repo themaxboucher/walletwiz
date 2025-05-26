@@ -16,7 +16,7 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { signup } from "@/lib/actions/user.actions";
-import AuthError from "./AuthError";
+import AuthAlert from "./AuthAlert";
 import { sendVerificationEmail } from "@/lib/appwrite/client";
 
 const formSchema = z.object({
@@ -139,7 +139,7 @@ export default function SignupForm() {
             </FormItem>
           )}
         />
-        {error && <AuthError message={error} />}
+        {error && <AuthAlert message={error} type="error" />}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
           {!loading && "Create an account"}

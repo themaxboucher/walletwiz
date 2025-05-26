@@ -13,10 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import EmailLink from "@/components/auth/EmailLink";
 import { LoaderCircle, MailCheck, Send } from "lucide-react";
-
-// Import the reusable function
 import { sendVerificationEmail } from "@/lib/appwrite/client";
-import AuthError from "./AuthError";
+import AuthAlert from "./AuthAlert";
 
 interface EmailVerificationDialogProps {
   user: any; // Replace 'any' with your actual user type
@@ -90,10 +88,13 @@ export default function EmailVerificationDialog({
           )}
         </Button>
         {resendStatus === "success" && (
-          <p className="text-sm text-primary">Verification email sent!</p>
+          <AuthAlert message="Verification email sent!" type="success" />
         )}
         {resendStatus === "error" && (
-          <AuthError message="Failed to send email. Please try again." />
+          <AuthAlert
+            message="Failed to send email. Please try again."
+            type="error"
+          />
         )}
         <DialogFooter>
           <p className="text-sm">

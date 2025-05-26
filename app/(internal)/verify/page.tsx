@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import { LoaderCircle } from "lucide-react";
-import AuthError from "@/components/auth/AuthError";
+import AuthAlert from "@/components/auth/AuthAlert";
 import { updateVerification } from "@/lib/appwrite/client";
 
 export default function VerifyPage() {
@@ -58,7 +58,17 @@ export default function VerifyPage() {
         )}
 
         {status === "error" && (
-          <AuthError message={error ?? "An unknown error occurred."} />
+          <AuthAlert
+            message={error ?? "An unknown error occurred."}
+            type="error"
+          />
+        )}
+
+        {status === "success" && (
+          <AuthAlert
+            message="Email verified successfully! Redirecting to dashboard..."
+            type="success"
+          />
         )}
       </div>
     </AuthCard>

@@ -15,7 +15,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import AuthError from "./AuthError";
+import AuthAlert from "./AuthAlert";
 import { resetPassword } from "@/lib/appwrite/client";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -116,11 +116,12 @@ export default function ResetPasswordForm() {
             </FormItem>
           )}
         />
-        {error && <AuthError message={error} />}
+        {error && <AuthAlert message={error} type="error" />}
         {success && (
-          <p className="text-sm text-primary">
-            Password reset successful! Redirecting to login...
-          </p>
+          <AuthAlert
+            message="Password reset successful! Redirecting to login..."
+            type="success"
+          />
         )}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}

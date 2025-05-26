@@ -17,7 +17,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { login } from "@/lib/actions/user.actions";
-import AuthError from "./AuthError";
+import AuthAlert from "./AuthAlert";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email" }),
@@ -106,7 +106,7 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-        {error && <AuthError message={error} />}
+        {error && <AuthAlert message={error} type="error" />}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
           {!loading && "Login"}
