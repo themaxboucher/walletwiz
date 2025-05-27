@@ -5,18 +5,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 import AuthAlert from "./AuthAlert";
 import { sendPasswordRecoveryEmail } from "@/lib/appwrite/client";
+import { TextField } from "../ui/form-fields/TextField";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email" }),
@@ -64,18 +57,11 @@ export default function ForgotPasswordForm() {
         className="grid gap-4"
         onSubmit={form.handleSubmit(onSubmitHandler)}
       >
-        <FormField
-          control={form.control}
+        <TextField
+          form={form}
           name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="you@example.com" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
+          label="Email"
+          placeholder="you@example.com"
         />
         {error && <AuthAlert message={error} type="error" />}
         {success && (

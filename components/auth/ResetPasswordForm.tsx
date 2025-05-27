@@ -5,19 +5,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 import AuthAlert from "./AuthAlert";
 import { resetPassword } from "@/lib/appwrite/client";
 import { useSearchParams, useRouter } from "next/navigation";
+import { PasswordField } from "../ui/form-fields/PasswordField";
 
 const formSchema = z
   .object({
@@ -90,31 +83,11 @@ export default function ResetPasswordForm() {
         className="grid gap-4"
         onSubmit={form.handleSubmit(onSubmitHandler)}
       >
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>New Password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
+        <PasswordField form={form} name="password" label="New Password" />
+        <PasswordField
+          form={form}
           name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
+          label="Confirm Password"
         />
         {error && <AuthAlert message={error} type="error" />}
         {success && (

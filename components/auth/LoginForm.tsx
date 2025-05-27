@@ -5,19 +5,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { login } from "@/lib/actions/user.actions";
 import AuthAlert from "./AuthAlert";
+import { TextField } from "../ui/form-fields/TextField";
+import { PasswordField } from "../ui/form-fields/PasswordField";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email" }),
@@ -72,40 +66,24 @@ export default function LoginForm() {
         className="grid gap-4"
         onSubmit={form.handleSubmit(onSubmitHandler)}
       >
-        <FormField
-          control={form.control}
+        <TextField
+          form={form}
           name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="you@example.com" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
+          label="Email"
+          placeholder="you@example.com"
         />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <div className="flex items-center">
-                <FormLabel>Password</FormLabel>
-                <Link
-                  href="/forgot-password"
-                  className="ml-auto inline-block text-sm underline"
-                >
-                  Forgot your password?
-                </Link>
-              </div>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
+        <div>
+          <div className="flex items-center mb-2">
+            <label className="text-sm font-medium">Password</label>
+            <Link
+              href="/forgot-password"
+              className="ml-auto inline-block text-sm underline"
+            >
+              Forgot your password?
+            </Link>
+          </div>
+          <PasswordField form={form} name="password" label="" />
+        </div>
         {error && <AuthAlert message={error} type="error" />}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
