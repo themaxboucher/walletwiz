@@ -16,7 +16,7 @@ import { sendVerificationEmail } from "@/lib/appwrite/client";
 import AuthAlert from "./AuthAlert";
 
 interface EmailVerificationDialogProps {
-  user: any; // Replace 'any' with your actual user type
+  user: User;
 }
 
 export default function EmailVerificationDialog({

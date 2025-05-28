@@ -1,5 +1,4 @@
 import { getLoggedInUser } from "@/lib/actions/user.actions";
-import LogoutButton from "@/components/auth/LogoutButton";
 import Greeting from "@/components/dashboard/Greeting";
 
 export default async function DashboardPage() {
@@ -11,9 +10,7 @@ export default async function DashboardPage() {
         <h1 className="text-lg font-bold md:text-3xl">
           <Greeting />, {user?.firstName}
         </h1>
-        <LogoutButton />
       </div>
-      <p>{user?.email}</p>
     </>
   );
 }
