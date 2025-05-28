@@ -1,9 +1,16 @@
 import Link from "next/link";
-import { FaMoneyBillWave } from "react-icons/fa";
+import Image from "next/image";
+
 export default function Logo() {
   return (
-    <Link href="/" className="flex justify-center items-center gap-[0.65rem]">
-      <FaMoneyBillWave className="text-primary size-7" />
+    <Link href="/" className="flex justify-center items-center gap-[0.4rem]">
+      <Image
+        src="/walletwiz-logo.svg"
+        alt="WalletWiz Logo"
+        width={32}
+        height={32}
+        className="h-8 w-8"
+      />
       <div className="text-lg font-extrabold">WalletWiz</div>
     </Link>
   );
