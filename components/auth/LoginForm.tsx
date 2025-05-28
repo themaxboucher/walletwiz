@@ -77,7 +77,7 @@ export default function LoginForm() {
             <label className="text-sm font-medium">Password</label>
             <Link
               href="/forgot-password"
-              className="ml-auto inline-block text-sm underline"
+              className="ml-auto inline-block text-sm link"
             >
               Forgot your password?
             </Link>

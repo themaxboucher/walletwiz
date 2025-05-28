@@ -10,9 +10,8 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import EmailLink from "@/components/auth/EmailLink";
-import { LoaderCircle, MailCheck, Send } from "lucide-react";
+import { MailCheck } from "lucide-react";
 import { sendVerificationEmail } from "@/lib/appwrite/client";
 import AuthAlert from "./AuthAlert";
 
@@ -63,30 +62,19 @@ export default function EmailVerificationDialog({
       <DialogContent className="flex flex-col items-center text-center">
         <DialogClose /> {/* Standard close button */}
         <DialogHeader className="flex flex-col items-center text-center">
-          <MailCheck className="text-primary size-6 m-4" />
+          <MailCheck className="text-primary size-8 m-4" />
           <DialogTitle>
             Check your inbox to confirm your email address
           </DialogTitle>
-          <DialogDescription className="text-center">
-            We sent a temporary verification link to{" "}
-            <span className="font-medium">{user.email}</span>. If you don't see
-            it, check your spam folder. After confirming your email you can
-            explore the platform.
+          <DialogDescription className="text-center max-w-[25rem]">
+            We sent an email to{" "}
+            <span className="font-medium">{user.email}</span>. Click the link in
+            the email to verify your account.
           </DialogDescription>
         </DialogHeader>
-        {/* <div>
+        <div>
           <EmailLink email={user?.email} />
-        </div> */}
-        <Button onClick={handleResendEmail} disabled={resending}>
-          {resending ? (
-            <LoaderCircle className="h-4 w-4 animate-spin" />
-          ) : (
-            <>
-              <Send className="h-4 w-4" />
-              Resend email
-            </>
-          )}
-        </Button>
+        </div>
         {resendStatus === "success" && (
           <AuthAlert message="Verification email sent!" type="success" />
         )}
@@ -96,9 +84,16 @@ export default function EmailVerificationDialog({
             type="error"
           />
         )}
-        <DialogFooter>
-          <p className="text-sm">
-            Didn't get the email? If not, check your spam folder.
+        <DialogFooter className="text-sm text-muted-foreground">
+          <p>
+            Don't see an email?{" "}
+            <button
+              onClick={handleResendEmail}
+              disabled={resending}
+              className="link"
+            >
+              Resend email
+            </button>
           </p>
         </DialogFooter>
       </DialogContent>

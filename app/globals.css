@@ -143,6 +143,9 @@
   .section-large {
     @apply mx-auto w-full max-w-[82rem] sm:px-10 px-5 py-20;
   }
+  .link {
+    @apply font-medium underline hover:text-primary transition-colors duration-200 cursor-pointer;
+  }
 }
 
 @layer utilities {
