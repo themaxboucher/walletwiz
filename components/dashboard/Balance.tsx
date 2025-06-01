@@ -11,10 +11,9 @@ export default function Balance() {
     <Card>
       <CardHeader>
         <CardTitle className="text-muted-foreground">Balance</CardTitle>
-      </CardHeader>
-      <CardContent>
         <p className="text-2xl font-semibold">$2,890.34</p>
-      </CardContent>
+      </CardHeader>
+      <CardContent></CardContent>
     </Card>
   );
 }

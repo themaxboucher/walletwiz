@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import Transactions from "@/components/dashboard/Transactions";
 import Balance from "@/components/dashboard/Balance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import AmountCard from "@/components/dashboard/AmountCard";
 
 export default async function DashboardPage() {
   const user = await getLoggedInUser();
@@ -20,30 +21,17 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-3 gap-5">
         <div className="grid grid-cols-1 gap-5 col-span-2">
           <div className="grid grid-cols-3 gap-5">
-            <Card>
-              <CardHeader>
-                <CardTitle>Income</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-xl font-semibold">$2890.63</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Expenses</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-xl font-semibold">$2890.63</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Net Change</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-xl font-semibold">$2890.63</div>
-              </CardContent>
-            </Card>
+            <AmountCard
+              title="Income"
+              amount={1562.82}
+              percentageChange={15.2}
+            />
+            <AmountCard
+              title="Expenses"
+              amount={1562.82}
+              percentageChange={-4.5}
+            />
+            <AmountCard title="Net Change" amount={1562.82} />
           </div>
           <Balance />
           <Transactions />

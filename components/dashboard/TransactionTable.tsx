@@ -20,6 +20,7 @@ import { useState } from "react";
 import { format } from "date-fns";
 import CategoryBadge from "./CategoryBadge";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
+import { formatCurrency } from "@/lib/utils";
 
 export interface Transaction {
   id: string | number;
@@ -72,6 +73,9 @@ export default function TransactionTable({
             <TableHead className="py-3 text-muted-foreground">
               Account
             </TableHead>
+            <TableHead className="py-3 px-6 text-muted-foreground text-right">
+              Action
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -90,10 +94,7 @@ export default function TransactionTable({
               </TableCell>
               <TableCell className="py-3 font-medium">
                 {tx.amount > 0 ? "+" : ""}
-                {tx.amount.toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                })}
+                {formatCurrency(tx.amount)}
               </TableCell>
               <TableCell className="py-3">
                 <CategoryBadge
@@ -103,10 +104,10 @@ export default function TransactionTable({
                   {tx.category.name}
                 </CategoryBadge>
               </TableCell>
+              <TableCell className="py-3">{tx.account}</TableCell>
               <TableCell className="py-3 text-muted-foreground">
                 {format(new Date(tx.date), "PP")}
               </TableCell>
-              <TableCell className="py-3">{tx.account}</TableCell>
               <TableCell className="py-3 px-6 text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
