@@ -10,10 +10,7 @@ export default function Balance() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Net Balance</CardTitle>
-        <CardDescription>
-          Net balance based on all available transactions
-        </CardDescription>
+        <CardTitle className="text-muted-foreground">Balance</CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-2xl font-semibold">$2,890.34</p>
