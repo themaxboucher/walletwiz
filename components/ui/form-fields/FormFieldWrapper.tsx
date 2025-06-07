@@ -6,13 +6,15 @@ import {
   FormMessage,
 } from "../form";
 import { ReactNode } from "react";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, ControllerRenderProps } from "react-hook-form";
 
 interface FormFieldWrapperProps {
   form: UseFormReturn<any>;
   name: string;
   label: string;
-  children: ReactNode;
+  children:
+    | ReactNode
+    | ((props: { field: ControllerRenderProps<any, string> }) => ReactNode);
   className?: string;
 }
 
@@ -30,7 +32,9 @@ export function FormFieldWrapper({
       render={({ field }) => (
         <FormItem className={className}>
           <FormLabel>{label}</FormLabel>
-          <FormControl>{children}</FormControl>
+          <FormControl>
+            {typeof children === "function" ? children({ field }) : children}
+          </FormControl>
           <FormMessage className="text-xs" />
         </FormItem>
       )}

@@ -22,36 +22,16 @@ import CategoryBadge from "./CategoryBadge";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { formatCurrency } from "@/lib/utils";
 
-export interface Transaction {
-  id: string | number;
-  merchant: string;
-  amount: number;
-  account: string;
-  category: {
-    name: string;
-    lucideIconName: string;
-    color:
-      | "red"
-      | "yellow"
-      | "orange"
-      | "cyan"
-      | "blue"
-      | "violet"
-      | "pink"
-      | "primary";
-  };
-  date: string;
-  merchantLogo?: string | null;
-}
-
 interface TransactionTableProps {
   transactions: Transaction[];
   pageSize?: number;
+  onEditClick: (transaction: Transaction) => void;
 }
 
 export default function TransactionTable({
   transactions,
   pageSize = 7,
+  onEditClick,
 }: TransactionTableProps) {
   const [page, setPage] = useState(1);
   const totalPages = Math.ceil(transactions.length / pageSize);
@@ -104,10 +84,10 @@ export default function TransactionTable({
                   {tx.category.name}
                 </CategoryBadge>
               </TableCell>
-              <TableCell className="py-3">{tx.account}</TableCell>
               <TableCell className="py-3 text-muted-foreground">
                 {format(new Date(tx.date), "PP")}
               </TableCell>
+              <TableCell className="py-3">{tx.account}</TableCell>
               <TableCell className="py-3 px-6 text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -116,7 +96,10 @@ export default function TransactionTable({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem className="font-medium">
+                    <DropdownMenuItem
+                      className="font-medium"
+                      onClick={() => onEditClick(tx)}
+                    >
                       <Edit className="w-4 h-4 mr-2" /> Edit
                     </DropdownMenuItem>
                     <DropdownMenuItem
