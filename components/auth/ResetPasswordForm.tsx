@@ -7,7 +7,7 @@ import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
-import AuthAlert from "./AuthAlert";
+import FormAlert from "../FormAlert";
 import { resetPassword } from "@/lib/appwrite/client";
 import { useSearchParams, useRouter } from "next/navigation";
 import { PasswordField } from "../ui/form-fields/PasswordField";
@@ -89,9 +89,9 @@ export default function ResetPasswordForm() {
           name="confirmPassword"
           label="Confirm Password"
         />
-        {error && <AuthAlert message={error} type="error" />}
+        {error && <FormAlert message={error} type="error" />}
         {success && (
-          <AuthAlert
+          <FormAlert
             message="Password reset successful! Redirecting to login..."
             type="success"
           />

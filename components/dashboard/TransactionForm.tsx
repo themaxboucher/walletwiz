@@ -11,15 +11,23 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "../ui/form";
 import { categories, categoryIcons } from "@/constants";
+import { createTransaction } from "@/lib/actions/transaction.actions";
+import { getLoggedInUser } from "@/lib/actions/user.actions";
+import { LoaderCircle } from "lucide-react";
+import { useState } from "react";
+import FormAlert from "../FormAlert";
 
 // Define the Zod schema for the transaction form
 const transactionFormSchema = z
   .object({
-    merchant: z.string().min(1, { message: "Merchant name is required" }),
+    merchant: z
+      .string()
+      .min(1, { message: "Merchant name is required" })
+      .max(50, { message: "Merchant name is too long" }),
     amount: z.coerce.number(),
     category: z.string().min(1, { message: "Category is required" }),
     date: z.date({ required_error: "Date is required" }),
-    notes: z.string().optional(),
+    notes: z.string().max(300, { message: "Note is too long" }).optional(),
   })
   .superRefine((data, ctx) => {
     const category = categories.find((cat) => cat.name === data.category);
@@ -51,15 +59,18 @@ export default function TransactionForm({
   transactionToEdit,
   onCancel,
 }: TransactionFormProps) {
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: transactionToEdit
       ? {
-          merchant: transactionToEdit.merchant,
+          merchant: transactionToEdit.merchantName,
           amount: transactionToEdit.amount,
           category: transactionToEdit.category.name,
           date: new Date(transactionToEdit.date),
-          notes: transactionToEdit.notes,
+          notes: transactionToEdit.note,
         }
       : {
           merchant: "",
@@ -70,15 +81,41 @@ export default function TransactionForm({
         },
   });
 
-  function onSubmit(values: TransactionFormData) {
-    console.log(values);
-    onCancel();
+  async function onSubmit(values: TransactionFormData) {
+    setError(null);
+    setLoading(true);
+
+    try {
+      const category = categories.find((cat) => cat.name === values.category);
+      if (!category) throw new Error("Category not found");
+
+      const user = await getLoggedInUser();
+      if (!user) throw new Error("User not found");
+
+      await createTransaction({
+        merchantName: values.merchant,
+        amount: Number(values.amount.toFixed(2)), // Round amounts to two decimal places
+        category,
+        date: values.date.toISOString(),
+        note: values.notes,
+        user: user.$id,
+      });
+
+      onCancel();
+    } catch (error) {
+      console.error("Error creating transaction:", error);
+      setError(
+        error instanceof Error ? error.message : "Failed to create transaction"
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   const categoryOptions = categories.map((cat) => ({
     value: cat.value || cat.name,
     label: cat.name,
-    icon: cat.lucideIconName ? categoryIcons[cat.lucideIconName] : undefined,
+    icon: cat.iconName ? categoryIcons[cat.iconName] : undefined,
     color: cat.color,
     type: cat.type,
   }));
@@ -120,11 +157,15 @@ export default function TransactionForm({
           placeholder="Write a note here..."
         />
 
+        {error && <FormAlert message={error} type="error" />}
         <div className="flex justify-end gap-2 mt-4 col-span-4">
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="submit">Save Transaction</Button>
+          <Button type="submit" disabled={loading}>
+            {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
+            {!loading && "Save Transaction"}
+          </Button>
         </div>
       </form>
     </Form>

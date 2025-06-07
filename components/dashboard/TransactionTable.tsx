@@ -64,13 +64,13 @@ export default function TransactionTable({
               <TableCell className="py-3 px-6 font-medium flex items-center gap-3">
                 <Avatar className="size-6">
                   {tx.merchantLogo && (
-                    <AvatarImage src={tx.merchantLogo} alt={tx.merchant} />
+                    <AvatarImage src={tx.merchantLogo} alt={tx.merchantName} />
                   )}
                   <AvatarFallback>
                     <Store className="size-4 text-muted-foreground" />
                   </AvatarFallback>
                 </Avatar>
-                {tx.merchant}
+                {tx.merchantName}
               </TableCell>
               <TableCell className="py-3 font-medium">
                 {tx.amount > 0 ? "+" : ""}
@@ -79,7 +79,7 @@ export default function TransactionTable({
               <TableCell className="py-3">
                 <CategoryBadge
                   color={tx.category.color}
-                  lucideIconName={tx.category.lucideIconName}
+                  lucideIconName={tx.category.iconName}
                 >
                   {tx.category.name}
                 </CategoryBadge>

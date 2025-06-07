@@ -52,7 +52,7 @@ export function CategoryField({ form, options, className }: SelectFieldProps) {
                     {selectedOption.icon && (
                       <selectedOption.icon
                         className={cn("h-4 w-4", {
-                          "text-primary": selectedOption.color === "primary",
+                          "text-primary": selectedOption.color === "green",
                           "text-red-500": selectedOption.color === "red",
                           "text-blue-500": selectedOption.color === "blue",
                           "text-yellow-500": selectedOption.color === "yellow",
@@ -80,7 +80,7 @@ export function CategoryField({ form, options, className }: SelectFieldProps) {
                       {option.icon && (
                         <option.icon
                           className={cn("h-4 w-4", {
-                            "text-primary": option.color === "primary",
+                            "text-primary": option.color === "green",
                             "text-red-500": option.color === "red",
                             "text-blue-500": option.color === "blue",
                             "text-yellow-500": option.color === "yellow",
@@ -107,7 +107,7 @@ export function CategoryField({ form, options, className }: SelectFieldProps) {
                       {option.icon && (
                         <option.icon
                           className={cn("h-4 w-4", {
-                            "text-primary": option.color === "primary",
+                            "text-primary": option.color === "green",
                             "text-red-500": option.color === "red",
                             "text-blue-500": option.color === "blue",
                             "text-yellow-500": option.color === "yellow",

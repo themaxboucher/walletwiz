@@ -7,7 +7,7 @@ import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
-import AuthAlert from "./AuthAlert";
+import FormAlert from "../FormAlert";
 import { sendPasswordRecoveryEmail } from "@/lib/appwrite/client";
 import { TextField } from "../ui/form-fields/TextField";
 
@@ -63,9 +63,9 @@ export default function ForgotPasswordForm() {
           label="Email"
           placeholder="you@example.com"
         />
-        {error && <AuthAlert message={error} type="error" />}
+        {error && <FormAlert message={error} type="error" />}
         {success && (
-          <AuthAlert
+          <FormAlert
             message="Recovery email sent! Please check your inbox."
             type="success"
           />

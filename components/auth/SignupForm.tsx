@@ -8,7 +8,7 @@ import { LoaderCircle } from "lucide-react";
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 import { signup } from "@/lib/actions/user.actions";
-import AuthAlert from "./AuthAlert";
+import FormAlert from "../FormAlert";
 import { sendVerificationEmail } from "@/lib/appwrite/client";
 import { TextField } from "../ui/form-fields/TextField";
 import { PasswordField } from "../ui/form-fields/PasswordField";
@@ -99,7 +99,7 @@ export default function SignupForm() {
           placeholder="tony@starkindustries.com"
         />
         <PasswordField form={form} name="password" label="Password" />
-        {error && <AuthAlert message={error} type="error" />}
+        {error && <FormAlert message={error} type="error" />}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
           {!loading && "Create an account"}

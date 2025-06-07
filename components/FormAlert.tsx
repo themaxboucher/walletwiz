@@ -1,15 +1,15 @@
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { Alert, AlertDescription } from "../ui/alert";
+import { Alert, AlertDescription } from "./ui/alert";
 import { cn } from "@/lib/utils";
 
 type AlertType = "error" | "success";
 
-interface AuthAlertProps {
+interface FormAlertProps {
   message: string;
   type?: AlertType;
 }
 
-export default function AuthAlert({ message, type = "error" }: AuthAlertProps) {
+export default function FormAlert({ message, type = "error" }: FormAlertProps) {
   const isError = type === "error";
 
   return (

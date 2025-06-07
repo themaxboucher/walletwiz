@@ -15,7 +15,7 @@ declare interface User {
 
 declare interface Category {
   name: string;
-  lucideIconName: string;
+  iconName: string;
   color:
     | "red"
     | "yellow"
@@ -24,19 +24,21 @@ declare interface Category {
     | "blue"
     | "violet"
     | "pink"
-    | "primary";
+    | "green";
   type: "income" | "expense";
   value?: string;
   budget?: number;
 }
 
 declare interface Transaction {
-  id: string | number;
-  merchant: string;
+  id?: string | number;
+  name?: string;
+  merchantName: string;
   amount: number;
-  account: string;
+  account?: string;
   category: Category;
   date: string;
   merchantLogo?: string | null;
-  notes?: string;
+  note?: string;
+  user?: string;
 }

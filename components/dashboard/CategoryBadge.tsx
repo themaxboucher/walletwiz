@@ -24,7 +24,7 @@ interface CategoryBadgeProps {
     | "blue"
     | "violet"
     | "pink"
-    | "primary";
+    | "green";
 }
 
 const colorMap: Record<CategoryBadgeProps["color"], string> = {
@@ -35,7 +35,7 @@ const colorMap: Record<CategoryBadgeProps["color"], string> = {
   blue: "text-blue-500",
   violet: "text-violet-500",
   pink: "text-pink-500",
-  primary: "text-primary",
+  green: "text-primary",
 };
 
 const iconMap: Record<

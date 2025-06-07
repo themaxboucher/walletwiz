@@ -13,7 +13,7 @@ import {
 import EmailLink from "@/components/auth/EmailLink";
 import { MailCheck } from "lucide-react";
 import { sendVerificationEmail } from "@/lib/appwrite/client";
-import AuthAlert from "./AuthAlert";
+import FormAlert from "../FormAlert";
 
 interface EmailVerificationDialogProps {
   user: User;
@@ -76,10 +76,10 @@ export default function EmailVerificationDialog({
           <EmailLink email={user?.email} />
         </div>
         {resendStatus === "success" && (
-          <AuthAlert message="Verification email sent!" type="success" />
+          <FormAlert message="Verification email sent!" type="success" />
         )}
         {resendStatus === "error" && (
-          <AuthAlert
+          <FormAlert
             message="Failed to send email. Please try again."
             type="error"
           />
