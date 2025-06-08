@@ -58,3 +58,24 @@ export const deleteTransaction = async (transactionId: string) => {
     throw error;
   }
 };
+
+export const updateTransaction = async (
+  transactionId: string,
+  transaction: Partial<Transaction>
+) => {
+  try {
+    const { database } = await createAdminClient();
+
+    const updatedTransaction = await database.updateDocument(
+      DATABASE_ID!,
+      TRANSACTION_COLLECTION_ID!,
+      transactionId,
+      transaction
+    );
+
+    return parseStringify(updatedTransaction);
+  } catch (error) {
+    console.error("Error updating transaction:", error);
+    throw error;
+  }
+};

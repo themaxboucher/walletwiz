@@ -11,7 +11,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "../ui/form";
 import { categories, categoryIcons } from "@/constants";
-import { createTransaction } from "@/lib/actions/transaction.actions";
+import {
+  createTransaction,
+  updateTransaction,
+} from "@/lib/actions/transaction.actions";
 import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
@@ -95,20 +98,27 @@ export default function TransactionForm({
       const user = await getLoggedInUser();
       if (!user) throw new Error("User not found");
 
-      await createTransaction({
+      const transactionData = {
         merchantName: values.merchant,
         amount: Number(values.amount.toFixed(2)), // Round amounts to two decimal places
         category,
         date: values.date.toISOString(),
         note: values.notes,
         user: user.$id,
-      });
+      };
+
+      if (transactionToEdit?.$id) {
+        await updateTransaction(String(transactionToEdit.$id), transactionData);
+      } else {
+        await createTransaction(transactionData);
+      }
+
       router.refresh();
       onCancel();
     } catch (error) {
-      console.error("Error creating transaction:", error);
+      console.error("Error saving transaction:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to create transaction"
+        error instanceof Error ? error.message : "Failed to save transaction"
       );
     } finally {
       setLoading(false);
@@ -167,7 +177,8 @@ export default function TransactionForm({
           </Button>
           <Button type="submit" disabled={loading}>
             {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
-            {!loading && "Save Transaction"}
+            {!loading &&
+              (transactionToEdit ? "Update Transaction" : "Save Transaction")}
           </Button>
         </div>
       </form>
