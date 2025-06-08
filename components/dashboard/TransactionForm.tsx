@@ -16,6 +16,7 @@ import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import FormAlert from "../FormAlert";
+import { useRouter } from "next/navigation";
 
 // Define the Zod schema for the transaction form
 const transactionFormSchema = z
@@ -59,6 +60,7 @@ export default function TransactionForm({
   transactionToEdit,
   onCancel,
 }: TransactionFormProps) {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -85,6 +87,7 @@ export default function TransactionForm({
     setError(null);
     setLoading(true);
 
+    // TODO: Make async function faster
     try {
       const category = categories.find((cat) => cat.name === values.category);
       if (!category) throw new Error("Category not found");
@@ -100,7 +103,7 @@ export default function TransactionForm({
         note: values.notes,
         user: user.$id,
       });
-
+      router.refresh();
       onCancel();
     } catch (error) {
       console.error("Error creating transaction:", error);

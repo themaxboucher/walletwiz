@@ -43,3 +43,18 @@ export const getTransactions = async (userId: string) => {
     throw error;
   }
 };
+
+export const deleteTransaction = async (transactionId: string) => {
+  try {
+    const { database } = await createAdminClient();
+
+    await database.deleteDocument(
+      DATABASE_ID!,
+      TRANSACTION_COLLECTION_ID!,
+      transactionId
+    );
+  } catch (error) {
+    console.error("Error deleting transaction:", error);
+    throw error;
+  }
+};

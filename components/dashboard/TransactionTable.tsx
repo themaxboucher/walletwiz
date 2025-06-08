@@ -21,6 +21,7 @@ import { format } from "date-fns";
 import CategoryBadge from "./CategoryBadge";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { formatCurrency } from "@/lib/utils";
+import DeleteTransactionDialog from "./DeleteTransactionDialog";
 
 interface TransactionTableProps {
   transactions: Transaction[];
@@ -101,12 +102,18 @@ export default function TransactionTable({
                     >
                       <Edit className="w-4 h-4 mr-2" /> Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="font-medium"
-                      variant="destructive"
-                    >
-                      <Trash2 className="w-4 h-4 mr-2 " /> Delete
-                    </DropdownMenuItem>
+                    <DeleteTransactionDialog
+                      transactionId={String(tx.$id)}
+                      trigger={
+                        <DropdownMenuItem
+                          className="font-medium"
+                          variant="destructive"
+                          onSelect={(e) => e.preventDefault()}
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" /> Delete
+                        </DropdownMenuItem>
+                      }
+                    />
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
