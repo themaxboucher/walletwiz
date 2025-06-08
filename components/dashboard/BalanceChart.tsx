@@ -11,17 +11,41 @@ interface BalanceChartProps {
 
 export default function BalanceChart({ transactions }: BalanceChartProps) {
   const chartData = useMemo(() => {
+    if (transactions.length === 0) return [];
+
     // Sort transactions by date
     const sortedTransactions = [...transactions].sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     );
 
-    // Calculate running balance
+    // Get the date range
+    const firstDate = new Date(sortedTransactions[0].date);
+    const lastDate = new Date(
+      sortedTransactions[sortedTransactions.length - 1].date
+    );
+
+    // Create evenly spaced dates
+    const dates: Date[] = [];
+    const currentDate = new Date(firstDate);
+    while (currentDate <= lastDate) {
+      dates.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    // Calculate running balance for each date
     let balance = 0;
-    return sortedTransactions.map((tx) => {
-      balance += tx.amount;
+    let txIndex = 0;
+    return dates.map((date) => {
+      // Add any transactions that occurred on or before this date
+      while (
+        txIndex < sortedTransactions.length &&
+        new Date(sortedTransactions[txIndex].date) <= date
+      ) {
+        balance += sortedTransactions[txIndex].amount;
+        txIndex++;
+      }
       return {
-        date: new Date(tx.date).toLocaleDateString(),
+        date: date.toISOString(),
         balance,
       };
     });
