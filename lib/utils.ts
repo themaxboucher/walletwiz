@@ -23,3 +23,23 @@ export function formatCurrency(amount: number): string {
     currency: "USD",
   });
 }
+
+export function abbreviateNumber(value: number): string {
+  const suffixes = ["", "k", "M", "B", "T"];
+  const sign = Math.sign(value);
+  const absValue = Math.abs(value);
+
+  if (absValue < 1000) {
+    return (sign * absValue).toString();
+  }
+
+  const tier = Math.floor(Math.log10(absValue) / 3);
+
+  const suffix = suffixes[tier];
+  const scale = Math.pow(10, tier * 3);
+  const scaled = absValue / scale;
+
+  const formatted = scaled % 1 === 0 ? scaled.toFixed(0) : scaled.toFixed(1);
+
+  return `${sign < 0 ? "-" : ""}${formatted}${suffix}`;
+}

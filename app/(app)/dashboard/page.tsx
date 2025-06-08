@@ -48,7 +48,7 @@ export default async function DashboardPage() {
             />
             <AmountCard title="Net Change" amount={netChange} />
           </div>
-          <Balance />
+          <Balance transactions={transactions} />
           <Transactions transactions={transactions} />
         </div>
         <div className="grid grid-cols-1 gap-5">
