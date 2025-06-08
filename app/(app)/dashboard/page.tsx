@@ -12,7 +12,17 @@ export default async function DashboardPage() {
   if (!user) return null;
 
   const transactions = await getTransactions(user.$id);
-  console.log(transactions);
+
+  // Calculate totals from transactions
+  const income = transactions
+    .filter((tx: Transaction) => tx.amount > 0)
+    .reduce((sum: number, tx: Transaction) => sum + tx.amount, 0);
+
+  const expenses = transactions
+    .filter((tx: Transaction) => tx.amount < 0)
+    .reduce((sum: number, tx: Transaction) => sum + Math.abs(tx.amount), 0);
+
+  const netChange = income - expenses;
 
   return (
     <>
@@ -28,15 +38,15 @@ export default async function DashboardPage() {
           <div className="grid grid-cols-3 gap-5">
             <AmountCard
               title="Income"
-              amount={1562.82}
-              percentageChange={15.2}
+              amount={income}
+              percentageChange={15.2} // TODO: Calculate actual percentage change
             />
             <AmountCard
               title="Expenses"
-              amount={1562.82}
-              percentageChange={-4.5}
+              amount={expenses}
+              percentageChange={-4.5} // TODO: Calculate actual percentage change
             />
-            <AmountCard title="Net Change" amount={1562.82} />
+            <AmountCard title="Net Change" amount={netChange} />
           </div>
           <Balance />
           <Transactions transactions={transactions} />
