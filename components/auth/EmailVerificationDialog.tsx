@@ -62,7 +62,9 @@ export default function EmailVerificationDialog({
       <DialogContent className="flex flex-col items-center text-center">
         <DialogClose /> {/* Standard close button */}
         <DialogHeader className="flex flex-col items-center text-center">
-          <MailCheck className="text-primary size-8 m-4" />
+          <div className="rounded-full bg-primary/10 p-3 mb-4">
+            <MailCheck className="text-primary size-6" />
+          </div>
           <DialogTitle>
             Check your inbox to confirm your email address
           </DialogTitle>

@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { Card, CardHeader, CardTitle } from "../ui/card";
 import TransactionTable from "./TransactionTable";
 import TransactionDialog from "./TransactionDialog";
+import EmptyState from "./EmptyState";
 
 export default function Transactions(props: { transactions: Transaction[] }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -28,17 +29,27 @@ export default function Transactions(props: { transactions: Transaction[] }) {
         <CardHeader className="w-full">
           <CardTitle>Transactions</CardTitle>
         </CardHeader>
-        <Button size="sm" variant="outline" onClick={() => handleOpenDialog()}>
-          <Plus className="h-3.5 w-3.5" />
-          <span>Add Transaction</span>
-        </Button>
+        {props.transactions.length > 0 && (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleOpenDialog()}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>Add Transaction</span>
+          </Button>
+        )}
       </div>
 
-      <TransactionTable
-        transactions={props.transactions}
-        pageSize={7}
-        onEditClick={handleOpenDialog}
-      />
+      {props.transactions.length === 0 ? (
+        <EmptyState onAddClick={() => handleOpenDialog()} />
+      ) : (
+        <TransactionTable
+          transactions={props.transactions}
+          pageSize={7}
+          onEditClick={handleOpenDialog}
+        />
+      )}
 
       <TransactionDialog
         open={isDialogOpen}
