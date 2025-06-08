@@ -34,8 +34,14 @@ export default function TransactionTable({
   onEditClick,
 }: TransactionTableProps) {
   const [page, setPage] = useState(1);
-  const totalPages = Math.ceil(transactions.length / pageSize);
-  const paginated = transactions.slice((page - 1) * pageSize, page * pageSize);
+  const sortedTransactions = [...transactions].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+  const totalPages = Math.ceil(sortedTransactions.length / pageSize);
+  const paginated = sortedTransactions.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
 
   return (
     <div>
@@ -50,12 +56,6 @@ export default function TransactionTable({
               Category
             </TableHead>
             <TableHead className="py-3 text-muted-foreground">Date</TableHead>
-            <TableHead className="py-3 text-muted-foreground">
-              Account
-            </TableHead>
-            <TableHead className="py-3 px-6 text-muted-foreground text-right">
-              Action
-            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -87,7 +87,6 @@ export default function TransactionTable({
               <TableCell className="py-3 text-muted-foreground">
                 {format(new Date(tx.date), "PP")}
               </TableCell>
-              <TableCell className="py-3">{tx.account}</TableCell>
               <TableCell className="py-3 px-6 text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>

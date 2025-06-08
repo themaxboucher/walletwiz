@@ -6,9 +6,8 @@ import { Button } from "../ui/button";
 import { Card, CardHeader, CardTitle } from "../ui/card";
 import TransactionTable from "./TransactionTable";
 import TransactionDialog from "./TransactionDialog";
-import { mockTransactions } from "@/constants";
 
-export default function Transactions() {
+export default function Transactions(props: { transactions: Transaction[] }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] =
     useState<Transaction | null>(null);
@@ -36,7 +35,7 @@ export default function Transactions() {
       </div>
 
       <TransactionTable
-        transactions={mockTransactions}
+        transactions={props.transactions}
         pageSize={7}
         onEditClick={handleOpenDialog}
       />

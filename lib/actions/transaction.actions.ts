@@ -26,3 +26,20 @@ export const createTransaction = async (transaction: Transaction) => {
     throw error;
   }
 };
+
+export const getTransactions = async (userId: string) => {
+  try {
+    const { database } = await createAdminClient();
+
+    const transactions = await database.listDocuments(
+      DATABASE_ID!,
+      TRANSACTION_COLLECTION_ID!,
+      [Query.equal("user", [userId])]
+    );
+
+    return parseStringify(transactions.documents);
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    throw error;
+  }
+};

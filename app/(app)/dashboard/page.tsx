@@ -1,4 +1,5 @@
 import { getLoggedInUser } from "@/lib/actions/user.actions";
+import { getTransactions } from "@/lib/actions/transaction.actions";
 import Greeting from "@/components/dashboard/Greeting";
 import { Separator } from "@/components/ui/separator";
 import Transactions from "@/components/dashboard/Transactions";
@@ -8,12 +9,16 @@ import AmountCard from "@/components/dashboard/AmountCard";
 
 export default async function DashboardPage() {
   const user = await getLoggedInUser();
+  if (!user) return null;
+
+  const transactions = await getTransactions(user.$id);
+  console.log(transactions);
 
   return (
     <>
       <div className="flex justify-between items-center">
         <h1 className="text-lg font-bold md:text-2xl">
-          <Greeting />, {user?.firstName}
+          <Greeting />, {user.firstName}
         </h1>
         <div>Time range selector</div>
       </div>
@@ -34,7 +39,7 @@ export default async function DashboardPage() {
             <AmountCard title="Net Change" amount={1562.82} />
           </div>
           <Balance />
-          <Transactions />
+          <Transactions transactions={transactions} />
         </div>
         <div className="grid grid-cols-1 gap-5">
           <Card>
