@@ -31,7 +31,7 @@ declare interface Category {
 }
 
 declare interface Transaction {
-  id?: string | number;
+  $id?: string | number;
   name?: string;
   merchantName: string;
   amount: number;

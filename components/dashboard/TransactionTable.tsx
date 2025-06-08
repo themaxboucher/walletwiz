@@ -60,7 +60,7 @@ export default function TransactionTable({
         </TableHeader>
         <TableBody>
           {paginated.map((tx) => (
-            <TableRow key={tx.id} className="hover:bg-muted/40">
+            <TableRow key={tx.$id} className="hover:bg-muted/40">
               <TableCell className="py-3 px-6 font-medium flex items-center gap-3">
                 <Avatar className="size-6">
                   {tx.merchantLogo && (

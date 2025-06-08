@@ -91,7 +91,7 @@ export const categories: Category[] = [
 
 export const mockTransactions: Transaction[] = [
   {
-    id: 1,
+    $id: 1,
     merchantName: "Google",
     amount: 5000,
     account: "Checking",
@@ -105,7 +105,7 @@ export const mockTransactions: Transaction[] = [
     merchantLogo: "https://logo.clearbit.com/google.com",
   },
   {
-    id: 3,
+    $id: 3,
     merchantName: "Whole Foods",
     amount: -150,
     account: "Credit Card",
@@ -119,21 +119,7 @@ export const mockTransactions: Transaction[] = [
     merchantLogo: "https://logo.clearbit.com/wholefoodsmarket.com",
   },
   {
-    id: 4,
-    merchantName: "Con Edison",
-    amount: -80,
-    account: "Checking",
-    category: {
-      name: "Utilities",
-      iconName: "Lightbulb",
-      color: "yellow",
-      type: "expense",
-    },
-    date: "2025-06-03",
-    merchantLogo: "https://logo.clearbit.com/coned.com",
-  },
-  {
-    id: 5,
+    $id: 5,
     merchantName: "Uber",
     amount: -45,
     account: "Savings",
@@ -147,7 +133,7 @@ export const mockTransactions: Transaction[] = [
     merchantLogo: "https://logo.clearbit.com/uber.com",
   },
   {
-    id: 6,
+    $id: 6,
     merchantName: "Amazon",
     amount: -200,
     account: "Credit Card",
@@ -161,7 +147,7 @@ export const mockTransactions: Transaction[] = [
     merchantLogo: "https://logo.clearbit.com/amazon.com",
   },
   {
-    id: 7,
+    $id: 7,
     merchantName: "Freelance Client A",
     amount: 1200,
     account: "Paypal",
@@ -175,7 +161,7 @@ export const mockTransactions: Transaction[] = [
     merchantLogo: "https://logo.clearbit.com/paypal.com",
   },
   {
-    id: 8,
+    $id: 8,
     merchantName: "The Spotted Pig",
     amount: -70,
     account: "Credit Card",
@@ -189,7 +175,7 @@ export const mockTransactions: Transaction[] = [
     merchantLogo: "https://logo.clearbit.com/thespottedpig.com",
   },
   {
-    id: 9,
+    $id: 9,
     merchantName: "Verizon",
     amount: -60,
     account: "Checking",
@@ -203,7 +189,7 @@ export const mockTransactions: Transaction[] = [
     merchantLogo: "https://logo.clearbit.com/verizon.com",
   },
   {
-    id: 10,
+    $id: 10,
     merchantName: "Local Coffee Shop",
     amount: -8.5,
     account: "Credit Card",
@@ -217,7 +203,7 @@ export const mockTransactions: Transaction[] = [
     merchantLogo: null,
   },
   {
-    id: 11,
+    $id: 11,
     merchantName: "Street Vendor",
     amount: -12.0,
     account: "Cash",
@@ -231,7 +217,7 @@ export const mockTransactions: Transaction[] = [
     merchantLogo: null,
   },
   {
-    id: 12,
+    $id: 12,
     merchantName: "Neighborhood Laundry",
     amount: -25.0,
     account: "Checking",
