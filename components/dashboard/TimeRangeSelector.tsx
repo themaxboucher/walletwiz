@@ -17,7 +17,8 @@ import {
 import { DateRange } from "react-day-picker";
 
 interface TimeRangeSelectorProps {
-  onRangeChange: (startDate: Date, endDate: Date) => void;
+  dateRange: DateRange;
+  onDateRangeChange: (range: DateRange) => void;
   transactions: Array<{ date: string }>;
 }
 
@@ -86,13 +87,10 @@ const PRESET_RANGES = [
 const CUSTOM_RANGE = "Custom";
 
 export default function TimeRangeSelector({
-  onRangeChange,
+  dateRange,
+  onDateRangeChange,
   transactions,
 }: TimeRangeSelectorProps) {
-  const [date, setDate] = useState<DateRange>({
-    from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-    to: new Date(),
-  });
   const [selectedPreset, setSelectedPreset] = useState<string>("Last Month");
 
   const isSameDay = (date1: Date, date2: Date) => {
@@ -120,18 +118,16 @@ export default function TimeRangeSelector({
     const preset = PRESET_RANGES.find((p) => p.label === value);
     if (preset) {
       const { start, end } = preset.getRange(transactions);
-      setDate({ from: start, to: end });
+      onDateRangeChange({ from: start, to: end });
       setSelectedPreset(value);
-      onRangeChange(start, end);
     }
   };
 
   const handleDateSelect = (range: DateRange | undefined) => {
     if (range?.from && range?.to) {
-      setDate(range);
+      onDateRangeChange(range);
       const matchingPreset = checkIfMatchesPreset(range.from, range.to);
       setSelectedPreset(matchingPreset);
-      onRangeChange(range.from, range.to);
     }
   };
 
@@ -157,18 +153,18 @@ export default function TimeRangeSelector({
             variant="outline"
             className={cn(
               "w-[240px] justify-start text-left font-normal bg-white",
-              !date && "text-muted-foreground"
+              !dateRange && "text-muted-foreground"
             )}
           >
             <Calendar className="mr-2 h-4 w-4" />
-            {date?.from ? (
-              date.to ? (
+            {dateRange?.from ? (
+              dateRange.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
+                  {format(dateRange.from, "LLL dd, y")} -{" "}
+                  {format(dateRange.to, "LLL dd, y")}
                 </>
               ) : (
-                format(date.from, "LLL dd, y")
+                format(dateRange.from, "LLL dd, y")
               )
             ) : (
               <span>Pick a date range</span>
@@ -179,8 +175,8 @@ export default function TimeRangeSelector({
           <CalendarComponent
             initialFocus
             mode="range"
-            defaultMonth={date?.from}
-            selected={date}
+            defaultMonth={dateRange?.from}
+            selected={dateRange}
             onSelect={handleDateSelect}
             numberOfMonths={2}
           />

@@ -8,24 +8,25 @@ import {
 import BalanceChart from "./BalanceChart";
 import { formatCurrency } from "@/lib/utils";
 
-interface BalanceProps {
-  transactions: Transaction[];
+interface ChartDataPoint {
+  date: string;
+  balance: number;
 }
 
-export default function Balance({ transactions }: BalanceProps) {
-  // Calculate current balance
-  const currentBalance = transactions.reduce((sum, tx) => sum + tx.amount, 0);
+interface BalanceProps {
+  totalBalance: number;
+  chartData: ChartDataPoint[];
+}
 
+export default function Balance({ totalBalance, chartData }: BalanceProps) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-muted-foreground">Balance</CardTitle>
-        <p className="text-2xl font-semibold">
-          {formatCurrency(currentBalance)}
-        </p>
+        <p className="text-2xl font-semibold">{formatCurrency(totalBalance)}</p>
       </CardHeader>
       <CardContent>
-        <BalanceChart transactions={transactions} />
+        <BalanceChart chartData={chartData} />
       </CardContent>
     </Card>
   );
