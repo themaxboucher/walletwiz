@@ -9,6 +9,7 @@ import AmountCard from "./AmountCard";
 import TimeRangeSelector from "./TimeRangeSelector";
 import { useState, useMemo } from "react";
 import { DateRange } from "react-day-picker";
+import { percentageChange } from "@/lib/utils";
 
 interface DashboardContentProps {
   user: {
@@ -68,7 +69,7 @@ export default function DashboardContent({
     }
 
     return dates.map((date) => {
-      // Add any transactions that occurred on or before this date
+      // For each date, add any transactions that occurred on or before this date
       while (
         txIndex < sortedTransactions.length &&
         new Date(sortedTransactions[txIndex].date) <= date
@@ -99,12 +100,12 @@ export default function DashboardContent({
 
   // Calculate totals from filtered transactions
   const income = filteredTransactions
-    .filter((tx) => tx.amount > 0)
-    .reduce((sum, tx) => sum + tx.amount, 0);
+    .filter((tx: Transaction) => tx.amount > 0)
+    .reduce((sum: number, tx: Transaction) => sum + tx.amount, 0);
 
   const expenses = filteredTransactions
-    .filter((tx) => tx.amount < 0)
-    .reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
+    .filter((tx: Transaction) => tx.amount < 0)
+    .reduce((sum: number, tx: Transaction) => sum + Math.abs(tx.amount), 0);
 
   const netChange = income - expenses;
 
@@ -114,6 +115,58 @@ export default function DashboardContent({
   const totalBalance = transactions
     .filter((tx) => new Date(tx.date) <= today)
     .reduce((sum, tx) => sum + tx.amount, 0);
+
+  // Calculate previous period metrics for comparison
+  const { previousIncome, previousExpenses, previousNetChange } =
+    useMemo(() => {
+      // Return zeros if date range is not defined to prevent errors
+      if (!dateRange?.from || !dateRange?.to)
+        return { previousIncome: 0, previousExpenses: 0, previousNetChange: 0 };
+
+      const currentPeriodStart = dateRange.from as Date;
+      const currentPeriodEnd = dateRange.to as Date;
+
+      // Calculate the duration of the current selected period
+      const durationMs =
+        currentPeriodEnd.getTime() - currentPeriodStart.getTime();
+
+      // Determine the end date of the previous period (one day before current period starts)
+      const previousPeriodEnd = new Date(currentPeriodStart.getTime() - 1);
+      // Determine the start date of the previous period by subtracting the duration
+      const previousPeriodStart = new Date(
+        previousPeriodEnd.getTime() - durationMs
+      );
+
+      // Filter transactions that fall within the previous period
+      const previousPeriodTransactions = transactions.filter((tx) => {
+        const txDate = new Date(tx.date);
+        return txDate >= previousPeriodStart && txDate <= previousPeriodEnd;
+      });
+
+      // Calculate income for the previous period
+      const prevIncome = previousPeriodTransactions
+        .filter((tx: Transaction) => tx.amount > 0)
+        .reduce((sum: number, tx: Transaction) => sum + tx.amount, 0);
+
+      // Calculate expenses for the previous period
+      const prevExpenses = previousPeriodTransactions
+        .filter((tx: Transaction) => tx.amount < 0)
+        .reduce((sum: number, tx: Transaction) => sum + Math.abs(tx.amount), 0);
+
+      // Calculate net change for the previous period
+      const prevNetChange = prevIncome - prevExpenses;
+
+      return {
+        previousIncome: prevIncome,
+        previousExpenses: prevExpenses,
+        previousNetChange: prevNetChange,
+      };
+    }, [transactions, dateRange]); // Recalculate when transactions or date range changes
+
+  // Calculate percentage changes for income, expenses, and net change
+  const incomePercentageChange = percentageChange(income, previousIncome);
+  const expensesPercentageChange = percentageChange(expenses, previousExpenses);
+  const savedPercentageChange = percentageChange(netChange, previousNetChange);
 
   return (
     <>
@@ -134,14 +187,18 @@ export default function DashboardContent({
             <AmountCard
               title="Income"
               amount={income}
-              percentageChange={15.2} // TODO: Calculate actual percentage change
+              percentageChange={incomePercentageChange}
             />
             <AmountCard
               title="Expenses"
               amount={expenses}
-              percentageChange={-4.5} // TODO: Calculate actual percentage change
+              percentageChange={expensesPercentageChange}
             />
-            <AmountCard title="Net Change" amount={netChange} />
+            <AmountCard
+              title="Saved"
+              amount={netChange}
+              percentageChange={savedPercentageChange}
+            />
           </div>
           <Balance totalBalance={totalBalance} chartData={filteredChartData} />
           <Transactions transactions={filteredTransactions} />

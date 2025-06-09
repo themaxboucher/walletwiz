@@ -24,6 +24,14 @@ export function formatCurrency(amount: number): string {
   });
 }
 
+export function formatNumber(amount: number): string {
+  return amount.toLocaleString("en-US", {
+    style: "decimal",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+}
+
 export function abbreviateNumber(value: number): string {
   const suffixes = ["", "k", "M", "B", "T"];
   const sign = Math.sign(value);
@@ -43,3 +51,15 @@ export function abbreviateNumber(value: number): string {
 
   return `${sign < 0 ? "-" : ""}${formatted}${suffix}`;
 }
+
+export const percentageChange = (
+  currentValue: number,
+  previousValue: number
+) => {
+  // Handle cases where previous value is zero to avoid division by zero
+  if (previousValue === 0) {
+    return currentValue === 0 ? 0 : undefined;
+  }
+  // Calculate percentage change
+  return ((currentValue - previousValue) / Math.abs(previousValue)) * 100;
+};

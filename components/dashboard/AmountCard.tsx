@@ -2,6 +2,7 @@ import { formatCurrency } from "@/lib/utils";
 import { Card, CardHeader, CardTitle } from "../ui/card";
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatNumber } from "@/lib/utils";
 
 interface AmountCardProps {
   title: string;
@@ -35,7 +36,7 @@ export default function AmountCard(props: AmountCardProps) {
               ) : (
                 <ArrowDownRight className="h-4 w-4" />
               )}
-              {Math.abs(percentageChange).toFixed(2)}%
+              {formatNumber(Math.abs(percentageChange))}%
             </div>
           )}
         </div>
