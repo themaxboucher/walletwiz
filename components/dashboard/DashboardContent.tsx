@@ -10,6 +10,11 @@ import TimeRangeSelector from "./TimeRangeSelector";
 import { useState, useMemo } from "react";
 import { DateRange } from "react-day-picker";
 import { percentageChange } from "@/lib/utils";
+import {
+  differenceInDays,
+  differenceInMonths,
+  differenceInYears,
+} from "date-fns";
 
 interface DashboardContentProps {
   user: {
@@ -40,6 +45,8 @@ export default function DashboardContent({
       return txDate >= from && txDate <= to;
     });
   }, [transactions, dateRange]);
+
+  console.log(filteredTransactions);
 
   // Generate balance chart data for all transactions
   const allChartData = useMemo(() => {
@@ -168,6 +175,26 @@ export default function DashboardContent({
   const expensesPercentageChange = percentageChange(expenses, previousExpenses);
   const savedPercentageChange = percentageChange(netChange, previousNetChange);
 
+  // Calculate period text for AmountCard tooltip
+  const periodText = useMemo(() => {
+    if (!dateRange?.from || !dateRange?.to) return "period";
+
+    const start = dateRange.from;
+    const end = dateRange.to;
+
+    const totalDaysIncludingStart = differenceInDays(end, start); // Include both start and end days
+
+    if (totalDaysIncludingStart === 7) return "week";
+    if (totalDaysIncludingStart === 30 || totalDaysIncludingStart === 31)
+      return "month";
+    if (totalDaysIncludingStart === 365 || totalDaysIncludingStart === 366)
+      return "year";
+
+    // Default to days
+    if (totalDaysIncludingStart === 1) return "day";
+    return `${totalDaysIncludingStart} days`;
+  }, [dateRange]);
+
   return (
     <>
       <div className="flex justify-between items-center">
@@ -188,16 +215,19 @@ export default function DashboardContent({
               title="Income"
               amount={income}
               percentageChange={incomePercentageChange}
+              periodText={periodText}
             />
             <AmountCard
               title="Expenses"
               amount={expenses}
               percentageChange={expensesPercentageChange}
+              periodText={periodText}
             />
             <AmountCard
               title="Saved"
               amount={netChange}
               percentageChange={savedPercentageChange}
+              periodText={periodText}
             />
           </div>
           <Balance totalBalance={totalBalance} chartData={filteredChartData} />
