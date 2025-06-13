@@ -10,11 +10,7 @@ import TimeRangeSelector from "./TimeRangeSelector";
 import { useState, useMemo } from "react";
 import { DateRange } from "react-day-picker";
 import { percentageChange } from "@/lib/utils";
-import {
-  differenceInDays,
-  differenceInMonths,
-  differenceInYears,
-} from "date-fns";
+import { differenceInDays } from "date-fns";
 
 interface DashboardContentProps {
   user: {
@@ -45,8 +41,6 @@ export default function DashboardContent({
       return txDate >= from && txDate <= to;
     });
   }, [transactions, dateRange]);
-
-  console.log(filteredTransactions);
 
   // Generate balance chart data for all transactions
   const allChartData = useMemo(() => {
