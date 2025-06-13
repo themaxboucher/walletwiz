@@ -7,10 +7,12 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/lib/actions/user.actions";
-import { Settings, HelpCircle, LogOut, User } from "lucide-react";
+import { Settings, HelpCircle, LogOut } from "lucide-react";
+import { ThemeSelector } from "../ThemeSelector";
 
 export default function AccountMenu(props: { user: User }) {
   const handleLogout = async () => {
@@ -44,19 +46,26 @@ export default function AccountMenu(props: { user: User }) {
             </span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <div className="flex justify-between items-center py-1">
+            <DropdownMenuLabel className="text-sm font-medium">
+              Theme
+            </DropdownMenuLabel>
+            <ThemeSelector />
+          </div>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => {}} className="cursor-pointer">
-            <Settings className="mr-1 h-4 w-4" />
+            <Settings className="mr-1 size-4" />
             Settings
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
-            <HelpCircle className="mr-1 h-4 w-4" />
+            <HelpCircle className="mr-1 size-4" />
             Support
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <form action={handleLogout}>
             <button className="w-full" type="submit">
               <DropdownMenuItem className="cursor-pointer">
-                <LogOut className="mr-1 h-4 w-4" />
+                <LogOut className="mr-1 size-4" />
                 Logout
               </DropdownMenuItem>
             </button>
