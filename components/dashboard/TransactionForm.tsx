@@ -126,8 +126,7 @@ export default function TransactionForm({
   }
 
   const categoryOptions = categories.map((cat) => ({
-    value: cat.value || cat.name,
-    label: cat.name,
+    name: cat.name,
     icon: cat.iconName ? categoryIcons[cat.iconName] : undefined,
     color: cat.color,
     type: cat.type,

@@ -11,19 +11,18 @@ import { FormFieldWrapper } from "./FormFieldWrapper";
 import { UseFormReturn, ControllerRenderProps } from "react-hook-form";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { categoryColors } from "@/constants";
 
 interface SelectOption {
-  value: string;
-  label: string;
+  name: string;
   icon?: LucideIcon;
-  color?: string;
+  color?: CategoryColor;
   type?: "income" | "expense";
 }
 
 interface SelectFieldProps {
   form: UseFormReturn<any>;
   options: SelectOption[];
-
   className?: string;
 }
 
@@ -37,7 +36,7 @@ export function CategoryField({ form, options, className }: SelectFieldProps) {
     >
       {({ field }: { field: ControllerRenderProps<any, string> }) => {
         const selectedOption = options.find(
-          (option) => option.value === field.value
+          (option) => option.name === field.value
         );
 
         const incomeOptions = options.filter((opt) => opt.type === "income");
@@ -49,20 +48,15 @@ export function CategoryField({ form, options, className }: SelectFieldProps) {
               <SelectValue placeholder="Select a category">
                 {selectedOption && (
                   <div className="flex items-center gap-2">
-                    {selectedOption.icon && (
+                    {selectedOption.icon && selectedOption.color && (
                       <selectedOption.icon
-                        className={cn("h-4 w-4", {
-                          "text-primary": selectedOption.color === "green",
-                          "text-red-500": selectedOption.color === "red",
-                          "text-blue-500": selectedOption.color === "blue",
-                          "text-yellow-500": selectedOption.color === "yellow",
-                          "text-violet-500": selectedOption.color === "violet",
-                          "text-pink-500": selectedOption.color === "pink",
-                          "text-orange-500": selectedOption.color === "orange",
-                        })}
+                        className={cn(
+                          "h-4 w-4",
+                          categoryColors[selectedOption.color]
+                        )}
                       />
                     )}
-                    <span>{selectedOption.label}</span>
+                    <span>{selectedOption.name}</span>
                   </div>
                 )}
               </SelectValue>
@@ -73,24 +67,19 @@ export function CategoryField({ form, options, className }: SelectFieldProps) {
                   <SelectLabel>Income</SelectLabel>
                   {incomeOptions.map((option) => (
                     <SelectItem
-                      key={option.value}
-                      value={option.value}
+                      key={option.name}
+                      value={option.name}
                       className="flex items-center gap-2"
                     >
-                      {option.icon && (
+                      {option.icon && option.color && (
                         <option.icon
-                          className={cn("h-4 w-4", {
-                            "text-primary": option.color === "green",
-                            "text-red-500": option.color === "red",
-                            "text-blue-500": option.color === "blue",
-                            "text-yellow-500": option.color === "yellow",
-                            "text-violet-500": option.color === "violet",
-                            "text-pink-500": option.color === "pink",
-                            "text-orange-500": option.color === "orange",
-                          })}
+                          className={cn(
+                            "h-4 w-4",
+                            categoryColors[option.color]
+                          )}
                         />
                       )}
-                      <span>{option.label}</span>
+                      <span>{option.name}</span>
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -100,24 +89,19 @@ export function CategoryField({ form, options, className }: SelectFieldProps) {
                   <SelectLabel>Expense</SelectLabel>
                   {expenseOptions.map((option) => (
                     <SelectItem
-                      key={option.value}
-                      value={option.value}
+                      key={option.name}
+                      value={option.name}
                       className="flex items-center gap-2"
                     >
-                      {option.icon && (
+                      {option.icon && option.color && (
                         <option.icon
-                          className={cn("h-4 w-4", {
-                            "text-primary": option.color === "green",
-                            "text-red-500": option.color === "red",
-                            "text-blue-500": option.color === "blue",
-                            "text-yellow-500": option.color === "yellow",
-                            "text-violet-500": option.color === "violet",
-                            "text-pink-500": option.color === "pink",
-                            "text-orange-500": option.color === "orange",
-                          })}
+                          className={cn(
+                            "h-4 w-4",
+                            categoryColors[option.color]
+                          )}
                         />
                       )}
-                      <span>{option.label}</span>
+                      <span>{option.name}</span>
                     </SelectItem>
                   ))}
                 </SelectGroup>

@@ -1,61 +1,17 @@
 import React from "react";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
-import {
-  DollarSign,
-  Home,
-  ShoppingCart,
-  Lightbulb,
-  Car,
-  ShoppingBag,
-  Briefcase,
-  Utensils,
-  Smartphone,
-} from "lucide-react";
+import { categoryIcons, categoryColors } from "@/constants";
 
 interface CategoryBadgeProps {
   children: React.ReactNode;
   lucideIconName: string;
-  color:
-    | "red"
-    | "yellow"
-    | "orange"
-    | "cyan"
-    | "blue"
-    | "violet"
-    | "pink"
-    | "green";
+  color: CategoryColor;
 }
 
-const colorMap: Record<CategoryBadgeProps["color"], string> = {
-  red: "text-red-500",
-  yellow: "text-yellow-500",
-  orange: "text-orange-500",
-  cyan: "text-cyan-500",
-  blue: "text-blue-500",
-  violet: "text-violet-500",
-  pink: "text-pink-500",
-  green: "text-primary",
-};
-
-const iconMap: Record<
-  string,
-  React.ComponentType<React.SVGProps<SVGSVGElement>>
-> = {
-  DollarSign: DollarSign,
-  Home: Home,
-  ShoppingCart: ShoppingCart,
-  Lightbulb: Lightbulb,
-  Car: Car,
-  ShoppingBag: ShoppingBag,
-  Briefcase: Briefcase,
-  Utensils: Utensils,
-  Smartphone: Smartphone,
-};
-
 export default function CategoryBadge(props: CategoryBadgeProps) {
-  const dynamicColorClass = colorMap[props.color] || "text-muted-foreground"; // Fallback
-  const IconComponent = iconMap[props.lucideIconName];
+  const dynamicColorClass = categoryColors[props.color];
+  const IconComponent = categoryIcons[props.lucideIconName];
 
   if (!IconComponent) {
     console.warn(

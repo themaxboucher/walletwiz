@@ -13,18 +13,19 @@ declare interface User {
   $emailVerification: boolean;
 }
 
+declare type CategoryColor =
+  | "red"
+  | "yellow"
+  | "orange"
+  | "blue"
+  | "violet"
+  | "pink"
+  | "green";
+
 declare interface Category {
   name: string;
   iconName: string;
-  color:
-    | "red"
-    | "yellow"
-    | "orange"
-    | "cyan"
-    | "blue"
-    | "violet"
-    | "pink"
-    | "green";
+  color: CategoryColor;
   type: "income" | "expense";
   value?: string;
   budget?: number;

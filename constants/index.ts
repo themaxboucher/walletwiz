@@ -8,8 +8,22 @@ import {
   Briefcase,
   Utensils,
   Smartphone,
+  Music,
+  PiggyBank,
+  BanknoteArrowUp,
+  BanknoteArrowDown,
   LucideIcon,
 } from "lucide-react";
+
+export const categoryColors: Record<CategoryColor, string> = {
+  red: "text-red-500",
+  yellow: "text-yellow-500",
+  orange: "text-orange-500",
+  blue: "text-blue-500",
+  violet: "text-violet-500",
+  pink: "text-pink-500",
+  green: "text-primary",
+};
 
 export const categoryIcons: Record<string, LucideIcon> = {
   DollarSign,
@@ -21,70 +35,65 @@ export const categoryIcons: Record<string, LucideIcon> = {
   Briefcase,
   Utensils,
   Smartphone,
+  Music,
+  PiggyBank,
+  BanknoteArrowUp,
+  BanknoteArrowDown,
 };
 
 export const categories: Category[] = [
   {
     name: "Salary",
-    value: "Salary",
+    color: "blue",
+    iconName: "Briefcase",
+    type: "income",
+  },
+  {
+    name: "Other Income",
     color: "green",
-    iconName: "DollarSign",
+    iconName: "BanknoteArrowUp",
     type: "income",
   },
   {
     name: "Housing",
-    value: "Housing",
     color: "red",
     iconName: "Home",
     type: "expense",
   },
   {
     name: "Groceries",
-    value: "Groceries",
     color: "blue",
     iconName: "ShoppingCart",
     type: "expense",
   },
   {
     name: "Utilities",
-    value: "Utilities",
     color: "yellow",
     iconName: "Lightbulb",
     type: "expense",
   },
   {
     name: "Transport",
-    value: "Transport",
     color: "violet",
     iconName: "Car",
     type: "expense",
   },
   {
     name: "Shopping",
-    value: "Shopping",
     color: "pink",
     iconName: "ShoppingBag",
     type: "expense",
   },
   {
-    name: "Income",
-    value: "Income",
-    color: "green",
-    iconName: "Briefcase",
-    type: "income",
-  },
-  {
-    name: "Food and beverage",
-    value: "Food and beverage",
+    name: "Entertainment",
     color: "orange",
-    iconName: "Utensils",
+    iconName: "Music",
     type: "expense",
   },
   {
-    name: "Mobile Phone",
-    value: "Mobile Phone",
-    color: "yellow",
-    iconName: "Smartphone",
+    name: "Other Expense",
+    color: "red",
+    iconName: "BanknoteArrowDown",
     type: "expense",
   },
 ];
