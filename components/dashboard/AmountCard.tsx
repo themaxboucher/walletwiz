@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle } from "../ui/card";
 import {
   ArrowUpRight,
   ArrowDownRight,
-  Banknote,
+  PiggyBank,
   BanknoteArrowUp,
   BanknoteArrowDown,
   LucideIcon,
@@ -22,7 +22,7 @@ interface AmountCardProps {
 const iconMap: Record<string, LucideIcon> = {
   Income: BanknoteArrowUp,
   Expenses: BanknoteArrowDown,
-  Saved: Banknote,
+  Saved: PiggyBank,
 };
 
 export default function AmountCard({
