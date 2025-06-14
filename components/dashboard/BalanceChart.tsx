@@ -1,6 +1,13 @@
 "use client";
 
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ReferenceLine,
+} from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
 import { abbreviateNumber, formatCurrency } from "@/lib/utils";
 
@@ -28,7 +35,7 @@ export default function BalanceChart({ chartData }: BalanceChartProps) {
     >
       <AreaChart
         data={chartData}
-        margin={{ top: 0, right: 0, left: -18, bottom: 0 }}
+        margin={{ top: 3, right: 4, left: -18, bottom: 3 }}
       >
         <defs>
           <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
@@ -94,6 +101,12 @@ export default function BalanceChart({ chartData }: BalanceChartProps) {
           stroke="oklch(0.6635 0.1608 155.21)"
           fill="url(#balanceGradient)"
           strokeWidth={2}
+        />
+        <ReferenceLine
+          y={0}
+          stroke="currentColor"
+          opacity={0.3}
+          strokeDasharray="5 5"
         />
       </AreaChart>
     </ChartContainer>
