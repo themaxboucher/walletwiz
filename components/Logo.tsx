@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Badge } from "./ui/badge";
 
 export default function Logo() {
   return (
@@ -12,6 +13,9 @@ export default function Logo() {
         className="h-8 w-8"
       />
       <div className="text-lg font-extrabold">WalletWiz</div>
+      <Badge className="text-[10px] px-[0.35rem] py-[0.1rem] font-semibold text-foreground bg-primary/10 border border-primary/50">
+        BETA
+      </Badge>
     </Link>
   );
 }
