@@ -8,7 +8,15 @@ import TransactionTable from "./TransactionTable";
 import TransactionDialog from "./TransactionDialog";
 import EmptyState from "./EmptyState";
 
-export default function Transactions(props: { transactions: Transaction[] }) {
+interface TransactionsProps {
+  transactions: Transaction[];
+  categories: Category[];
+}
+
+export default function Transactions({
+  transactions,
+  categories,
+}: TransactionsProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] =
     useState<Transaction | null>(null);
@@ -29,7 +37,7 @@ export default function Transactions(props: { transactions: Transaction[] }) {
         <CardHeader className="w-full">
           <CardTitle>Transactions</CardTitle>
         </CardHeader>
-        {props.transactions.length > 0 && (
+        {transactions.length > 0 && (
           <Button
             size="sm"
             variant="outline"
@@ -41,7 +49,7 @@ export default function Transactions(props: { transactions: Transaction[] }) {
         )}
       </div>
 
-      {props.transactions.length === 0 ? (
+      {transactions.length === 0 ? (
         <EmptyState
           icon={<Receipt className="size-5 text-primary" />}
           title="No transactions yet"
@@ -51,7 +59,7 @@ export default function Transactions(props: { transactions: Transaction[] }) {
         />
       ) : (
         <TransactionTable
-          transactions={props.transactions}
+          transactions={transactions}
           pageSize={7}
           onEditClick={handleOpenDialog}
         />
@@ -61,6 +69,7 @@ export default function Transactions(props: { transactions: Transaction[] }) {
         open={isDialogOpen}
         onOpenChange={handleCloseDialog}
         transactionToEdit={editingTransaction}
+        categories={categories}
       />
     </Card>
   );

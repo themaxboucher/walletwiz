@@ -1,3 +1,5 @@
+declare type Override<T, R> = Omit<T, keyof R> & R;
+
 declare interface User {
   email: string;
   userId: string;
@@ -44,3 +46,6 @@ declare interface Transaction {
   note?: string;
   user?: string;
 }
+
+// Transaction type when the category is the category id
+declare type TransactionDB = Override<Transaction, { category: string }>;

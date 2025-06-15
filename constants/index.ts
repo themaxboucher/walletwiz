@@ -49,6 +49,12 @@ export const categories: Category[] = [
     type: "income",
   },
   {
+    name: "Other Income",
+    color: "green",
+    iconName: "BanknoteArrowUp",
+    type: "income",
+  },
+  {
     name: "Housing",
     color: "red",
     iconName: "Home",
@@ -82,6 +88,12 @@ export const categories: Category[] = [
     name: "Entertainment",
     color: "orange",
     iconName: "Music",
+    type: "expense",
+  },
+  {
+    name: "Other Expense",
+    color: "red",
+    iconName: "BanknoteArrowDown",
     type: "expense",
   },
 ];

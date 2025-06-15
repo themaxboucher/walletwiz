@@ -9,7 +9,7 @@ const {
   APPWRITE_TRANSACTION_COLLECTION_ID: TRANSACTION_COLLECTION_ID,
 } = process.env;
 
-export const createTransaction = async (transaction: Transaction) => {
+export const createTransaction = async (transaction: TransactionDB) => {
   try {
     const { database } = await createAdminClient();
 
@@ -61,7 +61,7 @@ export const deleteTransaction = async (transactionId: string) => {
 
 export const updateTransaction = async (
   transactionId: string,
-  transaction: Partial<Transaction>
+  transaction: Partial<TransactionDB>
 ) => {
   try {
     const { database } = await createAdminClient();

@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "../ui/form";
-import { categories, categoryIcons } from "@/constants";
+import { categoryIcons } from "@/constants";
 import {
   createTransaction,
   updateTransaction,
@@ -22,53 +22,67 @@ import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
 
 // Define the Zod schema for the transaction form
-const transactionFormSchema = z
-  .object({
-    merchant: z
-      .string()
-      .min(1, { message: "Merchant name is required" })
-      .max(50, { message: "Merchant name is too long" }),
-    amount: z.coerce.number(),
-    category: z.string().min(1, { message: "Category is required" }),
-    date: z.date({ required_error: "Date is required" }),
-    notes: z.string().max(300, { message: "Note is too long" }).optional(),
-  })
-  .superRefine((data, ctx) => {
-    const category = categories.find((cat) => cat.name === data.category);
-    if (!category) return;
-
-    if (category.type === "income" && data.amount <= 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `${category.name} amount must be positive`,
-        path: ["amount"],
-      });
-    } else if (category.type === "expense" && data.amount >= 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `${category.name} amount must be negative`,
-        path: ["amount"],
-      });
-    }
-  });
+const transactionFormSchema = z.object({
+  merchant: z
+    .string()
+    .min(1, { message: "Merchant name is required" })
+    .max(50, { message: "Merchant name is too long" }),
+  amount: z.coerce.number(),
+  category: z.string().min(1, { message: "Category is required" }),
+  date: z.date({ required_error: "Date is required" }),
+  notes: z.string().max(300, { message: "Note is too long" }).optional(),
+});
 
 type TransactionFormData = z.infer<typeof transactionFormSchema>;
 
 interface TransactionFormProps {
   transactionToEdit?: Transaction | null;
   onCancel: () => void;
+  categories: Category[];
 }
 
 export default function TransactionForm({
   transactionToEdit,
   onCancel,
+  categories,
 }: TransactionFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  // Refine schema dynamically using the categories prop
+  const refinedTransactionFormSchema = transactionFormSchema.superRefine(
+    (data, ctx) => {
+      const category = categories.find(
+        (cat: Category) => cat.name === data.category
+      );
+      if (!category) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Invalid category selected",
+          path: ["category"],
+        });
+        return;
+      }
+
+      if (category.type === "income" && data.amount <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `${category.name} amount must be positive`,
+          path: ["amount"],
+        });
+      } else if (category.type === "expense" && data.amount >= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `${category.name} amount must be negative`,
+          path: ["amount"],
+        });
+      }
+    }
+  );
+
   const form = useForm<TransactionFormData>({
-    resolver: zodResolver(transactionFormSchema),
+    resolver: zodResolver(refinedTransactionFormSchema),
     defaultValues: transactionToEdit
       ? {
           merchant: transactionToEdit.merchantName,
@@ -90,18 +104,20 @@ export default function TransactionForm({
     setError(null);
     setLoading(true);
 
-    // TODO: Make async function faster
     try {
-      const category = categories.find((cat) => cat.name === values.category);
-      if (!category) throw new Error("Category not found");
+      const selectedCategory = categories.find(
+        (cat: Category) => cat.name === values.category
+      );
+      if (!selectedCategory || !selectedCategory.$id)
+        throw new Error("Category not found");
 
       const user = await getLoggedInUser();
       if (!user) throw new Error("User not found");
 
       const transactionData = {
         merchantName: values.merchant,
-        amount: Number(values.amount.toFixed(2)), // Round amounts to two decimal places
-        category,
+        amount: Number(values.amount.toFixed(2)),
+        category: selectedCategory.$id,
         date: values.date.toISOString(),
         note: values.notes,
         user: user.$id,
@@ -125,12 +141,21 @@ export default function TransactionForm({
     }
   }
 
-  const categoryOptions = categories.map((cat) => ({
+  const categoryOptions = categories.map((cat: Category) => ({
     name: cat.name,
     icon: cat.iconName ? categoryIcons[cat.iconName] : undefined,
     color: cat.color,
     type: cat.type,
   }));
+
+  if (categories.length === 0) {
+    return (
+      <FormAlert
+        message="No categories available. Please add categories to create transactions."
+        type="info"
+      />
+    );
+  }
 
   return (
     <Form {...form}>

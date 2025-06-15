@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardDescription,
-} from "../ui/card";
-import { categories } from "@/constants";
+import { Card, CardHeader, CardTitle, CardDescription } from "../ui/card";
 import BudgetItem from "./BudgetItem";
 import { useMemo } from "react";
 import { Separator } from "../ui/separator";
@@ -13,15 +6,11 @@ import EmptyState from "./EmptyState";
 import { ChartPie } from "lucide-react";
 
 interface BudgetProps {
-  transactions: Array<{
-    amount: number;
-    category: {
-      name: string;
-    };
-  }>;
+  transactions: Transaction[];
+  categories: Category[];
 }
 
-export default function Budget({ transactions }: BudgetProps) {
+export default function Budget({ transactions, categories }: BudgetProps) {
   // Calculate spent amount for each category
   const categorySpending = useMemo(() => {
     const spending: Record<string, number> = {};

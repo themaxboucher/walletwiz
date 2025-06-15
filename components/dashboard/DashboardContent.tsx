@@ -1,10 +1,8 @@
 "use client";
 
 import Greeting from "./Greeting";
-import { Separator } from "../ui/separator";
 import Transactions from "./Transactions";
 import Balance from "./Balance";
-import { Card, CardHeader, CardTitle } from "../ui/card";
 import AmountCard from "./AmountCard";
 import TimeRangeSelector from "./TimeRangeSelector";
 import { useState, useMemo } from "react";
@@ -19,11 +17,13 @@ interface DashboardContentProps {
     firstName: string;
   };
   transactions: Transaction[];
+  categories: Category[];
 }
 
 export default function DashboardContent({
   user,
   transactions,
+  categories,
 }: DashboardContentProps) {
   // State for date range
   const [dateRange, setDateRange] = useState<DateRange>({
@@ -227,10 +227,13 @@ export default function DashboardContent({
             />
           </div>
           <Balance totalBalance={totalBalance} chartData={filteredChartData} />
-          <Transactions transactions={filteredTransactions} />
+          <Transactions
+            transactions={filteredTransactions}
+            categories={categories}
+          />
         </div>
         <div className="col-span-1 flex flex-col gap-5">
-          <Budget transactions={transactions} />
+          <Budget transactions={transactions} categories={categories} />
           <Accounts />
         </div>
       </div>

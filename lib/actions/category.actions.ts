@@ -2,6 +2,7 @@
 
 import { ID, Query } from "node-appwrite";
 import { createAdminClient } from "../appwrite/server";
+import { parseStringify } from "../utils";
 
 const {
   APPWRITE_DATABASE_ID: DATABASE_ID,
@@ -33,12 +34,14 @@ export const createCategory = async (
 export const getCategories = async (userId: string) => {
   try {
     const { database } = await createAdminClient();
+
     const categories = await database.listDocuments(
       DATABASE_ID!,
       CATEGORY_COLLECTION_ID!,
       [Query.equal("user", userId)]
     );
-    return categories.documents;
+
+    return parseStringify(categories.documents);
   } catch (error) {
     console.error("Error getting categories:", error);
     throw error;
