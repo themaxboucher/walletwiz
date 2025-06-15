@@ -23,6 +23,7 @@ declare type CategoryColor =
   | "green";
 
 declare interface Category {
+  $id?: string;
   name: string;
   iconName: string;
   color: CategoryColor;
