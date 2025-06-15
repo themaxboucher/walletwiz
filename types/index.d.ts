@@ -32,6 +32,7 @@ declare interface Category {
   type: "income" | "expense";
   value?: string;
   budget?: number;
+  user?: User;
 }
 
 declare interface Transaction {
@@ -44,8 +45,11 @@ declare interface Transaction {
   date: string;
   merchantLogo?: string | null;
   note?: string;
-  user?: string;
+  user?: User;
 }
 
-// Transaction type when the category is the category id
-declare type TransactionDB = Override<Transaction, { category: string }>;
+// Transaction type when the category or user is the document id
+declare type TransactionDB = Override<
+  Transaction,
+  { category: string; user: string }
+>;

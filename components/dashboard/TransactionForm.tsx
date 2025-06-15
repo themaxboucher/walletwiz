@@ -111,8 +111,9 @@ export default function TransactionForm({
       if (!selectedCategory || !selectedCategory.$id)
         throw new Error("Category not found");
 
-      const user = await getLoggedInUser();
-      if (!user) throw new Error("User not found");
+      // Get the users ID from the selected category
+      const userId = selectedCategory?.user?.$id;
+      if (!userId) throw new Error("User not found");
 
       const transactionData = {
         merchantName: values.merchant,
@@ -120,7 +121,7 @@ export default function TransactionForm({
         category: selectedCategory.$id,
         date: values.date.toISOString(),
         note: values.notes,
-        user: user.$id,
+        user: userId,
       };
 
       if (transactionToEdit?.$id) {
