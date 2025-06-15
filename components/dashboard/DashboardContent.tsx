@@ -11,6 +11,8 @@ import { useState, useMemo } from "react";
 import { DateRange } from "react-day-picker";
 import { percentageChange } from "@/lib/utils";
 import { differenceInDays } from "date-fns";
+import Budget from "./Budget";
+import Accounts from "./Accounts";
 
 interface DashboardContentProps {
   user: {
@@ -191,19 +193,19 @@ export default function DashboardContent({
 
   return (
     <>
-      <div className="flex justify-between items-center">
-        <h1 className="text-lg font-bold md:text-2xl">
-          <Greeting />, {user.firstName}
-        </h1>
-        <TimeRangeSelector
-          dateRange={dateRange}
-          onDateRangeChange={setDateRange}
-          transactions={transactions}
-        />
-      </div>
-      <Separator />
+      {/* <Separator /> */}
       <div className="grid grid-cols-3 gap-5">
-        <div className="grid grid-cols-1 gap-5 col-span-2">
+        <div className="flex flex-col gap-5 col-span-2">
+          <div className="flex justify-between items-center">
+            <h1 className="text-lg font-bold md:text-2xl">
+              <Greeting />, {user.firstName}
+            </h1>
+            <TimeRangeSelector
+              dateRange={dateRange}
+              onDateRangeChange={setDateRange}
+              transactions={transactions}
+            />
+          </div>
           <div className="grid grid-cols-3 gap-5">
             <AmountCard
               title="Income"
@@ -227,17 +229,9 @@ export default function DashboardContent({
           <Balance totalBalance={totalBalance} chartData={filteredChartData} />
           <Transactions transactions={filteredTransactions} />
         </div>
-        <div className="grid grid-cols-1 gap-5">
-          <Card>
-            <CardHeader>
-              <CardTitle>Budget</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Connect an account</CardTitle>
-            </CardHeader>
-          </Card>
+        <div className="col-span-1 flex flex-col gap-5">
+          <Budget transactions={transactions} />
+          <Accounts />
         </div>
       </div>
     </>

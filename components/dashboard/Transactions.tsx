@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Receipt } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardHeader, CardTitle } from "../ui/card";
 import TransactionTable from "./TransactionTable";
@@ -42,7 +42,13 @@ export default function Transactions(props: { transactions: Transaction[] }) {
       </div>
 
       {props.transactions.length === 0 ? (
-        <EmptyState onAddClick={() => handleOpenDialog()} />
+        <EmptyState
+          icon={<Receipt className="size-5 text-primary" />}
+          title="No transactions yet"
+          description="Start tracking your finances by adding your first transaction."
+          buttonText="Add Transaction"
+          onAddClick={() => handleOpenDialog()}
+        />
       ) : (
         <TransactionTable
           transactions={props.transactions}
