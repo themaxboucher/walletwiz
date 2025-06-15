@@ -15,7 +15,6 @@ import {
   createTransaction,
   updateTransaction,
 } from "@/lib/actions/transaction.actions";
-import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import FormAlert from "../FormAlert";
