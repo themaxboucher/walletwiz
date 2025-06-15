@@ -227,10 +227,7 @@ export default function DashboardContent({
             />
           </div>
           <Balance totalBalance={totalBalance} chartData={filteredChartData} />
-          <Transactions
-            transactions={filteredTransactions}
-            categories={categories}
-          />
+          <Transactions transactions={transactions} categories={categories} />
         </div>
         <div className="col-span-1 flex flex-col gap-5">
           <Budget transactions={transactions} categories={categories} />

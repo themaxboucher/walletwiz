@@ -38,11 +38,7 @@ export default function Transactions({
           <CardTitle>Transactions</CardTitle>
         </CardHeader>
         {transactions.length > 0 && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => handleOpenDialog()}
-          >
+          <Button size="sm" onClick={() => handleOpenDialog()}>
             <Plus className="h-3.5 w-3.5" />
             <span>Add Transaction</span>
           </Button>

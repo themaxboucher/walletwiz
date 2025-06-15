@@ -1,9 +1,10 @@
-import { Card, CardHeader, CardTitle, CardDescription } from "../ui/card";
+import { Card, CardHeader, CardTitle } from "../ui/card";
 import BudgetItem from "./BudgetItem";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Separator } from "../ui/separator";
 import EmptyState from "./EmptyState";
 import { ChartPie } from "lucide-react";
+import { MonthSelector } from "./MonthSelector";
 
 interface BudgetProps {
   transactions: Transaction[];
@@ -11,11 +12,28 @@ interface BudgetProps {
 }
 
 export default function Budget({ transactions, categories }: BudgetProps) {
+  const [selectedMonth, setSelectedMonth] = useState(
+    new Date().toLocaleString("default", { month: "short" })
+  );
+  const [selectedYear, setSelectedYear] = useState(
+    new Date().getFullYear().toString()
+  );
+
+  // Filter transactions for the selected month and year
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((tx) => {
+      const txDate = new Date(tx.date);
+      const txMonth = txDate.toLocaleString("default", { month: "short" });
+      const txYear = txDate.getFullYear().toString();
+      return txMonth === selectedMonth && txYear === selectedYear;
+    });
+  }, [transactions, selectedMonth, selectedYear]);
+
   // Calculate spent amount for each category
   const categorySpending = useMemo(() => {
     const spending: Record<string, number> = {};
 
-    transactions.forEach((tx) => {
+    filteredTransactions.forEach((tx) => {
       if (tx.amount < 0) {
         // Only count expenses
         const categoryName = tx.category.name;
@@ -25,7 +43,7 @@ export default function Budget({ transactions, categories }: BudgetProps) {
     });
 
     return spending;
-  }, [transactions]);
+  }, [filteredTransactions]);
 
   // Filter out income categories and categories without budgets
   const budgetCategories = categories.filter(
@@ -35,8 +53,18 @@ export default function Budget({ transactions, categories }: BudgetProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Budget</CardTitle>
-        <CardDescription>Your spending goals for the month.</CardDescription>
+        <div className="flex justify-between">
+          <CardTitle>Budget</CardTitle>
+          {budgetCategories.length > 0 && (
+            <MonthSelector
+              value={selectedMonth}
+              onValueChange={setSelectedMonth}
+              yearValue={selectedYear}
+              onYearChange={setSelectedYear}
+              transactions={transactions}
+            />
+          )}
+        </div>
       </CardHeader>
       <div>
         {budgetCategories.length === 0 ? (

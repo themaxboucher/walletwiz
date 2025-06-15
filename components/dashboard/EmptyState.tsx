@@ -18,7 +18,7 @@ export default function EmptyState({
   buttonText,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-6">
+    <div className="flex flex-col items-center justify-center pt-4 pb-8 px-6">
       <div className="rounded-full bg-primary/10 p-3 mb-4">{icon}</div>
       <h3 className=" font-semibold mb-2">{title}</h3>
       <p className="text-muted-foreground text-center mb-6 max-w-64 text-sm">
