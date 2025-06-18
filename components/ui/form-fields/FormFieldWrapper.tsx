@@ -11,7 +11,7 @@ import { UseFormReturn, ControllerRenderProps } from "react-hook-form";
 interface FormFieldWrapperProps {
   form: UseFormReturn<any>;
   name: string;
-  label: string;
+  label?: string;
   children:
     | ReactNode
     | ((props: { field: ControllerRenderProps<any, string> }) => ReactNode);
@@ -31,7 +31,7 @@ export function FormFieldWrapper({
       name={name}
       render={({ field }) => (
         <FormItem className={className}>
-          <FormLabel>{label}</FormLabel>
+          {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             {typeof children === "function" ? children({ field }) : children}
           </FormControl>

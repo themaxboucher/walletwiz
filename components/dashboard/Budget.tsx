@@ -5,6 +5,8 @@ import { Separator } from "../ui/separator";
 import EmptyState from "./EmptyState";
 import { ChartPie } from "lucide-react";
 import { MonthSelector } from "./MonthSelector";
+import BudgetDialog from "./BudgetDialog";
+import { Button } from "../ui/button";
 
 interface BudgetProps {
   transactions: Transaction[];
@@ -18,6 +20,7 @@ export default function Budget({ transactions, categories }: BudgetProps) {
   const [selectedYear, setSelectedYear] = useState(
     new Date().getFullYear().toString()
   );
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Filter transactions for the selected month and year
   const filteredTransactions = useMemo(() => {
@@ -55,15 +58,20 @@ export default function Budget({ transactions, categories }: BudgetProps) {
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>Budget</CardTitle>
-          {budgetCategories.length > 0 && (
-            <MonthSelector
-              value={selectedMonth}
-              onValueChange={setSelectedMonth}
-              yearValue={selectedYear}
-              onYearChange={setSelectedYear}
-              transactions={transactions}
-            />
-          )}
+          <div className="flex items-center gap-2">
+            {budgetCategories.length > 0 && (
+              <MonthSelector
+                value={selectedMonth}
+                onValueChange={setSelectedMonth}
+                yearValue={selectedYear}
+                onYearChange={setSelectedYear}
+                transactions={transactions}
+              />
+            )}
+            <Button className="h-9 w-9" onClick={() => setIsDialogOpen(true)}>
+              <ChartPie className="size-4" />
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <div>
@@ -73,7 +81,7 @@ export default function Budget({ transactions, categories }: BudgetProps) {
             title="No budgets set"
             description="Set a budget for your expense categories to start tracking."
             buttonText="Set Budget"
-            onAddClick={() => {}}
+            onAddClick={() => setIsDialogOpen(true)}
           />
         ) : (
           budgetCategories.map((category, index) => (
@@ -92,6 +100,12 @@ export default function Budget({ transactions, categories }: BudgetProps) {
           ))
         )}
       </div>
+
+      <BudgetDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        categories={categories}
+      />
     </Card>
   );
 }

@@ -8,7 +8,7 @@ import { DollarSign } from "lucide-react";
 interface NumberFieldProps {
   form: UseFormReturn<any>;
   name: string;
-  label: string;
+  label?: string;
   placeholder?: string;
   className?: string;
   step?: string;

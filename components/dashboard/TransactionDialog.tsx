@@ -21,7 +21,7 @@ export default function TransactionDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader className="mb-4">
           <DialogTitle>
-            {transactionToEdit ? "Edit Transaction" : "Add New Transaction"}
+            {transactionToEdit ? "Edit Transaction" : "Add Transaction"}
           </DialogTitle>
         </DialogHeader>
         <TransactionForm

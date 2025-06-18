@@ -31,7 +31,7 @@ declare interface Category {
   color: CategoryColor;
   type: "income" | "expense";
   value?: string;
-  budget?: number;
+  budget?: number | null;
   user?: User;
 }
 

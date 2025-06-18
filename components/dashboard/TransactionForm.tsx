@@ -201,8 +201,7 @@ export default function TransactionForm({
           </Button>
           <Button type="submit" disabled={loading}>
             {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
-            {!loading &&
-              (transactionToEdit ? "Update Transaction" : "Save Transaction")}
+            {!loading && "Save"}
           </Button>
         </div>
       </form>
