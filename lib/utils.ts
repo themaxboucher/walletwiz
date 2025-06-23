@@ -28,7 +28,7 @@ export function formatNumber(amount: number): string {
   return amount.toLocaleString("en-US", {
     style: "decimal",
     minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
   });
 }
 
@@ -63,3 +63,158 @@ export const percentageChange = (
   // Calculate percentage change
   return ((currentValue - previousValue) / Math.abs(previousValue)) * 100;
 };
+
+// Transaction functions //
+
+/**
+ * Filters transactions by a given date range.
+ */
+export function filterTransactionsByDateRange(
+  transactions: Transaction[],
+  dateRange?: { from?: Date; to?: Date }
+) {
+  if (!dateRange?.from || !dateRange?.to) return transactions;
+  const from = dateRange.from as Date;
+  const to = dateRange.to as Date;
+  return transactions.filter((tx) => {
+    const txDate = new Date(tx.date);
+    return txDate >= from && txDate <= to;
+  });
+}
+
+/**
+ * Generates running balance chart data for all transactions within a date range.
+ */
+export function generateBalanceChartData(
+  transactions: Transaction[],
+  dateRange?: { from?: Date; to?: Date }
+) {
+  if (transactions.length === 0) return [];
+  const sortedTransactions = [...transactions].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+  let balance = 0;
+  let txIndex = 0;
+  const dates: Date[] = [];
+  const from = dateRange?.from || new Date(sortedTransactions[0].date);
+  const to =
+    dateRange?.to ||
+    new Date(sortedTransactions[sortedTransactions.length - 1].date);
+  const currentDate = new Date(from);
+  while (currentDate <= to) {
+    dates.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dates.map((date) => {
+    while (
+      txIndex < sortedTransactions.length &&
+      new Date(sortedTransactions[txIndex].date) <= date
+    ) {
+      balance += sortedTransactions[txIndex].amount;
+      txIndex++;
+    }
+    return {
+      date: date.toISOString(),
+      balance,
+    };
+  });
+}
+
+/**
+ * Filters chart data by a given date range.
+ */
+export function filterChartDataByDateRange<T extends { date: string }>(
+  chartData: T[],
+  dateRange?: { from?: Date; to?: Date }
+): T[] {
+  if (!dateRange?.from || !dateRange?.to) return chartData;
+  const from = dateRange.from as Date;
+  const to = dateRange.to as Date;
+  return chartData.filter((point) => {
+    const pointDate = new Date(point.date);
+    return pointDate >= from && pointDate <= to;
+  });
+}
+
+/**
+ * Calculates total income from a list of transactions.
+ */
+export function calculateIncome(transactions: Transaction[]) {
+  return transactions
+    .filter((tx) => tx.amount > 0)
+    .reduce((sum, tx) => sum + tx.amount, 0);
+}
+
+/**
+ * Calculates total expenses from a list of transactions.
+ */
+export function calculateExpenses(transactions: Transaction[]) {
+  return transactions
+    .filter((tx) => tx.amount < 0)
+    .reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
+}
+
+/**
+ * Calculates net change (income - expenses).
+ */
+export function calculateNetChange(income: number, expenses: number) {
+  return income - expenses;
+}
+
+/**
+ * Calculates total balance from all transactions up to a given date (defaults to today).
+ */
+export function calculateTotalBalance(
+  transactions: Transaction[],
+  upToDate?: Date
+) {
+  const date = upToDate ? new Date(upToDate) : new Date();
+  date.setHours(23, 59, 59, 999);
+  return transactions
+    .filter((tx) => new Date(tx.date) <= date)
+    .reduce((sum, tx) => sum + tx.amount, 0);
+}
+
+/**
+ * Calculates previous period metrics for comparison.
+ */
+export function calculatePreviousPeriodMetrics(
+  transactions: Transaction[],
+  dateRange?: { from?: Date; to?: Date }
+) {
+  if (!dateRange?.from || !dateRange?.to)
+    return { previousIncome: 0, previousExpenses: 0, previousNetChange: 0 };
+  const currentPeriodStart = dateRange.from as Date;
+  const currentPeriodEnd = dateRange.to as Date;
+  const durationMs = currentPeriodEnd.getTime() - currentPeriodStart.getTime();
+  const previousPeriodEnd = new Date(currentPeriodStart.getTime() - 1);
+  const previousPeriodStart = new Date(
+    previousPeriodEnd.getTime() - durationMs
+  );
+  const previousPeriodTransactions = filterTransactionsByDateRange(
+    transactions,
+    { from: previousPeriodStart, to: previousPeriodEnd }
+  );
+  const previousIncome = calculateIncome(previousPeriodTransactions);
+  const previousExpenses = calculateExpenses(previousPeriodTransactions);
+  const previousNetChange = previousIncome - previousExpenses;
+  return { previousIncome, previousExpenses, previousNetChange };
+}
+
+import { differenceInDays } from "date-fns";
+/**
+ * Returns a human-readable period text for a given date range.
+ */
+export function getPeriodText(dateRange?: { from?: Date; to?: Date }) {
+  if (!dateRange?.from || !dateRange?.to) return "period";
+  const start = dateRange.from;
+  const end = dateRange.to;
+  const totalDaysIncludingStart = differenceInDays(end, start);
+  if (totalDaysIncludingStart === 7) return "week";
+  if (totalDaysIncludingStart === 30 || totalDaysIncludingStart === 31)
+    return "month";
+  if (totalDaysIncludingStart === 365 || totalDaysIncludingStart === 366)
+    return "year";
+  if (totalDaysIncludingStart === 1) return "day";
+  return `${totalDaysIncludingStart} days`;
+}

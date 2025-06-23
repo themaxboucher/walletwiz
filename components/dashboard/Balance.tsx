@@ -21,9 +21,11 @@ interface BalanceProps {
 export default function Balance({ totalBalance, chartData }: BalanceProps) {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="gap-2">
         <CardTitle className="text-muted-foreground">Balance</CardTitle>
-        <p className="text-2xl font-semibold">{formatCurrency(totalBalance)}</p>
+        <p className="text-3xl tracking-tight font-semibold">
+          {formatCurrency(totalBalance)}
+        </p>
       </CardHeader>
       <CardContent>
         <BalanceChart chartData={chartData} />

@@ -18,6 +18,11 @@ const config: NextConfig = {
         hostname: "media3.giphy.com",
         pathname: "/media/**",
       },
+      {
+        protocol: "https",
+        hostname: "img.logo.dev",
+        pathname: "/**",
+      },
     ],
   },
 };

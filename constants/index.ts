@@ -98,81 +98,11 @@ export const categories: Category[] = [
   },
 ];
 
-export const mockTransactions: Transaction[] = [
+export const displayTransactions: Transaction[] = [
   {
     $id: 1,
-    merchantName: "Google",
-    amount: 5000,
-    account: "Checking",
-    category: {
-      name: "Salary",
-      iconName: "DollarSign",
-      color: "green",
-      type: "income",
-    },
-    date: "2025-05-31",
-    merchantLogo: "https://logo.clearbit.com/google.com",
-  },
-  {
-    $id: 3,
-    merchantName: "Whole Foods",
-    amount: -150,
-    account: "Credit Card",
-    category: {
-      name: "Groceries",
-      iconName: "ShoppingCart",
-      color: "blue",
-      type: "expense",
-    },
-    date: "2025-06-02",
-    merchantLogo: "https://logo.clearbit.com/wholefoodsmarket.com",
-  },
-  {
-    $id: 5,
-    merchantName: "Uber",
-    amount: -45,
-    account: "Savings",
-    category: {
-      name: "Transport",
-      iconName: "Car",
-      color: "violet",
-      type: "expense",
-    },
-    date: "2025-06-03",
-    merchantLogo: "https://logo.clearbit.com/uber.com",
-  },
-  {
-    $id: 6,
-    merchantName: "Amazon",
-    amount: -200,
-    account: "Credit Card",
-    category: {
-      name: "Shopping",
-      iconName: "ShoppingBag",
-      color: "pink",
-      type: "expense",
-    },
-    date: "2025-06-04",
-    merchantLogo: "https://logo.clearbit.com/amazon.com",
-  },
-  {
-    $id: 7,
-    merchantName: "Freelance Client A",
-    amount: 1200,
-    account: "Paypal",
-    category: {
-      name: "Income",
-      iconName: "Briefcase",
-      color: "green",
-      type: "income",
-    },
-    date: "2025-06-05",
-    merchantLogo: "https://logo.clearbit.com/paypal.com",
-  },
-  {
-    $id: 8,
-    merchantName: "The Spotted Pig",
-    amount: -70,
+    merchantName: "Tim Hortons",
+    amount: -4.25,
     account: "Credit Card",
     category: {
       name: "Food and beverage",
@@ -180,13 +110,44 @@ export const mockTransactions: Transaction[] = [
       color: "orange",
       type: "expense",
     },
-    date: "2025-06-05",
-    merchantLogo: "https://logo.clearbit.com/thespottedpig.com",
+    date: "2025-06-02",
+    merchantLogo:
+      "https://img.logo.dev/timhortons.ca?token=pk_aIln8e6dSBC2g0xYnOuCiA",
   },
   {
-    $id: 9,
-    merchantName: "Verizon",
-    amount: -60,
+    $id: 2,
+    merchantName: "Wealthsimple",
+    amount: 3000,
+    account: "Checking",
+    category: {
+      name: "Salary",
+      iconName: "Briefcase",
+      color: "blue",
+      type: "income",
+    },
+    date: "2025-06-06",
+    merchantLogo:
+      "https://img.logo.dev/wealthsimple.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    $id: 4,
+    merchantName: "Uber",
+    amount: -13.25,
+    account: "Credit Card",
+    category: {
+      name: "Transport",
+      iconName: "Car",
+      color: "violet",
+      type: "expense",
+    },
+    date: "2025-06-04",
+    merchantLogo:
+      "https://img.logo.dev/uber.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    $id: 5,
+    merchantName: "Rogers",
+    amount: -85.0,
     account: "Checking",
     category: {
       name: "Utilities",
@@ -194,49 +155,96 @@ export const mockTransactions: Transaction[] = [
       color: "yellow",
       type: "expense",
     },
-    date: "2025-06-06",
-    merchantLogo: "https://logo.clearbit.com/verizon.com",
+    date: "2025-06-05",
+    merchantLogo: "https://logo.clearbit.com/rogers.com",
   },
   {
-    $id: 10,
-    merchantName: "Local Coffee Shop",
-    amount: -8.5,
+    $id: 3,
+    merchantName: "Shoppers Drug Mart",
+    amount: -32.75,
     account: "Credit Card",
     category: {
-      name: "Food and beverage",
-      iconName: "Utensils",
-      color: "orange",
+      name: "Shopping",
+      iconName: "ShoppingBag",
+      color: "pink",
       type: "expense",
     },
-    date: "2025-06-07",
-    merchantLogo: null,
+    date: "2025-06-03",
+    merchantLogo: "https://logo.clearbit.com/shoppersdrugmart.ca",
+  },
+];
+
+export const institutions = [
+  {
+    name: "RBC",
+    url: "https://img.logo.dev/rbccm.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
   },
   {
-    $id: 11,
-    merchantName: "Street Vendor",
-    amount: -12.0,
-    account: "Cash",
-    category: {
-      name: "Food and beverage",
-      iconName: "Utensils",
-      color: "orange",
-      type: "expense",
-    },
-    date: "2025-06-07",
-    merchantLogo: null,
+    name: "TD Canada Trust",
+    url: "https://img.logo.dev/td.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
   },
   {
-    $id: 12,
-    merchantName: "Neighborhood Laundry",
-    amount: -25.0,
-    account: "Checking",
-    category: {
-      name: "Utilities",
-      iconName: "Lightbulb",
-      color: "yellow",
-      type: "expense",
-    },
-    date: "2025-06-08",
-    merchantLogo: null,
+    name: "Scotiabank",
+    url: "https://img.logo.dev/scotiabank.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "BMO",
+    url: "https://img.logo.dev/bmo.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "CIBC",
+    url: "https://img.logo.dev/cibc.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "National Bank",
+    url: "https://img.logo.dev/fbngp.ca?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "Desjardins",
+    url: "https://img.logo.dev/desjardins.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "EQ Bank",
+    url: "https://img.logo.dev/eqbank.ca?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "Wealthsimple",
+    url: "https://img.logo.dev/wealthsimple.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "Tangerine",
+    url: "https://img.logo.dev/tangerine.ca?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "Chase",
+    url: "https://img.logo.dev/chase.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "Bank of America",
+    url: "https://img.logo.dev/bankofamerica.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "Wells Fargo",
+    url: "https://img.logo.dev/wellsfargo.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "Citi",
+    url: "https://img.logo.dev/citibankonline.pl?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "Capital One",
+    url: "https://img.logo.dev/capitalone.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "Ally",
+    url: "https://img.logo.dev/ally.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "SoFi",
+    url: "https://img.logo.dev/sofi.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+  },
+  {
+    name: "Robinhood",
+    url: "https://img.logo.dev/robinhood.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
   },
 ];

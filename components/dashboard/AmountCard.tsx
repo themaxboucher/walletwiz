@@ -1,9 +1,9 @@
 import { formatCurrency } from "@/lib/utils";
 import { Card, CardHeader, CardTitle } from "../ui/card";
 import {
-  ArrowUpRight,
-  ArrowDownRight,
-  PiggyBank,
+  ArrowUp,
+  ArrowDown,
+  Banknote,
   BanknoteArrowUp,
   BanknoteArrowDown,
   LucideIcon,
@@ -22,7 +22,7 @@ interface AmountCardProps {
 const iconMap: Record<string, LucideIcon> = {
   Income: BanknoteArrowUp,
   Expenses: BanknoteArrowDown,
-  Saved: PiggyBank,
+  Saved: Banknote,
 };
 
 export default function AmountCard({
@@ -40,8 +40,8 @@ export default function AmountCard({
   }
 
   const changeColor = isGoodChange
-    ? "text-primary bg-primary/10"
-    : "text-destructive bg-destructive/10";
+    ? { text: "text-primary", background: "bg-primary/20" }
+    : { text: "text-destructive", background: "bg-destructive/20" };
 
   const Icon = iconMap[title];
 
@@ -58,25 +58,27 @@ export default function AmountCard({
             <Tooltip>
               <TooltipTrigger>
                 <div
-                  className={cn(
-                    "flex items-center text-xs font-medium py-[0.125rem] px-1 rounded-sm",
-                    changeColor
-                  )}
+                  className={cn("flex gap-1.5 items-center", changeColor.text)}
                 >
-                  {isPositiveChange ? (
-                    <ArrowUpRight className="h-4 w-4" />
-                  ) : (
-                    <ArrowDownRight className="h-4 w-4" />
-                  )}
-                  {formatNumber(Math.abs(percentageChange))}%
+                  <div
+                    className={cn(
+                      "flex justify-center items-center py-[0.125rem] rounded-full size-5",
+                      changeColor.background
+                    )}
+                  >
+                    {isPositiveChange ? (
+                      <ArrowUp className="size-3.5" />
+                    ) : (
+                      <ArrowDown className="size-3.5" />
+                    )}
+                  </div>
+                  <span className="text-xs font-semibold">
+                    {formatNumber(Math.abs(percentageChange))}%
+                  </span>
                 </div>
               </TooltipTrigger>
               <TooltipContent className="bg-background border border-border text-forground shadow-sm">
-                <span className="font-medium">
-                  {formatNumber(Math.abs(percentageChange))}%
-                </span>{" "}
-                {isPositiveChange ? "increase" : "decrease"} vs. last{" "}
-                {periodText}
+                Compared to last {periodText}
               </TooltipContent>
             </Tooltip>
           )}

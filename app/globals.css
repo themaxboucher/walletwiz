@@ -123,10 +123,10 @@
 
 @layer components {
   .heading-1 {
-    @apply font-semibold m-0 text-4xl;
+    @apply font-semibold m-0 text-3xl sm:text-4xl lg:text-5xl;
   }
   .heading-2 {
-    @apply font-semibold m-0 text-3xl;
+    @apply font-semibold m-0 text-4xl;
   }
   .heading-3 {
     @apply font-semibold m-0 text-2xl;
@@ -158,4 +158,8 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }

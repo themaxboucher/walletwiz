@@ -100,7 +100,7 @@ export default function BalanceChart({ chartData }: BalanceChartProps) {
           dataKey="balance"
           stroke="oklch(0.6635 0.1608 155.21)"
           fill="url(#balanceGradient)"
-          strokeWidth={2}
+          strokeWidth={2.5}
         />
         <ReferenceLine
           y={0}
