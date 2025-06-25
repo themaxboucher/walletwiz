@@ -33,7 +33,7 @@ export default function DisplayTransactions() {
         </TableHeader>
         <TableBody>
           {displayTransactions.map((tx) => (
-            <TableRow key={tx.$id}>
+            <TableRow key={tx.$id} className="hover:bg-transparent">
               <TableCell className="py-3 px-6 font-medium flex items-center gap-3">
                 <Avatar className="size-6">
                   {tx.merchantLogo && (
@@ -45,7 +45,7 @@ export default function DisplayTransactions() {
                 </Avatar>
                 {tx.merchantName}
               </TableCell>
-              <TableCell className="py-3 font-medium">
+              <TableCell className="py-3 font-medium text-left">
                 {tx.amount > 0 ? "+" : ""}
                 {formatCurrency(tx.amount)}
               </TableCell>
@@ -57,7 +57,7 @@ export default function DisplayTransactions() {
                   {tx.category.name}
                 </CategoryBadge>
               </TableCell>
-              <TableCell className="py-3 text-muted-foreground">
+              <TableCell className="py-3 text-muted-foreground text-left">
                 {format(new Date(tx.date), "PP")}
               </TableCell>
             </TableRow>
