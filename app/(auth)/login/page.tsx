@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import AuthCard from "@/components/auth/AuthCard";
 import Link from "next/link";
 import LoginForm from "@/components/auth/LoginForm";
