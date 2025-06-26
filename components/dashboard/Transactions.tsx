@@ -11,11 +11,13 @@ import EmptyState from "./EmptyState";
 interface TransactionsProps {
   transactions: Transaction[];
   categories: Category[];
+  filteredOut?: boolean;
 }
 
 export default function Transactions({
   transactions,
   categories,
+  filteredOut = false,
 }: TransactionsProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] =
@@ -48,8 +50,16 @@ export default function Transactions({
       {transactions.length === 0 ? (
         <EmptyState
           icon={<Receipt className="size-5 text-primary" />}
-          title="No transactions yet"
-          description="Start tracking your finances by adding your first transaction."
+          title={
+            filteredOut
+              ? "No transactions in this period"
+              : "No transactions yet"
+          }
+          description={
+            filteredOut
+              ? "Try selecting a different date or time range to see your transactions."
+              : "Start tracking your finances by adding your first transaction."
+          }
           buttonText="Add Transaction"
           onAddClick={() => handleOpenDialog()}
         />

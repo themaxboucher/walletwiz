@@ -218,3 +218,50 @@ export function getPeriodText(dateRange?: { from?: Date; to?: Date }) {
   if (totalDaysIncludingStart === 1) return "day";
   return `${totalDaysIncludingStart} days`;
 }
+
+/**
+ * Filters data by a given end date and time range string (e.g., 1W, 1M, etc.).
+ */
+export function filterByRange<T extends { date: string }>(
+  data: T[],
+  lastDate: Date,
+  range: string
+): T[] {
+  if (!data.length || range === "ALL") return data;
+  const end = new Date(lastDate);
+  let fromDate;
+  switch (range) {
+    case "1W":
+      fromDate = new Date(end);
+      fromDate.setDate(fromDate.getDate() - 6);
+      break;
+    case "1M":
+      fromDate = new Date(end);
+      fromDate.setMonth(fromDate.getMonth() - 1);
+      fromDate.setDate(fromDate.getDate() + 1);
+      break;
+    case "3M":
+      fromDate = new Date(end);
+      fromDate.setMonth(fromDate.getMonth() - 3);
+      fromDate.setDate(fromDate.getDate() + 1);
+      break;
+    case "6M":
+      fromDate = new Date(end);
+      fromDate.setMonth(fromDate.getMonth() - 6);
+      fromDate.setDate(fromDate.getDate() + 1);
+      break;
+    case "YTD":
+      fromDate = new Date(end.getFullYear(), 0, 1);
+      break;
+    case "1Y":
+      fromDate = new Date(end);
+      fromDate.setFullYear(fromDate.getFullYear() - 1);
+      fromDate.setDate(fromDate.getDate() + 1);
+      break;
+    default:
+      return data;
+  }
+  return data.filter(
+    (item) => new Date(item.date) >= fromDate && new Date(item.date) <= end
+  );
+}
