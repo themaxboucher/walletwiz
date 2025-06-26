@@ -27,7 +27,7 @@ export default function DisplayBalance() {
   };
 
   return (
-    <Card className="text-left absolute top-10 left-10 -right-8">
+    <Card className="text-left absolute top-6 md:top-10 left-6 md:left-10 -right-8">
       <CardHeader>
         <CardTitle className="text-muted-foreground">Balance</CardTitle>
         <p className="text-3xl tracking-tight font-semibold">

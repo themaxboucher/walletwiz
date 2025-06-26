@@ -2,13 +2,25 @@
 
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export default function HeroImage() {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !resolvedTheme) {
+    // Render a placeholder or nothing until theme is resolved
+    return <div style={{ width: "100%", height: 400 }} />;
+  }
+
   return (
     <Image
       src={
-        theme === "light"
+        resolvedTheme === "light"
           ? "/walletwiz-dashboard-light.png"
           : "/walletwiz-dashboard-dark.png"
       }

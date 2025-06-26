@@ -34,7 +34,7 @@ export default function DisplayBudget() {
   };
 
   return (
-    <Card className="text-left absolute top-10 left-14 right-14">
+    <Card className="text-left absolute top-6 md:top-10 left-6 md:left-14 right-6 md:right-14">
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>Budget</CardTitle>
