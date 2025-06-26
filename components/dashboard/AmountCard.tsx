@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { formatNumber } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import CountUp from "react-countup";
 
 interface AmountCardProps {
   title: string;
@@ -53,7 +54,15 @@ export default function AmountCard({
           {title}
         </CardTitle>
         <div className="flex justify-between items-end gap-2">
-          <div className="text-2xl font-semibold">{formatCurrency(amount)}</div>
+          <div className="text-2xl font-semibold">
+            <CountUp
+              end={amount}
+              duration={1.2}
+              separator=","
+              decimals={2}
+              formattingFn={formatCurrency}
+            />
+          </div>
           {percentageChange !== undefined && (
             <Tooltip>
               <TooltipTrigger>
