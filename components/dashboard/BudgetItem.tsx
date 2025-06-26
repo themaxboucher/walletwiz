@@ -33,7 +33,7 @@ export default function BudgetItem({
           {formatCurrency(spent)} / {formatCurrency(budget)}
         </div>
       </div>
-      <Progress value={progress} className="h-2" />
+      <Progress value={progress <= 100 ? progress : 100} className="h-2" />
       <div
         className={cn(
           "flex justify-between text-xs text-muted-foreground",
