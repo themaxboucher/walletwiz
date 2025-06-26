@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import AuthCard from "@/components/auth/AuthCard";
 import { LoaderCircle } from "lucide-react";
 import FormAlert from "@/components/FormAlert";
 import { updateVerification } from "@/lib/appwrite/client";
 
-export default function VerifyPage() {
+function VerifyContent() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
   );
@@ -72,5 +72,13 @@ export default function VerifyPage() {
         )}
       </div>
     </AuthCard>
+  );
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyContent />
+    </Suspense>
   );
 }
