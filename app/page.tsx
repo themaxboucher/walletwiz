@@ -25,7 +25,7 @@ export default async function Home() {
       <Navbar loggedIn={loggedIn} />
       <main>
         {/* Hero */}
-        <section className="section-large pb-0 relative flex flex-col items-center justify-center">
+        <section className="section-large pb-0 relative flex flex-col items-center justify-center max-h-[140vh]">
           {/* <ShrinkingHeroBg /> */}
           <div className="absolute top-0 w-[100vw] h-full bg-gradient-to-t from-25% from-primary/20 to-transparent overflow-hidden"></div>
           <div className="absolute inset-x-auto top-15 w-[80vw] md:w-[60vw] z-10 h-[40vh] bg-background rounded-[100%] blur-3xl" />
@@ -36,9 +36,7 @@ export default async function Home() {
                 <h1>Free Personal Finance Tracker</h1>
               </div>
               <h2 className="heading-1 md:text-5xl lg:text-6xl max-w-[50rem]">
-                Track, budget, and{" "}
-                <span className="text-primary">master your money</span> with
-                ease.
+                Track, budget, and master your money with ease.
               </h2>
               <p className="mt-5 max-w-[42rem] md:text-lg text-muted-foreground">
                 WalletWiz gives you a clear, real-time view of your finances, so
@@ -152,8 +150,7 @@ export default async function Home() {
               </div>
 
               <h2 className="heading-2">
-                <span className="text-primary">Simple. Fast. Free.</span> Take
-                control of your money today.
+                Simple. Fast. Free. Take control of your money today.
               </h2>
               <p className="mt-4 md:text-lg text-muted-foreground">
                 Sign up for free and see how easy it is to take control of your

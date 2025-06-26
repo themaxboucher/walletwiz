@@ -23,6 +23,11 @@ const config: NextConfig = {
         hostname: "img.logo.dev",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "media-cldnry.s-nbcnews.com",
+        pathname: "/image/upload/**",
+      },
     ],
   },
 };

@@ -11,7 +11,6 @@ export default function Navbar({ loggedIn }: NavbarProps) {
   return (
     <header className="w-full max-w-[87rem] mx-auto flex justify-between items-center px-8 py-4">
       <Logo />
-      <ThemeSelector />
 
       <div className="sm:flex items-center gap-2 hidden">
         {!loggedIn ? (

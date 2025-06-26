@@ -27,7 +27,7 @@ export default function HeroImage() {
       alt="WalletWiz dashboard"
       width={1400}
       height={1000}
-      className="rounded-t-xl shadow-2xl border border-b-0 w-full max-w-5xl"
+      className="rounded-t-sm md:rounded-t-lg shadow-2xl border border-border border-b-0 w-full max-w-5xl"
       style={{ objectFit: "cover" }}
       priority
     />

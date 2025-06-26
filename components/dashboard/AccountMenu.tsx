@@ -27,8 +27,11 @@ export default function AccountMenu(props: { user: User }) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Avatar className="size-10 shadow-inn">
-            <AvatarImage src={props.user?.avatar} />
+          <Avatar className="size-10">
+            <AvatarImage
+              className="object-cover shadow-inner"
+              src={props.user?.avatar}
+            />
             <AvatarFallback className="text-sm font-extrabold text-white/80 bg-primary">
               {userInitials}
             </AvatarFallback>
