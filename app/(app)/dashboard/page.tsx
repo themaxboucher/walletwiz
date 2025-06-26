@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { getTransactions } from "@/lib/actions/transaction.actions";
 import DashboardContent from "@/components/dashboard/DashboardContent";

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import AuthCard from "@/components/auth/AuthCard";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 

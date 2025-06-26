@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import InfoBadge from "@/components/InfoBadge";
 import CTAButtons from "@/components/landing-page/CTAButtons";
 import DisplayAccounts from "@/components/landing-page/DisplayAccounts";
