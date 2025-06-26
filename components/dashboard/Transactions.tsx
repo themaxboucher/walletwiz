@@ -34,7 +34,7 @@ export default function Transactions({
   };
 
   return (
-    <Card>
+    <Card className="pb-0">
       <div className="flex justify-between pr-6">
         <CardHeader className="w-full">
           <CardTitle>Transactions</CardTitle>
