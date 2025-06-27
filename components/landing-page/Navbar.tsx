@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Logo from "../Logo";
 import { Button } from "../ui/button";
-import { ThemeSelector } from "../ThemeSelector";
 
 interface NavbarProps {
   loggedIn: boolean;
@@ -9,7 +8,7 @@ interface NavbarProps {
 
 export default function Navbar({ loggedIn }: NavbarProps) {
   return (
-    <header className="w-full max-w-[87rem] mx-auto flex justify-between items-center px-8 py-4">
+    <header className="w-full max-w-[87rem] mx-auto flex justify-between items-center px-5 md:px-8 py-4">
       <Logo />
 
       <div className="sm:flex items-center gap-2 hidden">

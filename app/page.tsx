@@ -15,8 +15,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getLoggedInUser } from "@/lib/actions/user.actions";
-import { HandCoins, TrendingUp, Zap } from "lucide-react";
+import { CircleDollarSign, Sparkles, Zap } from "lucide-react";
 import ShrinkingHeroBg from "@/components/landing-page/ShrinkingHeroBg";
+import BackgroundGrid from "@/components/landing-page/BackgroundGrid";
 
 export default async function Home() {
   const loggedIn = await getLoggedInUser();
@@ -26,14 +27,16 @@ export default async function Home() {
       <Navbar loggedIn={loggedIn} />
       <main>
         {/* Hero */}
-        <section className="section-large pb-0 relative flex flex-col items-center justify-center max-h-[140vh]">
+        <section className="section-large pb-0 relative flex flex-col items-center justify-center max-h-[120vh] md:max-h-[140vh]">
           {/* <ShrinkingHeroBg /> */}
+          <BackgroundGrid className="w-[100vw] inset-auto top-0" />
+          <div className="absolute top-0 w-[100vw] h-full bg-gradient-to-b from-background to-transparent to-5% overflow-hidden"></div>
           <div className="absolute top-0 w-[100vw] h-full bg-gradient-to-t from-25% from-primary/20 to-transparent overflow-hidden"></div>
           <div className="absolute inset-x-auto top-15 w-[80vw] md:w-[60vw] z-10 h-[40vh] bg-background rounded-[100%] blur-3xl" />
           <div className="relative z-10 w-full max-w-[82rem] mx-auto flex flex-col items-center text-center overflow-hidden">
             <div className="flex flex-col items-center px-4 sm:px-8">
               <div className="uppercase text-primary text-sm font-semibold rounded-xl flex items-center gap-2 mb-5">
-                <TrendingUp className="size-4 text-primary" />
+                <CircleDollarSign className="size-4 text-primary" />
                 <h1>Free Personal Finance Tracker</h1>
               </div>
               <h2 className="heading-1 md:text-5xl lg:text-6xl max-w-[50rem]">
@@ -60,7 +63,7 @@ export default async function Home() {
         >
           <div className="max-w-lg mb-12 flex flex-col items-center">
             <div className="uppercase text-primary text-sm font-semibold rounded-xl flex items-center gap-2 mb-5">
-              <Zap className="size-4 text-primary" />
+              <Sparkles className="size-4 text-primary" />
               <h2>Features</h2>
             </div>
             <h2 className="heading-2">
@@ -77,6 +80,7 @@ export default async function Home() {
                 <Card className="pt-0 absolute top-6 md:top-10 left-6 md:left-10 -right-4">
                   <DisplayTransactions />
                 </Card>
+                <BackgroundGrid />
               </div>
               <CardHeader className="py-6 border-t border-border text-left gap-2 bg-card">
                 <CardTitle className="heading-4">
@@ -92,6 +96,7 @@ export default async function Home() {
             <Card className="col-span-1 md:col-span-4 flex flex-col py-0 overflow-hidden gap-0 bg-transparent h-[27rem]">
               <div className="p-6 bg-gradient-to-b from-primary/20 to-transparent relative overflow-hidden h-full">
                 <DisplayBalance />
+                <BackgroundGrid />
               </div>
               <CardHeader className="py-6 border-t border-border text-left gap-2 bg-card">
                 <CardTitle className="heading-4">
@@ -107,6 +112,7 @@ export default async function Home() {
             <Card className="col-span-1 md:col-span-4 flex flex-col py-0 overflow-hidden gap-0 bg-transparent h-[27rem]">
               <div className="p-6 bg-gradient-to-t from-primary/20 to-transparent relative overflow-hidden h-full">
                 <DisplayAccounts />
+                <BackgroundGrid />
               </div>
               <CardHeader className="py-6 border-t border-border text-left gap-2 bg-card">
                 <div className="flex gap-2 items-center">
@@ -125,6 +131,7 @@ export default async function Home() {
             <Card className="col-span-1 md:col-span-5 flex flex-col py-0 overflow-hidden gap-0 bg-transparent h-[27rem]">
               <div className="p-6 bg-gradient-to-tl from-primary/20 to-transparent relative overflow-hidden h-full">
                 <DisplayBudget />
+                <BackgroundGrid />
               </div>
               <CardHeader className="py-6 border-t border-border text-left gap-2 bg-card">
                 <CardTitle className="heading-4">
@@ -141,12 +148,13 @@ export default async function Home() {
 
         {/* CTA */}
         <section className="section-large pt-0">
-          <div className=" p-10 sm:p-18 flex flex-col items-center text-center relative rounded-2xl overflow-hidden w-full border border-border">
+          <div className=" p-10 sm:p-18 flex flex-col items-center text-center relative rounded-2xl overflow-hidden w-full border border-border shadow-xs">
+            <BackgroundGrid />
             <div className="absolute inset-x-auto top-10 w-[80vw] md:w-[60vw] -z-1 h-[40vh] bg-background rounded-[100%] blur-3xl opacity-50" />
             <div className="absolute inset-0 -z-2 size-full bg-gradient-to-t from-primary/20 to-primary/5" />
             <div className="max-w-lg flex flex-col items-center text-center">
               <div className="uppercase text-primary text-sm font-semibold rounded-xl flex items-center gap-2 mb-5">
-                <HandCoins className="size-4 text-primary" />
+                <Zap className="size-4 text-primary" />
                 <h2>Get Started</h2>
               </div>
 
