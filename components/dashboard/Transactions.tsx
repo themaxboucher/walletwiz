@@ -41,7 +41,7 @@ export default function Transactions({
         </CardHeader>
         {transactions.length > 0 && (
           <Button size="sm" onClick={() => handleOpenDialog()}>
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="size-3.5 opacity-75" />
             <span>Add Transaction</span>
           </Button>
         )}

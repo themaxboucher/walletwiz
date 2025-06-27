@@ -25,7 +25,7 @@ export default function EmptyState({
         {description}
       </p>
       <Button onClick={onAddClick}>
-        <Plus className="size-4" />
+        <Plus className="size-4 opacity-75" />
         <span>{buttonText}</span>
       </Button>
     </div>
