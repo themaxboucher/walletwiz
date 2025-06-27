@@ -86,8 +86,27 @@ export default function AmountCard({
                   </span>
                 </div>
               </TooltipTrigger>
-              <TooltipContent className="bg-background border border-border text-forground shadow-sm">
-                Compared to last {periodText}
+              <TooltipContent className="text-xs bg-card border border-border text-forground shadow-xs flex gap-1.5">
+                <div
+                  className={cn(
+                    "flex justify-center items-center rounded-full size-3.5 -ml-1.5",
+                    changeColor.background,
+                    changeColor.text
+                  )}
+                >
+                  {isPositiveChange ? (
+                    <ArrowUp className="size-2.5" />
+                  ) : (
+                    <ArrowDown className="size-2.5" />
+                  )}
+                </div>
+                <div>
+                  <span className={cn("font-medium", changeColor.text)}>
+                    {formatNumber(Math.abs(percentageChange))}%
+                  </span>{" "}
+                  {isPositiveChange ? "increase" : "decrease"}
+                  <br /> vs. last {periodText}
+                </div>
               </TooltipContent>
             </Tooltip>
           )}

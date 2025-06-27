@@ -83,8 +83,12 @@ export default function DashboardContent({
 
   // Calculate previous period metrics for comparison
   const { previousIncome, previousExpenses, previousNetChange } = useMemo(
-    () => calculatePreviousPeriodMetrics(transactions, { to: lastDate }),
-    [transactions, lastDate]
+    () =>
+      calculatePreviousPeriodMetrics(transactions, {
+        from: chartFromDate,
+        to: chartToDate,
+      }),
+    [transactions, chartFromDate, chartToDate]
   );
 
   // Calculate percentage changes for income, expenses, and net change
@@ -93,7 +97,10 @@ export default function DashboardContent({
   const savedPercentageChange = percentageChange(netChange, previousNetChange);
 
   // Calculate period text for AmountCard tooltip
-  const periodText = useMemo(() => getPeriodText({ to: lastDate }), [lastDate]);
+  const periodText = useMemo(
+    () => getPeriodText({ from: chartFromDate, to: chartToDate }),
+    [chartFromDate, chartToDate]
+  );
 
   return (
     <>

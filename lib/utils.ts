@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { differenceInDays } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -57,8 +58,8 @@ export const percentageChange = (
   previousValue: number
 ) => {
   // Handle cases where previous value is zero to avoid division by zero
-  if (previousValue === 0) {
-    return currentValue === 0 ? 0 : undefined;
+  if (previousValue === 0 || currentValue === 0) {
+    return undefined;
   }
   // Calculate percentage change
   return ((currentValue - previousValue) / Math.abs(previousValue)) * 100;
@@ -208,7 +209,6 @@ export function calculatePreviousPeriodMetrics(
   return { previousIncome, previousExpenses, previousNetChange };
 }
 
-import { differenceInDays } from "date-fns";
 /**
  * Returns a human-readable period text for a given date range.
  */
@@ -216,14 +216,20 @@ export function getPeriodText(dateRange?: { from?: Date; to?: Date }) {
   if (!dateRange?.from || !dateRange?.to) return "period";
   const start = dateRange.from;
   const end = dateRange.to;
-  const totalDaysIncludingStart = differenceInDays(end, start);
-  if (totalDaysIncludingStart === 7) return "week";
-  if (totalDaysIncludingStart === 30 || totalDaysIncludingStart === 31)
-    return "month";
-  if (totalDaysIncludingStart === 365 || totalDaysIncludingStart === 366)
-    return "year";
-  if (totalDaysIncludingStart === 1) return "day";
-  return `${totalDaysIncludingStart} days`;
+  const totalDays = differenceInDays(end, start) + 1;
+  if (totalDays === 7) return "week";
+  if (totalDays === 30 || totalDays === 31) return "month";
+  if (totalDays === 90 || totalDays === 91 || totalDays === 92)
+    return "3 months";
+  if (
+    totalDays === 180 ||
+    totalDays === 181 ||
+    totalDays === 182 ||
+    totalDays === 183
+  )
+    return "6 months";
+  if (totalDays === 365 || totalDays === 366) return "year";
+  return `${totalDays} days`;
 }
 
 /**
