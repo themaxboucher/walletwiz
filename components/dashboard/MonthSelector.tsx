@@ -50,7 +50,7 @@ export function MonthSelector({
   return (
     <div className="flex gap-2">
       <Select value={value} onValueChange={onValueChange}>
-        <SelectTrigger className="w-[80px]">
+        <SelectTrigger className="w-fit">
           <SelectValue placeholder="Month" />
         </SelectTrigger>
         <SelectContent>
@@ -62,7 +62,7 @@ export function MonthSelector({
         </SelectContent>
       </Select>
       <Select value={yearValue} onValueChange={onYearChange}>
-        <SelectTrigger className="w-[90px]">
+        <SelectTrigger className="w-fit">
           <SelectValue placeholder="Year" />
         </SelectTrigger>
         <SelectContent>

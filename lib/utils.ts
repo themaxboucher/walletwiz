@@ -96,15 +96,22 @@ export function generateBalanceChartData(
   let balance = 0;
   let txIndex = 0;
   const dates: Date[] = [];
-  const from = dateRange?.from || new Date(sortedTransactions[0].date);
-  const to =
-    dateRange?.to ||
-    new Date(sortedTransactions[sortedTransactions.length - 1].date);
+
+  // Determine the date range to use
+  const from = dateRange?.from
+    ? new Date(dateRange.from)
+    : new Date(sortedTransactions[0].date);
+  const to = dateRange?.to
+    ? new Date(dateRange.to)
+    : new Date(sortedTransactions[sortedTransactions.length - 1].date);
+
+  // Always generate a data point for every day in the range
   const currentDate = new Date(from);
   while (currentDate <= to) {
     dates.push(new Date(currentDate));
     currentDate.setDate(currentDate.getDate() + 1);
   }
+
   return dates.map((date) => {
     while (
       txIndex < sortedTransactions.length &&
@@ -264,4 +271,57 @@ export function filterByRange<T extends { date: string }>(
   return data.filter(
     (item) => new Date(item.date) >= fromDate && new Date(item.date) <= end
   );
+}
+
+/**
+ * Returns the start date for a given time range and transaction list.
+ * For 'ALL', returns the date of the oldest transaction.
+ */
+export function getRangeStartDate(
+  lastDate: Date,
+  range: string,
+  transactions: Transaction[]
+) {
+  if (range === "ALL") {
+    // Oldest transaction date
+    if (transactions.length === 0) return new Date(lastDate);
+    return new Date(
+      Math.min(...transactions.map((tx) => new Date(tx.date).getTime()))
+    );
+  }
+  // Replicate logic from filterByRange for other ranges
+  const end = new Date(lastDate);
+  let fromDate;
+  switch (range) {
+    case "1W":
+      fromDate = new Date(end);
+      fromDate.setDate(fromDate.getDate() - 6);
+      break;
+    case "1M":
+      fromDate = new Date(end);
+      fromDate.setMonth(fromDate.getMonth() - 1);
+      fromDate.setDate(fromDate.getDate() + 1);
+      break;
+    case "3M":
+      fromDate = new Date(end);
+      fromDate.setMonth(fromDate.getMonth() - 3);
+      fromDate.setDate(fromDate.getDate() + 1);
+      break;
+    case "6M":
+      fromDate = new Date(end);
+      fromDate.setMonth(fromDate.getMonth() - 6);
+      fromDate.setDate(fromDate.getDate() + 1);
+      break;
+    case "YTD":
+      fromDate = new Date(end.getFullYear(), 0, 1);
+      break;
+    case "1Y":
+      fromDate = new Date(end);
+      fromDate.setFullYear(fromDate.getFullYear() - 1);
+      fromDate.setDate(fromDate.getDate() + 1);
+      break;
+    default:
+      fromDate = new Date(end);
+  }
+  return fromDate;
 }

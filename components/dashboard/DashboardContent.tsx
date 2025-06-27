@@ -15,6 +15,7 @@ import {
   percentageChange,
   filterByRange,
   generateBalanceChartData,
+  getRangeStartDate,
 } from "@/lib/utils";
 import Budget from "./Budget";
 import Accounts from "./Accounts";
@@ -46,13 +47,18 @@ export default function DashboardContent({
   }, [transactions, lastDate, selectedRange]);
 
   // Generate balance chart data for all transactions up to lastDate and filter by range
-  const allChartData = useMemo(
-    () => generateBalanceChartData(transactions, { to: lastDate }),
-    [transactions, lastDate]
+  const chartFromDate = useMemo(
+    () => getRangeStartDate(lastDate, selectedRange, transactions),
+    [lastDate, selectedRange, transactions]
   );
+  const chartToDate = lastDate;
   const filteredChartData = useMemo(
-    () => filterByRange(allChartData, lastDate, selectedRange),
-    [allChartData, lastDate, selectedRange]
+    () =>
+      generateBalanceChartData(transactions, {
+        from: chartFromDate,
+        to: chartToDate,
+      }),
+    [transactions, chartFromDate, chartToDate]
   );
 
   // Calculate totals from filtered transactions

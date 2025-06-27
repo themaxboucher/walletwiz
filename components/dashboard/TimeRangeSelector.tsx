@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,9 +57,9 @@ export default function TimeRangeSelector({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="w-[180px] justify-start text-left font-normal bg-card dark:bg-card active:scale-100"
+            className="w-fit justify-start text-left font-normal bg-card dark:bg-card active:scale-100"
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <CalendarIcon className=" h-4 w-4" />
             {lastDate ? format(lastDate, "PPP") : <span>Pick a date</span>}
           </Button>
         </PopoverTrigger>
