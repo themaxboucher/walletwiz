@@ -20,11 +20,14 @@ interface BalanceChartProps {
   chartData: ChartDataPoint[];
 }
 
+// Define the balance chart color as the primary color
+const chartColor = "oklch(0.716 0.1739 155.45)";
+
 export default function BalanceChart({ chartData }: BalanceChartProps) {
   const chartConfig = {
     balance: {
       label: "Balance",
-      color: "oklch(0.6635 0.1608 155.21)",
+      color: chartColor,
     },
   };
 
@@ -39,16 +42,8 @@ export default function BalanceChart({ chartData }: BalanceChartProps) {
       >
         <defs>
           <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop
-              offset="5%"
-              stopColor="oklch(0.6635 0.1608 155.21)"
-              stopOpacity={0.3}
-            />
-            <stop
-              offset="95%"
-              stopColor="oklch(0.6635 0.1608 155.21)"
-              stopOpacity={0}
-            />
+            <stop offset="5%" stopColor={chartColor} stopOpacity={0.3} />
+            <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
           </linearGradient>
         </defs>
         <CartesianGrid
@@ -98,7 +93,7 @@ export default function BalanceChart({ chartData }: BalanceChartProps) {
         <Area
           type="monotone"
           dataKey="balance"
-          stroke="oklch(0.6635 0.1608 155.21)"
+          stroke={chartColor}
           fill="url(#balanceGradient)"
           strokeWidth={2.5}
         />
