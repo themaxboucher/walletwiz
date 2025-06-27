@@ -86,7 +86,7 @@ export default function AmountCard({
                   </span>
                 </div>
               </TooltipTrigger>
-              <TooltipContent className="text-xs bg-card border border-border text-forground shadow-xs flex gap-1.5">
+              <TooltipContent className="text-xs bg-card border border-border text-forground shadow-sm flex gap-1.5">
                 <div
                   className={cn(
                     "flex justify-center items-center rounded-full size-3.5 -ml-1.5",
