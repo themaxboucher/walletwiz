@@ -11,6 +11,7 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://walletwiz.io/"),
   title: "WalletWiz | Free Personal Finance Tracker & Budgeting App",
   description:
     "WalletWiz is a free personal finance tracker and budgeting app. Track spending, set savings goals, and manage all your accounts in one place—no spreadsheets needed.",
