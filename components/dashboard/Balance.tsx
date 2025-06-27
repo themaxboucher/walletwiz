@@ -7,7 +7,7 @@ import {
 } from "../ui/card";
 import BalanceChart from "./BalanceChart";
 import { formatCurrency } from "@/lib/utils";
-import CountUp from "react-countup";
+import AmountCountUp from "./AmountCountUp";
 
 interface ChartDataPoint {
   date: string;
@@ -25,13 +25,7 @@ export default function Balance({ totalBalance, chartData }: BalanceProps) {
       <CardHeader className="gap-2">
         <CardTitle className="text-muted-foreground">Balance</CardTitle>
         <p className="text-3xl tracking-tight font-semibold">
-          <CountUp
-            end={totalBalance}
-            duration={1.2}
-            separator=","
-            decimals={2}
-            formattingFn={formatCurrency}
-          />
+          <AmountCountUp amount={totalBalance} formattingFn={formatCurrency} />
         </p>
       </CardHeader>
       <CardContent>
