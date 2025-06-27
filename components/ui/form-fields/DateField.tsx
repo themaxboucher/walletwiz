@@ -39,7 +39,7 @@ export function DateField({
             <Button
               variant="outline"
               className={cn(
-                "w-full justify-start text-left font-normal",
+                "w-full justify-start text-left font-normal active:scale-100",
                 !field.value && "text-muted-foreground"
               )}
             >
