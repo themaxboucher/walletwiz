@@ -39,15 +39,31 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
     },
   });
 
+  const MAX_AVATAR_SIZE = 2 * 1024 * 1024; // 2 MB
+  const ALLOWED_AVATAR_TYPES = ["image/png", "image/jpeg"];
+
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setAvatarFile(e.target.files[0]);
+      const file = e.target.files[0];
+      if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
+        toast("Only PNG and JPG images are allowed.", {
+          icon: <CircleX className="text-destructive size-5" />,
+        });
+        return;
+      }
+      if (file.size > MAX_AVATAR_SIZE) {
+        toast("Avatar must be under 2 MB.", {
+          icon: <CircleX className="text-destructive size-5" />,
+        });
+        return;
+      }
+      setAvatarFile(file);
       const reader = new FileReader();
       reader.onload = (ev) => {
         setAvatarPreview(ev.target?.result as string);
         form.setValue("avatar", ev.target?.result as string);
       };
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(file);
     }
   };
 
@@ -111,7 +127,7 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/*"
+              accept="image/png, image/jpeg"
               onChange={handleAvatarChange}
               className="hidden"
             />
