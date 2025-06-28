@@ -83,20 +83,20 @@ export default function SignupForm() {
             form={form}
             name="firstName"
             label="First Name"
-            placeholder="Tony"
+            placeholder="Jerry"
           />
           <TextField
             form={form}
             name="lastName"
             label="Last Name"
-            placeholder="Stark"
+            placeholder="Maguire"
           />
         </div>
         <TextField
           form={form}
           name="email"
           label="Email"
-          placeholder="tony@starkindustries.com"
+          placeholder="jerrymaguire@gmail.com"
         />
         <PasswordField form={form} name="password" label="Password" />
         {error && <FormAlert message={error} type="error" />}
