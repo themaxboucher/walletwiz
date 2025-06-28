@@ -76,7 +76,7 @@ export default async function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-9 gap-5 w-full">
             <Card className="col-span-1 md:col-span-5 flex flex-col py-0 overflow-hidden gap-0 bg-transparent h-[27rem]">
-              <div className="p-6 bg-gradient-to-br from-primary/20 to-transparent to-80% relative overflow-hidden h-full">
+              <div className="p-6 bg-gradient-to-r from-blue-500/20 to-transparent to-80% relative overflow-hidden h-full">
                 <Card className="pt-0 absolute top-6 md:top-10 left-6 md:left-10 -right-4">
                   <DisplayTransactions />
                 </Card>
@@ -94,7 +94,7 @@ export default async function Home() {
               </CardHeader>
             </Card>
             <Card className="col-span-1 md:col-span-4 flex flex-col py-0 overflow-hidden gap-0 bg-transparent h-[27rem]">
-              <div className="p-6 bg-gradient-to-b from-primary/20 to-transparent relative overflow-hidden h-full">
+              <div className="p-6 bg-gradient-to-b from-orange-500/20 to-transparent relative overflow-hidden h-full">
                 <DisplayBalance />
                 <BackgroundGrid />
               </div>
@@ -110,7 +110,7 @@ export default async function Home() {
               </CardHeader>
             </Card>
             <Card className="col-span-1 md:col-span-4 flex flex-col py-0 overflow-hidden gap-0 bg-transparent h-[27rem]">
-              <div className="p-6 bg-gradient-to-t from-primary/20 to-transparent relative overflow-hidden h-full">
+              <div className="p-6 bg-gradient-to-t from-purple-500/20 to-transparent relative overflow-hidden h-full">
                 <DisplayAccounts />
                 <BackgroundGrid />
               </div>
@@ -129,7 +129,7 @@ export default async function Home() {
               </CardHeader>
             </Card>
             <Card className="col-span-1 md:col-span-5 flex flex-col py-0 overflow-hidden gap-0 bg-transparent h-[27rem]">
-              <div className="p-6 bg-gradient-to-tl from-primary/20 to-transparent relative overflow-hidden h-full">
+              <div className="p-6 bg-gradient-to-tl from-yellow-500/20 to-transparent relative overflow-hidden h-full">
                 <DisplayBudget />
                 <BackgroundGrid />
               </div>
