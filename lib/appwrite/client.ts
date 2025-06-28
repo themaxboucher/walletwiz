@@ -1,6 +1,6 @@
 "use client";
 
-import { Client, Account } from "appwrite";
+import { Client, Account, Storage, ID } from "appwrite";
 import { getSession } from "@/lib/actions/user.actions";
 
 const client = new Client()
@@ -8,6 +8,7 @@ const client = new Client()
   .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
 
 const account = new Account(client);
+const storage = new Storage(client);
 
 export async function sendVerificationEmail() {
   try {
@@ -60,5 +61,24 @@ export async function updateVerification(userId: string, secret: string) {
   } catch (error) {
     console.error("Error verifying email:", error);
     throw error;
+  }
+}
+
+export async function uploadAvatar(file: File): Promise<string> {
+  try {
+    const uploaded = await storage.createFile(
+      process.env.NEXT_PUBLIC_APPWRITE_AVATAR_BUCKET_ID!,
+      ID.unique(),
+      file
+    );
+    return storage
+      .getFilePreview(
+        process.env.NEXT_PUBLIC_APPWRITE_AVATAR_BUCKET_ID!,
+        uploaded.$id
+      )
+      .toString();
+  } catch (error) {
+    console.error("Error uploading avatar:", error);
+    throw new Error("Failed to upload avatar. Please try again.");
   }
 }

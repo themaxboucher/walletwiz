@@ -164,7 +164,7 @@ export const updateUser = async ({
   firstName: string;
   lastName: string;
   email: string;
-  avatar?: string;
+  avatar: string | null;
 }) => {
   try {
     const { database } = await createAdminClient();

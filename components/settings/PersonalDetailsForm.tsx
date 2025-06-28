@@ -9,6 +9,7 @@ import { TextField } from "../ui/form-fields/TextField";
 import { Label } from "../ui/label";
 import { CircleCheck, CircleX, LoaderCircle } from "lucide-react";
 import { updateUser } from "@/lib/actions/user.actions";
+import { uploadAvatar } from "@/lib/appwrite/client";
 import { toast } from "sonner";
 
 const personalDetailsSchema = z.object({
@@ -25,9 +26,8 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
     user.avatar || null
   );
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const form = useForm<PersonalDetailsFormData>({
     resolver: zodResolver(personalDetailsSchema),
@@ -41,6 +41,7 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      setAvatarFile(e.target.files[0]);
       const reader = new FileReader();
       reader.onload = (ev) => {
         setAvatarPreview(ev.target?.result as string);
@@ -54,29 +55,31 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
 
   async function onSubmit(data: PersonalDetailsFormData) {
     console.log("Form submitted with data:", data);
-    toast("Personal details updated", {
-      icon: <CircleCheck className="text-primary size-5" />,
-    });
-    toast("Error updating personal details", {
-      icon: <CircleX className="text-destructive size-5" />,
-    });
-    // setLoading(true);
-    // setSuccess(null);
-    // setError(null);
-    // try {
-    //   await updateUser({
-    //     userId: user.userId || user.$id,
-    //     firstName: data.firstName,
-    //     lastName: data.lastName,
-    //     email: data.email,
-    //     avatar: data.avatar,
-    //   });
-    //   setSuccess("Profile updated successfully.");
-    // } catch (err: any) {
-    //   setError(err?.message || "Failed to update profile");
-    // } finally {
-    //   setLoading(false);
-    // }
+
+    setLoading(true);
+    try {
+      let avatarUrl = null;
+      if (avatarFile) {
+        avatarUrl = await uploadAvatar(avatarFile);
+      }
+      // TODO: make sure to delete old avatar if it exists
+      await updateUser({
+        userId: user.userId,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        avatar: avatarUrl,
+      });
+      toast("Personal details updated", {
+        icon: <CircleCheck className="text-primary size-5" />,
+      });
+    } catch (err: any) {
+      toast("Error updating personal details", {
+        icon: <CircleX className="text-destructive size-5" />,
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
