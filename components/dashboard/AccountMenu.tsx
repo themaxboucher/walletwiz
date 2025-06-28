@@ -11,10 +11,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/lib/actions/user.actions";
-import { Settings, HelpCircle, LogOut } from "lucide-react";
+import {
+  Settings,
+  HelpCircle,
+  LogOut,
+  Sparkle,
+  Heart,
+  MessageCircle,
+} from "lucide-react";
 import { ThemeSelector } from "../ThemeSelector";
+import SettingsDialog from "../settings/SettingsDialog";
+import { useState } from "react";
 
 export default function AccountMenu(props: { user: User }) {
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsSection, setSettingsSection] = useState<string | undefined>(
+    undefined
+  );
+
   const handleLogout = async () => {
     await logout();
   };
@@ -27,18 +41,24 @@ export default function AccountMenu(props: { user: User }) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Avatar className="size-10">
+          <Avatar className="size-10 border border-border">
             <AvatarImage
               className="object-cover shadow-inner"
               src={props.user?.avatar}
             />
-            <AvatarFallback className="text-sm font-extrabold text-white/80 bg-primary">
+            <AvatarFallback className="font-bold text-primary bg-primary/20">
               {userInitials}
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="max-w-56 w-56">
-          <DropdownMenuLabel className="flex flex-col">
+          <DropdownMenuLabel
+            className="flex flex-col cursor-pointer"
+            onClick={() => {
+              setSettingsSection("account");
+              setSettingsOpen(true);
+            }}
+          >
             <span className="font-semibold text-sm">
               <span>
                 {props.user.firstName} {props.user.lastName}
@@ -56,13 +76,42 @@ export default function AccountMenu(props: { user: User }) {
             <ThemeSelector />
           </div>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => {}} className="cursor-pointer">
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => {
+              setSettingsSection(undefined);
+              setSettingsOpen(true);
+            }}
+          >
             <Settings className="mr-1 size-4" />
             Settings
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer">
             <HelpCircle className="mr-1 size-4" />
             Support
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <a
+              href="https://walletwiz.featurebase.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center w-full"
+            >
+              <MessageCircle className="mr-1 size-4" />
+              Give Feadback
+            </a>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <a
+              href="https://senja.io/p/walletwiz/r/KG1SqQ"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center w-full"
+            >
+              <Heart className="mr-1 size-4" />
+              Leave a Testimonial
+            </a>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <form action={handleLogout}>
@@ -75,6 +124,12 @@ export default function AccountMenu(props: { user: User }) {
           </form>
         </DropdownMenuContent>
       </DropdownMenu>
+      <SettingsDialog
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        section={settingsSection}
+        user={props.user}
+      />
     </>
   );
 }

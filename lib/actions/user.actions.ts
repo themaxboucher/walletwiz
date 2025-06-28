@@ -152,3 +152,40 @@ export const getSession = async () => {
     return "";
   }
 };
+
+export const updateUser = async ({
+  userId,
+  firstName,
+  lastName,
+  email,
+  avatar,
+}: {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatar?: string;
+}) => {
+  try {
+    const { database } = await createAdminClient();
+    // Find the user document
+    const userDoc = await database.listDocuments(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      [Query.equal("userId", [userId])]
+    );
+    const docId = userDoc.documents[0]?.$id;
+    if (!docId) throw new Error("User document not found");
+    // Update the user document
+    const updated = await database.updateDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      docId,
+      { firstName, lastName, email, avatar }
+    );
+    return parseStringify(updated);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error;
+  }
+};
