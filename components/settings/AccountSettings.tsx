@@ -31,6 +31,7 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
           Manage your personal information and security settings.
         </p>
       </div>
+      <Separator className="my-4" />
       <div className="mb-8 max-w-md">
         <h3 className="font-semibold mb-4">Personal Information</h3>
         <PersonalDetailsForm user={user} />
