@@ -7,8 +7,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useState, useRef } from "react";
 import { TextField } from "../ui/form-fields/TextField";
 import { Label } from "../ui/label";
-import { LoaderCircle } from "lucide-react";
+import { CircleCheck, CircleX, LoaderCircle } from "lucide-react";
 import { updateUser } from "@/lib/actions/user.actions";
+import { toast } from "sonner";
 
 const personalDetailsSchema = z.object({
   avatar: z.string().optional(),
@@ -53,6 +54,12 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
 
   async function onSubmit(data: PersonalDetailsFormData) {
     console.log("Form submitted with data:", data);
+    toast("Personal details updated", {
+      icon: <CircleCheck className="text-primary size-5" />,
+    });
+    toast("Error updating personal details", {
+      icon: <CircleX className="text-destructive size-5" />,
+    });
     // setLoading(true);
     // setSuccess(null);
     // setError(null);
