@@ -13,6 +13,8 @@ import FormAlert from "../FormAlert";
 import { TextField } from "../ui/form-fields/TextField";
 import { PasswordField } from "../ui/form-fields/PasswordField";
 import { createClientSession } from "@/lib/appwrite/client";
+import { toast } from "sonner";
+import { CircleCheck } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email" }),
@@ -45,6 +47,9 @@ export default function LoginForm() {
       }
       // Create Appwrite client session in the browser
       await createClientSession(data.email, data.password);
+      toast("Logged in successfully", {
+        icon: <CircleCheck className="text-primary size-5" />,
+      });
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";

@@ -15,6 +15,8 @@ import {
 } from "@/lib/appwrite/client";
 import { TextField } from "../ui/form-fields/TextField";
 import { PasswordField } from "../ui/form-fields/PasswordField";
+import { toast } from "sonner";
+import { CircleCheck } from "lucide-react";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
@@ -57,6 +59,10 @@ export default function SignupForm() {
 
       // Send verification email
       await sendVerificationEmail();
+
+      toast("Account created successfully", {
+        icon: <CircleCheck className="text-primary size-5" />,
+      });
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
