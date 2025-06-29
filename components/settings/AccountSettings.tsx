@@ -2,12 +2,16 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import PersonalDetailsForm from "./PersonalDetailsForm";
 import UpdatePasswordForm from "./UpdatePasswordForm";
+import { useState } from "react";
+import DeleteAccountDialog from "./DeleteAccountDialog";
 
 interface AccountSettingsProps {
   user: User;
 }
 
 export default function AccountSettings({ user }: AccountSettingsProps) {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
   return (
     <div className="h-full">
       <div className="space-y-0.5 mb-6">
@@ -37,12 +41,16 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
         </div>
         <Button
           variant="destructive"
-          size="sm"
           className="mt-4 mb-6"
-          onClick={() => alert("Account deletion is not implemented yet.")}
+          onClick={() => setDeleteDialogOpen(true)}
         >
           Delete account
         </Button>
+        <DeleteAccountDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          onDelete={() => alert("Account deletion is not implemented yet.")}
+        />
       </div>
     </div>
   );
