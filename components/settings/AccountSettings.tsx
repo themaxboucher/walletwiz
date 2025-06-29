@@ -49,7 +49,7 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
         <DeleteAccountDialog
           open={deleteDialogOpen}
           onOpenChange={setDeleteDialogOpen}
-          onDelete={() => alert("Account deletion is not implemented yet.")}
+          user={user}
         />
       </div>
     </div>

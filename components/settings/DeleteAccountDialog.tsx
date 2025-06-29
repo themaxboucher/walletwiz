@@ -13,6 +13,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TextField } from "../ui/form-fields/TextField";
+import { toast } from "sonner";
+import { CircleCheck, CircleX, LoaderCircle } from "lucide-react";
+import { deleteAccount } from "@/lib/actions/user.actions";
+import { logout } from "@/lib/actions/user.actions";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const deleteSchema = z.object({
   confirm: z.string().refine((val) => val === "DELETE", {
@@ -25,18 +31,41 @@ type DeleteFormData = { confirm: string };
 type DeleteAccountDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onDelete: () => void;
+  user: User;
 };
 
 export default function DeleteAccountDialog({
   open,
   onOpenChange,
-  onDelete,
+  user,
 }: DeleteAccountDialogProps) {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
   const deleteForm = useForm<DeleteFormData>({
     resolver: zodResolver(deleteSchema),
     defaultValues: { confirm: "" },
   });
+
+  async function onDelete() {
+    setLoading(true);
+    try {
+      const authUserId = user.userId;
+      const docUserId = user.$id;
+      await deleteAccount(authUserId, docUserId);
+      toast("Account deleted successfully", {
+        icon: <CircleCheck className="text-primary size-5" />,
+      });
+      await logout();
+      router.push("/");
+    } catch (error) {
+      toast("Error deleting account", {
+        icon: <CircleX className="text-destructive size-5" />,
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -70,7 +99,8 @@ export default function DeleteAccountDialog({
                 className="bg-destructive hover:bg-destructive/90"
                 disabled={!deleteForm.formState.isValid}
               >
-                Delete
+                {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                {!loading && "Delete"}
               </AlertDialogAction>
             </AlertDialogFooter>
           </form>

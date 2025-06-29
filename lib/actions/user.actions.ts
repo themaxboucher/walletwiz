@@ -10,6 +10,8 @@ import { createCategory } from "./category.actions";
 const {
   APPWRITE_DATABASE_ID: DATABASE_ID,
   APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID,
+  APPWRITE_CATEGORY_COLLECTION_ID: CATEGORY_COLLECTION_ID,
+  APPWRITE_TRANSACTION_COLLECTION_ID: TRANSACTION_COLLECTION_ID,
 } = process.env;
 
 export const getUserInfo = async ({ userId }: { userId: string }) => {
@@ -207,6 +209,46 @@ export const updateUser = async ({
     return parseStringify(updated);
   } catch (error) {
     console.error("Error updating user:", error);
+    throw error;
+  }
+};
+
+export const deleteAccount = async (authUserId: string, docUserId: string) => {
+  try {
+    const { user: users, database } = await createAdminClient();
+    // Delete all transactions for the user
+    const transactions = await database.listDocuments(
+      DATABASE_ID!,
+      TRANSACTION_COLLECTION_ID!,
+      [Query.equal("user", [docUserId])]
+    );
+    for (const tx of transactions.documents) {
+      await database.deleteDocument(
+        DATABASE_ID!,
+        TRANSACTION_COLLECTION_ID!,
+        tx.$id
+      );
+    }
+    // Delete all categories for the user
+    const categories = await database.listDocuments(
+      DATABASE_ID!,
+      CATEGORY_COLLECTION_ID!,
+      [Query.equal("user", docUserId)]
+    );
+    for (const cat of categories.documents) {
+      await database.deleteDocument(
+        DATABASE_ID!,
+        CATEGORY_COLLECTION_ID!,
+        cat.$id
+      );
+    }
+    // Delete the user document from the database
+    await database.deleteDocument(DATABASE_ID!, USER_COLLECTION_ID!, docUserId);
+    // Delete the user from Appwrite Auth
+    await users.delete(authUserId);
+    return true;
+  } catch (error) {
+    console.error("Error deleting user account:", error);
     throw error;
   }
 };
