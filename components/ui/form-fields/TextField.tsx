@@ -8,6 +8,7 @@ interface TextFieldProps {
   label: string;
   placeholder?: string;
   className?: string;
+  description?: React.ReactNode;
 }
 
 export function TextField({
@@ -16,6 +17,7 @@ export function TextField({
   label,
   placeholder,
   className,
+  description,
 }: TextFieldProps) {
   return (
     <FormFieldWrapper
@@ -23,6 +25,7 @@ export function TextField({
       name={name}
       label={label}
       className={className}
+      description={description}
     >
       <Input placeholder={placeholder} {...form.register(name)} />
     </FormFieldWrapper>

@@ -1,5 +1,6 @@
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,6 +17,7 @@ interface FormFieldWrapperProps {
     | ReactNode
     | ((props: { field: ControllerRenderProps<any, string> }) => ReactNode);
   className?: string;
+  description?: React.ReactNode;
 }
 
 export function FormFieldWrapper({
@@ -24,6 +26,7 @@ export function FormFieldWrapper({
   label,
   children,
   className,
+  description,
 }: FormFieldWrapperProps) {
   return (
     <FormField
@@ -35,6 +38,11 @@ export function FormFieldWrapper({
           <FormControl>
             {typeof children === "function" ? children({ field }) : children}
           </FormControl>
+          {description && (
+            <FormDescription className="text-xs text-muted-foreground">
+              {description}
+            </FormDescription>
+          )}
           <FormMessage className="text-xs" />
         </FormItem>
       )}

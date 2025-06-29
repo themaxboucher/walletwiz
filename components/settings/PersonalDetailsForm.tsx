@@ -7,7 +7,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useState, useRef } from "react";
 import { TextField } from "../ui/form-fields/TextField";
 import { Label } from "../ui/label";
-import { CircleCheck, CircleX, LoaderCircle } from "lucide-react";
+import {
+  CircleCheck,
+  CircleX,
+  LoaderCircle,
+  BadgeCheck,
+  AlertCircle,
+} from "lucide-react";
 import { updateUser } from "@/lib/actions/user.actions";
 import { uploadAvatar, deleteAvatar } from "@/lib/appwrite/client";
 import { toast } from "sonner";
@@ -166,9 +172,24 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
             placeholder="Last name"
           />
         </div>
-        <TextField form={form} name="email" label="Email" placeholder="Email" />
+        <div>
+          <TextField
+            form={form}
+            name="email"
+            label="Email"
+            placeholder="Email"
+            description={
+              !user.$emailVerification ? (
+                <span className="flex items-center text-yellow-600 text-xs font-medium">
+                  <AlertCircle className="size-3 mr-1" />
+                  Email not verified
+                </span>
+              ) : undefined
+            }
+          />
+        </div>
 
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading} className="mt-2">
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
           {!loading && "Save changes"}
         </Button>
