@@ -47,7 +47,7 @@ export default function LoginForm() {
       }
       // Create Appwrite client session in the browser
       await createClientSession(data.email, data.password);
-      toast("Logged in successfully", {
+      toast("Login successful", {
         icon: <CircleCheck className="text-primary size-5" />,
       });
     } catch (err) {
