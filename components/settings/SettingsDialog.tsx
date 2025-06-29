@@ -63,7 +63,7 @@ export default function SettingsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full !max-w-[65rem] h-[80vh] overflow-hidden grid-cols-4 gap-0 p-0">
+      <DialogContent className="w-full !max-w-[65rem] h-[80vh] grid grid-cols-4 grid-rows-1 gap-0 p-0 overflow-hidden">
         <DialogTitle className="sr-only">Settings</DialogTitle>
         <SidebarProvider>
           <Sidebar>
@@ -86,7 +86,7 @@ export default function SettingsDialog({
             </SidebarContent>
           </Sidebar>
         </SidebarProvider>
-        <div className="col-span-3 p-6 overflow-y-scroll">
+        <div className="col-span-3 p-6 overflow-y-auto h-full">
           {SECTIONS.find((section) => section.key === selected)?.content}
         </div>
       </DialogContent>

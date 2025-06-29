@@ -78,7 +78,7 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
         <Button
           variant="destructive"
           size="sm"
-          className="mt-4"
+          className="mt-4 mb-6"
           onClick={() => alert("Account deletion is not implemented yet.")}
         >
           Delete account
