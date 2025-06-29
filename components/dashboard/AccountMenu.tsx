@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/lib/actions/user.actions";
+import { deleteClientSession } from "@/lib/appwrite/client";
 import {
   Settings,
   HelpCircle,
@@ -18,10 +19,13 @@ import {
   Sparkle,
   Heart,
   MessageCircle,
+  CircleCheck,
+  CircleX,
 } from "lucide-react";
 import { ThemeSelector } from "../ThemeSelector";
 import SettingsDialog from "../settings/SettingsDialog";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function AccountMenu(props: { user: User }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -30,7 +34,18 @@ export default function AccountMenu(props: { user: User }) {
   );
 
   const handleLogout = async () => {
-    await logout();
+    try {
+      await logout();
+      await deleteClientSession();
+      toast("Logged out successfully", {
+        icon: <CircleCheck className="text-primary size-5" />,
+      });
+    } catch (error) {
+      console.error("Error logging out:", error);
+      toast("Error logging out", {
+        icon: <CircleX className="text-destructive size-5" />,
+      });
+    }
   };
 
   const userInitials = (
@@ -114,14 +129,10 @@ export default function AccountMenu(props: { user: User }) {
             </a>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <form action={handleLogout}>
-            <button className="w-full" type="submit">
-              <DropdownMenuItem className="cursor-pointer">
-                <LogOut className="mr-1 size-4" />
-                Logout
-              </DropdownMenuItem>
-            </button>
-          </form>
+          <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+            <LogOut className="mr-1 size-4" />
+            Logout
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <SettingsDialog

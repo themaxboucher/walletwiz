@@ -111,5 +111,23 @@ export async function createClientSession(email: string, password: string) {
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
     .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
   const account = new Account(client);
-  return account.createEmailPasswordSession(email, password);
+  try {
+    return await account.createEmailPasswordSession(email, password);
+  } catch (error) {
+    console.error("Error creating client session:", error);
+    throw error;
+  }
+}
+
+export async function deleteClientSession() {
+  const client = new Client()
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
+  const account = new Account(client);
+  try {
+    return await account.deleteSession("current");
+  } catch (error) {
+    console.error("Error deleting client session:", error);
+    throw error;
+  }
 }
