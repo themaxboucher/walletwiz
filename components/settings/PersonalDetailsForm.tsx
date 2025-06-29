@@ -9,7 +9,7 @@ import { TextField } from "../ui/form-fields/TextField";
 import { Label } from "../ui/label";
 import { CircleCheck, CircleX, LoaderCircle } from "lucide-react";
 import { updateUser } from "@/lib/actions/user.actions";
-import { uploadAvatar } from "@/lib/appwrite/client";
+import { uploadAvatar, deleteAvatar } from "@/lib/appwrite/client";
 import { toast } from "sonner";
 
 const personalDetailsSchema = z.object({
@@ -70,15 +70,29 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
   const userInitials = (user.firstName[0] + user.lastName[0]).toUpperCase();
 
   async function onSubmit(data: PersonalDetailsFormData) {
-    console.log("Form submitted with data:", data);
-
     setLoading(true);
     try {
       let avatarUrl;
-      if (avatarFile) {
-        avatarUrl = await uploadAvatar(avatarFile);
+      let oldAvatarFileId: string | null = null;
+      if (user.avatar) {
+        // Extract fileId from the old avatar URL
+        const match = user.avatar.match(/files\/([^/]+)\/preview/);
+        if (match) {
+          oldAvatarFileId = match[1];
+        }
       }
-      // TODO: make sure to delete old avatar if it exists. Don't create a new avatar if the user didn't change it.
+      if (avatarFile) {
+        // Upload new avatar
+        avatarUrl = await uploadAvatar(avatarFile);
+        // Delete old avatar if it exists
+        if (oldAvatarFileId) {
+          try {
+            await deleteAvatar(oldAvatarFileId);
+          } catch (error) {
+            console.error("Failed to delete old avatar:", error);
+          }
+        }
+      }
       await updateUser({
         userId: user.userId,
         firstName: data.firstName,
@@ -89,10 +103,10 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
       toast("Personal details updated", {
         icon: <CircleCheck className="text-primary size-5" />,
       });
-    } catch (err: any) {
+    } catch (error: any) {
       let errorMessage = "Error updating personal details";
-      console.log(err);
-      if (err?.message?.includes("already exists")) {
+      console.log(error);
+      if (error?.message?.includes("already exists")) {
         errorMessage = "An account with this email already exists.";
       }
       toast(errorMessage, {
