@@ -1,28 +1,13 @@
-import { useState } from "react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { Input } from "../ui/input";
 import PersonalDetailsForm from "./PersonalDetailsForm";
+import UpdatePasswordForm from "./UpdatePasswordForm";
 
 interface AccountSettingsProps {
   user: User;
 }
 
 export default function AccountSettings({ user }: AccountSettingsProps) {
-  // Form state for password
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
-    alert("Password updated (not implemented)");
-  };
-
   return (
     <div className="h-full">
       <div className="space-y-0.5 mb-6">
@@ -37,35 +22,10 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
         <PersonalDetailsForm user={user} />
       </div>
       <Separator className="my-4" />
-      <form className="mb-8" onSubmit={handlePasswordSubmit}>
+      <div className="mb-8 max-w-md">
         <h3 className="font-semibold mb-4">Security</h3>
-        <div className="flex flex-col gap-2 max-w-md">
-          <Input
-            type="password"
-            placeholder="Current password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            required
-          />
-          <Input
-            type="password"
-            placeholder="New password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            required
-          />
-          <Input
-            type="password"
-            placeholder="Confirm new password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
-        <Button type="submit" size="sm" className="mt-2">
-          Update password
-        </Button>
-      </form>
+        <UpdatePasswordForm />
+      </div>
       <Separator className="my-4" />
       <div>
         <div className="space-y-1">

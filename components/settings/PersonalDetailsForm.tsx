@@ -111,7 +111,6 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
       });
     } catch (error: any) {
       let errorMessage = "Error updating personal details";
-      console.log(error);
       if (error?.message?.includes("already exists")) {
         errorMessage = "An account with this email already exists.";
       }

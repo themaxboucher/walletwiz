@@ -9,7 +9,10 @@ import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 import { signup } from "@/lib/actions/user.actions";
 import FormAlert from "../FormAlert";
-import { sendVerificationEmail } from "@/lib/appwrite/client";
+import {
+  sendVerificationEmail,
+  createClientSession,
+} from "@/lib/appwrite/client";
 import { TextField } from "../ui/form-fields/TextField";
 import { PasswordField } from "../ui/form-fields/PasswordField";
 
@@ -48,6 +51,9 @@ export default function SignupForm() {
       if (!result) {
         throw new Error("Failed to create account");
       }
+
+      // Create Appwrite client session in the browser
+      await createClientSession(data.email, data.password);
 
       // Send verification email
       await sendVerificationEmail();

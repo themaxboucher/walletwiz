@@ -12,6 +12,7 @@ import { login } from "@/lib/actions/user.actions";
 import FormAlert from "../FormAlert";
 import { TextField } from "../ui/form-fields/TextField";
 import { PasswordField } from "../ui/form-fields/PasswordField";
+import { createClientSession } from "@/lib/appwrite/client";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email" }),
@@ -42,6 +43,8 @@ export default function LoginForm() {
       if (!result) {
         throw new Error("Failed to login");
       }
+      // Create Appwrite client session in the browser
+      await createClientSession(data.email, data.password);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
@@ -70,7 +73,7 @@ export default function LoginForm() {
           form={form}
           name="email"
           label="Email"
-          placeholder="you@example.com"
+          placeholder="tylerdurden@gmail.com"
         />
         <div>
           <div className="flex items-center mb-2">

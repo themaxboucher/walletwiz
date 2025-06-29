@@ -95,3 +95,21 @@ export async function deleteAvatar(fileId: string): Promise<void> {
     throw new Error("Failed to delete avatar. Please try again.");
   }
 }
+
+export async function updatePassword(newPassword: string, oldPassword: string) {
+  try {
+    await account.updatePassword(newPassword, oldPassword);
+    console.log("Password updated successfully");
+  } catch (error) {
+    console.error("Error updating password:", error);
+    throw error;
+  }
+}
+
+export async function createClientSession(email: string, password: string) {
+  const client = new Client()
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
+  const account = new Account(client);
+  return account.createEmailPasswordSession(email, password);
+}
