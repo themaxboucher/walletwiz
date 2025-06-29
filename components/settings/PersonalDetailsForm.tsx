@@ -74,11 +74,11 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
 
     setLoading(true);
     try {
-      let avatarUrl = null;
+      let avatarUrl;
       if (avatarFile) {
         avatarUrl = await uploadAvatar(avatarFile);
       }
-      // TODO: make sure to delete old avatar if it exists
+      // TODO: make sure to delete old avatar if it exists. Don't create a new avatar if the user didn't change it.
       await updateUser({
         userId: user.userId,
         firstName: data.firstName,
@@ -90,7 +90,12 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
         icon: <CircleCheck className="text-primary size-5" />,
       });
     } catch (err: any) {
-      toast("Error updating personal details", {
+      let errorMessage = "Error updating personal details";
+      console.log(err);
+      if (err?.message?.includes("already exists")) {
+        errorMessage = "An account with this email already exists.";
+      }
+      toast(errorMessage, {
         icon: <CircleX className="text-destructive size-5" />,
       });
     } finally {

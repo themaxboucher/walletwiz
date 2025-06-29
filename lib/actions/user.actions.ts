@@ -164,10 +164,10 @@ export const updateUser = async ({
   firstName: string;
   lastName: string;
   email: string;
-  avatar: string | null;
+  avatar?: string;
 }) => {
   try {
-    const { database } = await createAdminClient();
+    const { database, user: users } = await createAdminClient();
     // Find the user document
     const userDoc = await database.listDocuments(
       DATABASE_ID!,
@@ -176,6 +176,27 @@ export const updateUser = async ({
     );
     const docId = userDoc.documents[0]?.$id;
     if (!docId) throw new Error("User document not found");
+
+    // Get current values from the user document
+    const currentEmail = userDoc.documents[0]?.email;
+    const currentName = `${userDoc.documents[0]?.firstName} ${userDoc.documents[0]?.lastName}`;
+    // Update the Appwrite Auth user (name and email) only if changed
+    try {
+      if (currentName !== `${firstName} ${lastName}`) {
+        await users.updateName(userId, `${firstName} ${lastName}`);
+      }
+      if (currentEmail !== email) {
+        await users.updateEmail(userId, email);
+      }
+    } catch (authError: any) {
+      console.error("Error updating Appwrite Auth user:", authError);
+      const message =
+        authError?.response?.message ||
+        authError?.message ||
+        "Failed to update Appwrite Auth user. User document not updated.";
+      throw new Error(message);
+    }
+
     // Update the user document
     const updated = await database.updateDocument(
       DATABASE_ID!,
