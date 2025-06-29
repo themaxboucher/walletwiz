@@ -64,6 +64,7 @@ export default function SettingsDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-full !max-w-[65rem] h-[80vh] overflow-hidden grid-cols-4 gap-0 p-0">
+        <DialogTitle className="sr-only">Settings</DialogTitle>
         <SidebarProvider>
           <Sidebar>
             <SidebarContent>
