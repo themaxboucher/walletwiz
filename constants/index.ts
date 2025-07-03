@@ -224,7 +224,7 @@ export const categories: Category[] = [
   },
   {
     name: "Refunds",
-    color: "red",
+    color: "violet",
     iconName: "RotateCcw",
     type: "income",
   },
@@ -309,7 +309,7 @@ export const categories: Category[] = [
     type: "expense",
   },
   {
-    name: "Dining Out",
+    name: "Eating Out",
     color: "orange",
     iconName: "Utensils",
     type: "expense",
@@ -417,7 +417,7 @@ export const categories: Category[] = [
     type: "expense",
   },
   {
-    name: "Streaming Services",
+    name: "Streaming",
     color: "red",
     iconName: "Film",
     type: "expense",
@@ -460,7 +460,7 @@ export const categories: Category[] = [
   },
   {
     name: "Personal Care",
-    color: "pink",
+    color: "blue",
     iconName: "Sparkles",
     type: "expense",
   },

@@ -104,7 +104,7 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
   return (
     <div>
       <Label className="mb-3">Income</Label>
-      <div className="flex gap-2 flex-wrap mb-2">
+      <div className="flex gap-2 flex-wrap mb-4">
         {selectedIncome.map((category) => (
           <div key={category.name} onClick={() => toggleCategory(category)}>
             <CategoryChip
@@ -117,7 +117,6 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
           </div>
         ))}
       </div>
-      <Separator className="mb-2" />
       <div className="flex gap-2 flex-wrap mb-6">
         {unselectedIncome.map((category) => (
           <div key={category.name} onClick={() => toggleCategory(category)}>
@@ -132,7 +131,7 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
         ))}
       </div>
       <Label className="mb-3">Expenses</Label>
-      <div className="flex gap-2 flex-wrap mb-2">
+      <div className="flex gap-2 flex-wrap mb-4">
         {selectedExpense.map((category) => (
           <div key={category.name} onClick={() => toggleCategory(category)}>
             <CategoryChip
@@ -145,7 +144,6 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
           </div>
         ))}
       </div>
-      <Separator className="mb-2" />
       <div className="flex gap-2 flex-wrap mb-6">
         {unselectedExpense.map((category) => (
           <div key={category.name} onClick={() => toggleCategory(category)}>
