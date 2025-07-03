@@ -10,6 +10,7 @@ import {
 } from "@/lib/actions/category.actions";
 import { Separator } from "../ui/separator";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface CategoriesFormProps {
   user: User;
@@ -21,6 +22,7 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
   const [initialUserCategories, setInitialUserCategories] = useState<
     Category[]
   >([]);
+  const router = useRouter();
 
   const incomeCategories = categories.filter(
     (c) => c.type === "income" && c.name !== "Other Income"
@@ -83,6 +85,7 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
       toast("Categories updated successfully.", {
         icon: <CircleCheck className="text-primary size-5" />,
       });
+      router.refresh();
     } catch (error) {
       toast("Error updating categories.", {
         icon: <CircleX className="text-destructive size-5" />,
