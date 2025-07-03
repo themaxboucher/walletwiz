@@ -4,7 +4,7 @@ import { ID, Query } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite/server";
 import { cookies } from "next/headers";
 import { parseStringify } from "../utils";
-import { categories } from "@/constants";
+import { defaultCategories } from "@/constants";
 import { createCategory } from "./category.actions";
 
 const {
@@ -92,7 +92,7 @@ export const signup = async ({
     );
 
     // Create default categories for the new user
-    for (const category of categories) {
+    for (const category of defaultCategories) {
       await createCategory(category, newUser.$id);
     }
 

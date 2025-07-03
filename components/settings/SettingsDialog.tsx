@@ -45,7 +45,7 @@ export default function SettingsDialog({
       key: "general",
       label: "General",
       icon: Settings,
-      content: <GeneralSettings />,
+      content: <GeneralSettings user={user} />,
     },
     {
       key: "account",

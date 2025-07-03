@@ -3,6 +3,7 @@
 import { ID, Query } from "node-appwrite";
 import { createAdminClient } from "../appwrite/server";
 import { parseStringify } from "../utils";
+import { getTransactions, updateTransaction } from "./transaction.actions";
 
 const {
   APPWRITE_DATABASE_ID: DATABASE_ID,
@@ -80,4 +81,63 @@ export const deleteCategory = async (categoryId: string) => {
     console.error("Error deleting category:", error);
     throw error;
   }
+};
+
+export const updateCategories = async (
+  userId: string,
+  selected: Category[],
+  initialUserCategories: Category[]
+) => {
+  // Find categories to add (selected but not in initialUserCategories)
+  const toAdd = selected.filter(
+    (cat: Category) =>
+      !initialUserCategories.some((c: Category) => c.name === cat.name)
+  );
+  // Find categories to delete (in initialUserCategories but not selected)
+  const toDelete = initialUserCategories.filter(
+    (cat: Category) => !selected.some((c: Category) => c.name === cat.name)
+  );
+
+  // Get user's current categories (including $id for 'Other Income' and 'Other Expense')
+  const userCategories = await getCategories(userId);
+  const otherIncome = userCategories.find(
+    (cat: Category) => cat.name === "Other Income" && cat.type === "income"
+  );
+  const otherExpense = userCategories.find(
+    (cat: Category) => cat.name === "Other Expense" && cat.type === "expense"
+  );
+
+  if (!otherIncome || !otherExpense) {
+    throw new Error(
+      "'Other Income' or 'Other Expense' category not found for user"
+    );
+  }
+
+  // Get all transactions for the user
+  const transactions = await getTransactions(userId);
+
+  // For each category to delete, update transactions to use the appropriate 'Other' category
+  for (const cat of toDelete) {
+    const replacementId =
+      cat.type === "income" ? otherIncome.$id : otherExpense.$id;
+    const affectedTransactions = transactions.filter(
+      (tx: any) => tx.category.$id === cat.$id
+    );
+    await Promise.all(
+      affectedTransactions.map((tx: any) =>
+        updateTransaction(tx.$id, { category: replacementId })
+      )
+    );
+  }
+
+  // Add new categories
+  await Promise.all(toAdd.map((cat: Category) => createCategory(cat, userId)));
+
+  // Delete removed categories
+  await Promise.all(
+    toDelete.map((cat: Category) => cat.$id && deleteCategory(cat.$id))
+  );
+
+  // Return updated categories
+  return getCategories(userId);
 };

@@ -13,11 +13,24 @@ export default async function DashboardPage() {
 
   const categories = await getCategories(user.$id);
 
+  // Sort categories so 'Other Income' and 'Other Expense' are at the end, and the rest alphabetically
+  const mainCategories = categories
+    .filter(
+      (cat: Category) =>
+        cat.name !== "Other Income" && cat.name !== "Other Expense"
+    )
+    .sort((a: Category, b: Category) => a.name.localeCompare(b.name));
+  const sortedCategories = [
+    ...mainCategories,
+    ...categories.filter((cat: Category) => cat.name === "Other Income"),
+    ...categories.filter((cat: Category) => cat.name === "Other Expense"),
+  ];
+
   return (
     <DashboardContent
       user={user}
       transactions={transactions}
-      categories={categories}
+      categories={sortedCategories}
     />
   );
 }
