@@ -25,8 +25,9 @@ const config: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "media-cldnry.s-nbcnews.com",
-        pathname: "/image/upload/**",
+        hostname: "nyc.cloud.appwrite.io",
+        port: "",
+        pathname: "/v1/storage/buckets/**/preview",
       },
     ],
   },

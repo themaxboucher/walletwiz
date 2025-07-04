@@ -33,6 +33,7 @@ export function PasswordField({
           type={showPassword ? "text" : "password"}
           placeholder={placeholder}
           {...form.register(name)}
+          aria-invalid={form.formState.errors[name] ? "true" : "false"}
         />
         <button
           type="button"

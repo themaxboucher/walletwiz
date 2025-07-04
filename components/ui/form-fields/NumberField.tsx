@@ -73,6 +73,7 @@ export function NumberField({
               isCurrency && "text-right pl-8",
               !isCurrency && "text-left"
             )}
+            aria-invalid={form.formState.errors[name] ? "true" : "false"}
             onChange={(e) => {
               const value = e.target.value;
               setDisplayValue(value);

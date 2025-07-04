@@ -4,6 +4,7 @@ import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { getTransactions } from "@/lib/actions/transaction.actions";
 import DashboardContent from "@/components/dashboard/DashboardContent";
 import { getCategories } from "@/lib/actions/category.actions";
+import { sortCategories } from "@/lib/utils";
 
 export default async function DashboardPage() {
   const user = await getLoggedInUser();
@@ -13,11 +14,13 @@ export default async function DashboardPage() {
 
   const categories = await getCategories(user.$id);
 
+  const sortedCategories = sortCategories(categories);
+
   return (
     <DashboardContent
       user={user}
       transactions={transactions}
-      categories={categories}
+      categories={sortedCategories}
     />
   );
 }

@@ -5,18 +5,16 @@ import { categoryIcons, categoryColors } from "@/constants";
 
 interface CategoryBadgeProps {
   children: React.ReactNode;
-  lucideIconName: string;
+  iconName: string;
   color: CategoryColor;
 }
 
 export default function CategoryBadge(props: CategoryBadgeProps) {
   const dynamicColorClass = categoryColors[props.color];
-  const IconComponent = categoryIcons[props.lucideIconName];
+  const IconComponent = categoryIcons[props.iconName];
 
   if (!IconComponent) {
-    console.warn(
-      `Lucide icon \'${props.lucideIconName}\' not found in mapping.`
-    );
+    console.warn(`Lucide icon \'${props.iconName}\' not found in mapping.`);
     return (
       <Badge
         variant="outline"

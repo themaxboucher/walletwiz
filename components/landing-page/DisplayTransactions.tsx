@@ -52,7 +52,7 @@ export default function DisplayTransactions() {
               <TableCell className="py-3">
                 <CategoryBadge
                   color={tx.category.color}
-                  lucideIconName={tx.category.iconName}
+                  iconName={tx.category.iconName}
                 >
                   {tx.category.name}
                 </CategoryBadge>
