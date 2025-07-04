@@ -22,9 +22,7 @@ import Accounts from "./Accounts";
 import TimeRangeSelector from "./TimeRangeSelector";
 
 interface DashboardContentProps {
-  user: {
-    firstName: string;
-  };
+  user: User;
   transactions: Transaction[];
   categories: Category[];
 }
@@ -152,7 +150,11 @@ export default function DashboardContent({
           />
         </div>
         <div className="col-span-1 flex flex-col gap-5">
-          <Budget transactions={transactions} categories={categories} />
+          <Budget
+            transactions={transactions}
+            categories={categories}
+            user={user}
+          />
           <Accounts />
         </div>
       </div>

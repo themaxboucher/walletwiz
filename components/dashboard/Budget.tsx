@@ -5,22 +5,30 @@ import { Separator } from "../ui/separator";
 import EmptyState from "./EmptyState";
 import { ChartPie } from "lucide-react";
 import { MonthSelector } from "./MonthSelector";
-import BudgetDialog from "./BudgetDialog";
 import { Button } from "../ui/button";
+import SettingsDialog from "../settings/SettingsDialog";
 
 interface BudgetProps {
   transactions: Transaction[];
   categories: Category[];
+  user: User;
 }
 
-export default function Budget({ transactions, categories }: BudgetProps) {
+export default function Budget({
+  transactions,
+  categories,
+  user,
+}: BudgetProps) {
   const [selectedMonth, setSelectedMonth] = useState(
     new Date().toLocaleString("default", { month: "short" })
   );
   const [selectedYear, setSelectedYear] = useState(
     new Date().getFullYear().toString()
   );
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsSection, setSettingsSection] = useState<string | undefined>(
+    undefined
+  );
 
   // Filter transactions for the selected month and year
   const filteredTransactions = useMemo(() => {
@@ -68,7 +76,13 @@ export default function Budget({ transactions, categories }: BudgetProps) {
                 transactions={transactions}
               />
             )}
-            <Button className="h-9 w-9" onClick={() => setIsDialogOpen(true)}>
+            <Button
+              className="h-9 w-9"
+              onClick={() => {
+                setSettingsSection("budget");
+                setSettingsOpen(true);
+              }}
+            >
               <ChartPie className="size-4" />
             </Button>
           </div>
@@ -81,7 +95,10 @@ export default function Budget({ transactions, categories }: BudgetProps) {
             title="No budgets set"
             description="Set a budget for your expense categories to start tracking."
             buttonText="Set Budget"
-            onAddClick={() => setIsDialogOpen(true)}
+            onAddClick={() => {
+              setSettingsSection("budget");
+              setSettingsOpen(true);
+            }}
           />
         ) : (
           budgetCategories.map((category, index) => (
@@ -101,10 +118,11 @@ export default function Budget({ transactions, categories }: BudgetProps) {
         )}
       </div>
 
-      <BudgetDialog
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        categories={categories}
+      <SettingsDialog
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        section={settingsSection}
+        user={user}
       />
     </Card>
   );

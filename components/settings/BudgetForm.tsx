@@ -7,12 +7,14 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "../ui/form";
 import { categoryIcons, categoryColors } from "@/constants";
-import { updateCategory } from "@/lib/actions/category.actions";
+import { updateCategory, getCategories } from "@/lib/actions/category.actions";
 import { LoaderCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn, sortCategories } from "@/lib/utils";
+import { toast } from "sonner";
+import { CircleCheck, CircleX } from "lucide-react";
 
 // Define the Zod schema for the budget form
 const budgetFormSchema = z.record(
@@ -27,16 +29,34 @@ const budgetFormSchema = z.record(
 type BudgetFormData = z.infer<typeof budgetFormSchema>;
 
 interface BudgetFormProps {
-  categories: Category[];
-  onCancel: () => void;
+  user: User;
 }
 
-export default function BudgetForm({ categories, onCancel }: BudgetFormProps) {
+export default function BudgetForm({ user }: BudgetFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [fetching, setFetching] = useState<boolean>(true);
 
-  // Filter expense categories and create default values
+  useEffect(() => {
+    async function fetchCategories() {
+      setFetching(true);
+      setError(null);
+      try {
+        if (!user?.$id) return;
+        const userCategories = await getCategories(user.$id);
+        const sortedCategories = sortCategories(userCategories);
+        setCategories(sortedCategories);
+      } catch (e) {
+        setError("Failed to fetch categories");
+      } finally {
+        setFetching(false);
+      }
+    }
+    fetchCategories();
+  }, [user]);
+
   const expenseCategories = categories.filter((cat) => cat.type === "expense");
   const defaultValues = expenseCategories.reduce(
     (acc, cat) => ({
@@ -50,6 +70,14 @@ export default function BudgetForm({ categories, onCancel }: BudgetFormProps) {
     resolver: zodResolver(budgetFormSchema),
     defaultValues,
   });
+
+  // Reset form when categories are fetched
+  useEffect(() => {
+    if (!fetching) {
+      form.reset(defaultValues);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetching, categories.length]);
 
   async function onSubmit(values: BudgetFormData) {
     setError(null);
@@ -73,16 +101,29 @@ export default function BudgetForm({ categories, onCancel }: BudgetFormProps) {
       );
 
       await Promise.all(updatePromises);
+      toast("Budgets saved successfully.", {
+        icon: <CircleCheck className="text-primary size-5" />,
+      });
       router.refresh();
-      onCancel();
     } catch (error) {
       console.error("Error saving budgets:", error);
       setError(
         error instanceof Error ? error.message : "Failed to save budgets"
       );
+      toast("Error saving budgets.", {
+        icon: <CircleX className="text-destructive size-5" />,
+      });
     } finally {
       setLoading(false);
     }
+  }
+
+  if (fetching) {
+    return (
+      <div className="w-full h-96 flex justify-center items-center text-primary">
+        <LoaderCircle className="size-10 animate-spin" />
+      </div>
+    );
   }
 
   if (expenseCategories.length === 0) {
@@ -123,15 +164,11 @@ export default function BudgetForm({ categories, onCancel }: BudgetFormProps) {
         })}
 
         {error && <FormAlert message={error} type="error" />}
-        <div className="flex justify-end gap-2 mt-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={loading}>
-            {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
-            {!loading && "Save"}
-          </Button>
-        </div>
+
+        <Button type="submit" disabled={loading} className="mb-6 mt-2">
+          {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
+          {!loading && "Save changes"}
+        </Button>
       </form>
     </Form>
   );

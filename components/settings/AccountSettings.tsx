@@ -14,7 +14,7 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
 
   return (
     <div className="h-full">
-      <div className="space-y-0.5 mb-6">
+      <div className="space-y-1 mb-6">
         <h2 className="text-xl font-semibold">Account</h2>
         <p className="text-sm text-muted-foreground">
           Manage your personal information and security settings.

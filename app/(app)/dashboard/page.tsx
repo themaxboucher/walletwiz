@@ -4,6 +4,7 @@ import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { getTransactions } from "@/lib/actions/transaction.actions";
 import DashboardContent from "@/components/dashboard/DashboardContent";
 import { getCategories } from "@/lib/actions/category.actions";
+import { sortCategories } from "@/lib/utils";
 
 export default async function DashboardPage() {
   const user = await getLoggedInUser();
@@ -13,18 +14,7 @@ export default async function DashboardPage() {
 
   const categories = await getCategories(user.$id);
 
-  // Sort categories so 'Other Income' and 'Other Expense' are at the end, and the rest alphabetically
-  const mainCategories = categories
-    .filter(
-      (cat: Category) =>
-        cat.name !== "Other Income" && cat.name !== "Other Expense"
-    )
-    .sort((a: Category, b: Category) => a.name.localeCompare(b.name));
-  const sortedCategories = [
-    ...mainCategories,
-    ...categories.filter((cat: Category) => cat.name === "Other Income"),
-    ...categories.filter((cat: Category) => cat.name === "Other Expense"),
-  ];
+  const sortedCategories = sortCategories(categories);
 
   return (
     <DashboardContent

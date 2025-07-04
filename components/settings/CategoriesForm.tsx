@@ -8,7 +8,6 @@ import {
   getCategories,
   updateCategories,
 } from "@/lib/actions/category.actions";
-import { Separator } from "../ui/separator";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -22,6 +21,7 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
   const [initialUserCategories, setInitialUserCategories] = useState<
     Category[]
   >([]);
+  const [fetching, setFetching] = useState<boolean>(true);
   const router = useRouter();
 
   const incomeCategories = categories.filter(
@@ -33,6 +33,7 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
 
   useEffect(() => {
     async function fetchUserCategories() {
+      setFetching(true);
       if (!user?.$id) return;
       try {
         const userCategories = await getCategories(user.$id);
@@ -40,6 +41,8 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
         setInitialUserCategories(userCategories);
       } catch (e) {
         // Optionally handle error
+      } finally {
+        setFetching(false);
       }
     }
     fetchUserCategories();
@@ -101,6 +104,14 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
   const selectedExpense = expenseCategories.filter(isSelected);
   const unselectedExpense = expenseCategories.filter((c) => !isSelected(c));
 
+  if (fetching) {
+    return (
+      <div className="w-full h-96 flex justify-center items-center text-primary">
+        <LoaderCircle className="size-10 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Label className="mb-3">Income</Label>
@@ -158,7 +169,7 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
         ))}
       </div>
 
-      <Button className="mb-4" disabled={loading} onClick={handleSave}>
+      <Button className="mb-6" disabled={loading} onClick={handleSave}>
         {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
         {!loading && "Save changes"}
       </Button>

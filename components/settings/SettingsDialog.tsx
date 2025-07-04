@@ -1,24 +1,18 @@
 import { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Settings, SlidersHorizontal, User } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { ChartPie, Tag, User } from "lucide-react";
 import {
   Sidebar,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarProvider,
-  SidebarHeader,
   SidebarContent,
   SidebarGroup,
 } from "@/components/ui/sidebar";
 import AccountSettings from "./AccountSettings";
-import GeneralSettings from "./GeneralSettings";
-import PreferencesSettings from "./PreferencesSettings";
+import CategoriesSettings from "./CategoriesSettings";
+import BudgetSettings from "./BudgetSettings";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -30,7 +24,7 @@ interface SettingsDialogProps {
 export default function SettingsDialog({
   open,
   onOpenChange,
-  section = "general",
+  section = "account",
   user,
 }: SettingsDialogProps) {
   const [selected, setSelected] = useState(section);
@@ -42,22 +36,22 @@ export default function SettingsDialog({
 
   const SECTIONS = [
     {
-      key: "general",
-      label: "General",
-      icon: Settings,
-      content: <GeneralSettings user={user} />,
-    },
-    {
       key: "account",
       label: "Account",
       icon: User,
       content: <AccountSettings user={user} />,
     },
     {
-      key: "preferences",
-      label: "Preferences",
-      icon: SlidersHorizontal,
-      content: <PreferencesSettings />,
+      key: "categories",
+      label: "Categories",
+      icon: Tag,
+      content: <CategoriesSettings user={user} />,
+    },
+    {
+      key: "budget",
+      label: "Budget",
+      icon: ChartPie,
+      content: <BudgetSettings user={user} />,
     },
   ];
 
