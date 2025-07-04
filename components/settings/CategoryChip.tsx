@@ -30,11 +30,7 @@ export default function CategoryChip(props: CategoryChipProps) {
         )}
       >
         <span>{props.children}</span>
-        {props.isSelected ? (
-          <X className="size-3 opacity-75" />
-        ) : (
-          <Plus className="size-3 opacity-75" />
-        )}
+        {!props.isSelected && <Plus className="size-3 opacity-75" />}
       </Badge>
     );
   }
@@ -43,17 +39,20 @@ export default function CategoryChip(props: CategoryChipProps) {
     <Badge
       variant="outline"
       className={cn(
-        "flex justify-center items-center gap-[.35rem] font-semibold rounded-lg active:scale-98 transition-all ease duration-100 border-dashed cursor-pointer",
+        "flex justify-center items-center gap-[.35rem] font-semibold rounded-lg active:scale-98 transition-all ease duration-100 border-dashed cursor-pointer group",
         selectedClass
       )}
     >
-      <IconComponent className={cn("h-3 w-3", dynamicColorClass)} />
-      <span>{props.children}</span>
-      {props.isSelected ? (
-        <X className="size-3 opacity-75" />
-      ) : (
-        <Plus className="size-3 opacity-75" />
+      <IconComponent
+        className={cn("h-3 w-3 group-hover:hidden", dynamicColorClass)}
+      />
+      {props.isSelected && (
+        <X className="size-3 opacity-75 hidden group-hover:block" />
       )}
+      {!props.isSelected && (
+        <Plus className="size-3 opacity-75 hidden group-hover:block" />
+      )}
+      <span>{props.children}</span>
     </Badge>
   );
 }
