@@ -1,7 +1,6 @@
 "use client";
 
 import { Client, Account, Storage, ID } from "appwrite";
-import { getSession } from "@/lib/actions/user.actions";
 
 const client = new Client()
   .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
@@ -12,15 +11,9 @@ const storage = new Storage(client);
 
 export async function sendVerificationEmail() {
   try {
-    // Get session from server
-    const session = await getSession();
-    console.log("Setting session:", session);
-    client.setSession(session);
-
     await account.createVerification(
       `${process.env.NEXT_PUBLIC_SITE_URL!}/verify`
     );
-    console.log("Verification email sent successfully");
   } catch (error) {
     console.error("Error sending verification email:", error);
     throw error;
@@ -33,7 +26,6 @@ export async function sendPasswordRecoveryEmail(email: string) {
       email,
       `${process.env.NEXT_PUBLIC_SITE_URL!}/reset-password`
     );
-    console.log("Password recovery email sent successfully");
   } catch (error) {
     console.error("Error sending password recovery email:", error);
     throw error;
@@ -47,7 +39,6 @@ export async function resetPassword(
 ) {
   try {
     await account.updateRecovery(userId, secret, password);
-    console.log("Password reset successfully");
   } catch (error) {
     console.error("Error resetting password:", error);
     throw error;
@@ -57,7 +48,6 @@ export async function resetPassword(
 export async function updateVerification(userId: string, secret: string) {
   try {
     await account.updateVerification(userId, secret);
-    console.log("Email verified successfully");
   } catch (error) {
     console.error("Error verifying email:", error);
     throw error;
@@ -99,7 +89,6 @@ export async function deleteAvatar(fileId: string): Promise<void> {
 export async function updatePassword(newPassword: string, oldPassword: string) {
   try {
     await account.updatePassword(newPassword, oldPassword);
-    console.log("Password updated successfully");
   } catch (error) {
     console.error("Error updating password:", error);
     throw error;
