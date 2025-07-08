@@ -49,36 +49,19 @@ export default function TransactionForm({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Refine schema dynamically using the categories prop
-  const refinedTransactionFormSchema = transactionFormSchema.superRefine(
-    (data, ctx) => {
-      const category = categories.find(
-        (cat: Category) => cat.name === data.category
-      );
-      if (!category) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Invalid category selected",
-          path: ["category"],
-        });
-        return;
+  // Refined schema using .refine for category and amount
+  const refinedTransactionFormSchema = transactionFormSchema
+    .refine(
+      (data) => categories.some((cat: Category) => cat.name === data.category),
+      {
+        message: "Invalid category selected",
+        path: ["category"],
       }
-
-      if (category.type === "income" && data.amount <= 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `${category.name} amount must be positive`,
-          path: ["amount"],
-        });
-      } else if (category.type === "expense" && data.amount >= 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `${category.name} amount must be negative`,
-          path: ["amount"],
-        });
-      }
-    }
-  );
+    )
+    .refine((data) => data.amount > 0, {
+      message: "Amount must be positive",
+      path: ["amount"],
+    });
 
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(refinedTransactionFormSchema),
@@ -116,7 +99,10 @@ export default function TransactionForm({
 
       const transactionData = {
         merchantName: values.merchant,
-        amount: Number(values.amount.toFixed(2)),
+        amount:
+          selectedCategory.type === "expense"
+            ? -Math.abs(Number(values.amount.toFixed(2)))
+            : Number(values.amount.toFixed(2)),
         category: selectedCategory.$id,
         date: values.date.toISOString(),
         note: values.notes,
