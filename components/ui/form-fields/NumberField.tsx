@@ -35,10 +35,8 @@ export function NumberField({
     const value = form.getValues(name);
     if (value !== undefined && value !== null) {
       setDisplayValue(isCurrency ? formatCurrency(value) : value.toString());
-    } else {
-      setDisplayValue("");
     }
-  }, [form, name, isCurrency, form.watch(name)]);
+  }, [form, name, isCurrency]);
 
   const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat("en-US", {
