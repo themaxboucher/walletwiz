@@ -29,16 +29,21 @@ export function NumberField({
   isCurrency = false,
 }: NumberFieldProps) {
   const [displayValue, setDisplayValue] = useState<string>("");
+  const [isFocused, setIsFocused] = useState(false);
 
-  // Initialize display value from form value
+  const watchedValue = form.watch(name);
+
+  // Initialize display value from form value only when not focused
   useEffect(() => {
-    const value = form.getValues(name);
-    if (value !== undefined && value !== null) {
-      setDisplayValue(isCurrency ? formatCurrency(value) : value.toString());
-    } else {
-      setDisplayValue("");
+    if (!isFocused) {
+      const value = watchedValue;
+      if (value !== undefined && value !== null && value !== "") {
+        setDisplayValue(isCurrency ? formatCurrency(value) : value.toString());
+      } else {
+        setDisplayValue("");
+      }
     }
-  }, [form, name, isCurrency, form.watch(name)]);
+  }, [watchedValue, isCurrency, isFocused]);
 
   const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat("en-US", {
@@ -90,6 +95,7 @@ export function NumberField({
               }
             }}
             onBlur={(e) => {
+              setIsFocused(false);
               const value = e.target.value;
               if (value) {
                 const numericValue = parseCurrency(value);
@@ -102,6 +108,7 @@ export function NumberField({
               }
             }}
             onFocus={(e) => {
+              setIsFocused(true);
               // When focusing, show the raw number without formatting
               const value = field.value;
               if (value !== undefined && value !== null) {
