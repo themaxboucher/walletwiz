@@ -47,22 +47,28 @@ export default function LoginForm() {
       }
       // Create Appwrite client session in the browser
       await createClientSession(data.email, data.password);
-      toast("Login successful", {
-        icon: <CircleCheck className="text-primary size-5" />,
-      });
+      toast(
+        <span className="block max-w-xs overflow-hidden text-ellipsis whitespace-nowrap align-middle">{`Logged in as ${data.email}`}</span>,
+        {
+          icon: <CircleCheck className="text-primary size-5" />,
+        }
+      );
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
 
       // Handle specific error cases
-      if (errorMessage.includes("Invalid credentials")) {
+      if (
+        errorMessage.includes("Invalid credentials") ||
+        errorMessage.includes("Invalid `password` param")
+      ) {
         setError("Invalid email or password");
       } else if (errorMessage.includes("rate limit")) {
-        setError("Too many attempts. Please try again later");
+        setError("Too many attempts. Please try again later.");
       } else if (errorMessage.includes("network")) {
-        setError("Network error. Please check your connection");
+        setError("Network error. Please check your connection.");
       } else {
-        setError(errorMessage);
+        setError("An unexpected error occurred");
       }
     } finally {
       setLoading(false);

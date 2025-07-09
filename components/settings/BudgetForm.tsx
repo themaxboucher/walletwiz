@@ -101,7 +101,7 @@ export default function BudgetForm({ user }: BudgetFormProps) {
       );
 
       await Promise.all(updatePromises);
-      toast("Budgets saved successfully.", {
+      toast("Budget saved successfully", {
         icon: <CircleCheck className="text-primary size-5" />,
       });
       router.refresh();
@@ -110,7 +110,7 @@ export default function BudgetForm({ user }: BudgetFormProps) {
       setError(
         error instanceof Error ? error.message : "Failed to save budgets"
       );
-      toast("Error saving budgets.", {
+      toast("Error saving budget", {
         icon: <CircleX className="text-destructive size-5" />,
       });
     } finally {

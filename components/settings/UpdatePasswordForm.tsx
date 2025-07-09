@@ -30,7 +30,7 @@ export default function UpdatePasswordForm() {
     setLoading(true);
     try {
       await updatePassword(data.newPassword, data.currentPassword);
-      toast("Password updated", {
+      toast("Password updated successfully", {
         icon: <CircleCheck className="text-primary size-5" />,
       });
       form.reset();
@@ -40,7 +40,7 @@ export default function UpdatePasswordForm() {
         error?.message?.includes("Invalid credentials") ||
         error?.message?.includes("Invalid `oldPassword` param")
       ) {
-        errorMessage = "The current password you entered is incorrect.";
+        errorMessage = "The current password you entered is incorrect";
       }
       toast(errorMessage, {
         icon: <CircleX className="text-destructive size-5" />,

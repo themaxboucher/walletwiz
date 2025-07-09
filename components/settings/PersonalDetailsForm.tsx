@@ -17,6 +17,7 @@ import {
 import { updateUser } from "@/lib/actions/user.actions";
 import { uploadAvatar, deleteAvatar } from "@/lib/appwrite/client";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const personalDetailsSchema = z.object({
   avatar: z.string().optional(),
@@ -34,6 +35,7 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const router = useRouter();
 
   const form = useForm<PersonalDetailsFormData>({
     resolver: zodResolver(personalDetailsSchema),
@@ -52,13 +54,13 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
-        toast("Only PNG and JPG images are allowed.", {
+        toast("Only PNG and JPG images are allowed", {
           icon: <CircleX className="text-destructive size-5" />,
         });
         return;
       }
       if (file.size > MAX_AVATAR_SIZE) {
-        toast("Avatar must be under 2 MB.", {
+        toast("Avatar must be under 2 MB", {
           icon: <CircleX className="text-destructive size-5" />,
         });
         return;
@@ -106,13 +108,14 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
         email: data.email,
         avatar: avatarUrl,
       });
-      toast("Personal details updated", {
+      toast("Personal details updated successfully", {
         icon: <CircleCheck className="text-primary size-5" />,
       });
+      router.refresh();
     } catch (error: any) {
       let errorMessage = "Error updating personal details";
       if (error?.message?.includes("already exists")) {
-        errorMessage = "An account with this email already exists.";
+        errorMessage = "An account with this email already exists";
       }
       toast(errorMessage, {
         icon: <CircleX className="text-destructive size-5" />,

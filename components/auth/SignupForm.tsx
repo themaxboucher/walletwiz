@@ -70,14 +70,12 @@ export default function SignupForm() {
       // Handle specific error cases
       if (errorMessage.includes("already exists")) {
         setError("An account with this email already exists");
-      } else if (errorMessage.includes("password")) {
-        setError("Password must be at least 6 characters long");
       } else if (errorMessage.includes("rate limit")) {
-        setError("Too many attempts. Please try again later");
+        setError("Too many attempts. Please try again later.");
       } else if (errorMessage.includes("network")) {
-        setError("Network error. Please check your connection");
+        setError("Network error. Please check your connection.");
       } else {
-        setError(errorMessage);
+        setError("An unexpected error occurred");
       }
     } finally {
       setLoading(false);

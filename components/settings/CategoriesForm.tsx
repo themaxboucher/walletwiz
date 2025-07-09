@@ -64,12 +64,12 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
     const selectedIncome = selected.filter((c) => c.type === "income");
     const selectedExpense = selected.filter((c) => c.type === "expense");
     if (selectedIncome.length < 2) {
-      toast("Please select at least one income category.", {
+      toast("Select at least one income category", {
         icon: <CircleX className="text-destructive size-5" />,
       });
     }
     if (selectedExpense.length < 4) {
-      toast("Please select at least three expense categories.", {
+      toast("Select at least three expense categories", {
         icon: <CircleX className="text-destructive size-5" />,
       });
     }
@@ -85,12 +85,12 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
       );
       setSelected(userCategories);
       setInitialUserCategories(userCategories);
-      toast("Categories updated successfully.", {
+      toast("Categories updated successfully", {
         icon: <CircleCheck className="text-primary size-5" />,
       });
       router.refresh();
     } catch (error) {
-      toast("Error updating categories.", {
+      toast("Error updating categories", {
         icon: <CircleX className="text-destructive size-5" />,
       });
       console.error("Error updating categories:", error);
