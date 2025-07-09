@@ -66,11 +66,11 @@ export default function ResetPasswordForm() {
       if (errorMessage.includes("Invalid reset link")) {
         setError("Invalid or expired reset link. Please request a new one.");
       } else if (errorMessage.includes("rate limit")) {
-        setError("Too many attempts. Please try again later");
+        setError("Too many attempts. Please try again later.");
       } else if (errorMessage.includes("network")) {
-        setError("Network error. Please check your connection");
+        setError("Network error. Please check your connection.");
       } else {
-        setError("Failed to reset password. Please try again.");
+        setError("An unexpected error occurred");
       }
     } finally {
       setLoading(false);

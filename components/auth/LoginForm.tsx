@@ -58,14 +58,17 @@ export default function LoginForm() {
         err instanceof Error ? err.message : "An unexpected error occurred";
 
       // Handle specific error cases
-      if (errorMessage.includes("Invalid credentials")) {
+      if (
+        errorMessage.includes("Invalid credentials") ||
+        errorMessage.includes("Invalid `password` param")
+      ) {
         setError("Invalid email or password");
       } else if (errorMessage.includes("rate limit")) {
-        setError("Too many attempts. Please try again later");
+        setError("Too many attempts. Please try again later.");
       } else if (errorMessage.includes("network")) {
-        setError("Network error. Please check your connection");
+        setError("Network error. Please check your connection.");
       } else {
-        setError(errorMessage);
+        setError("An unexpected error occurred");
       }
     } finally {
       setLoading(false);

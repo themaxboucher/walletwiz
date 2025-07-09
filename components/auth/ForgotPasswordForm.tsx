@@ -40,9 +40,13 @@ export default function ForgotPasswordForm() {
         err instanceof Error ? err.message : "An unexpected error occurred";
 
       if (errorMessage.includes("rate limit")) {
-        setError("Too many attempts. Please try again later");
+        setError("Too many attempts. Please try again later.");
       } else if (errorMessage.includes("network")) {
-        setError("Network error. Please check your connection");
+        setError("Network error. Please check your connection.");
+      } else if (
+        errorMessage.includes("User with the requested ID could not be found")
+      ) {
+        setError("No account found with that email address");
       } else {
         setError("Failed to send recovery email. Please try again.");
       }
