@@ -17,6 +17,7 @@ import {
 import { updateUser } from "@/lib/actions/user.actions";
 import { uploadAvatar, deleteAvatar } from "@/lib/appwrite/client";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const personalDetailsSchema = z.object({
   avatar: z.string().optional(),
@@ -34,6 +35,7 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const router = useRouter();
 
   const form = useForm<PersonalDetailsFormData>({
     resolver: zodResolver(personalDetailsSchema),
@@ -109,6 +111,7 @@ export default function PersonalDetailsForm({ user }: { user: User }) {
       toast("Personal details updated successfully", {
         icon: <CircleCheck className="text-primary size-5" />,
       });
+      router.refresh();
     } catch (error: any) {
       let errorMessage = "Error updating personal details";
       if (error?.message?.includes("already exists")) {
