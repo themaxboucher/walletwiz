@@ -47,9 +47,12 @@ export default function LoginForm() {
       }
       // Create Appwrite client session in the browser
       await createClientSession(data.email, data.password);
-      toast("Login successful", {
-        icon: <CircleCheck className="text-primary size-5" />,
-      });
+      toast(
+        <span className="block max-w-xs overflow-hidden text-ellipsis whitespace-nowrap align-middle">{`Logged in as ${data.email}`}</span>,
+        {
+          icon: <CircleCheck className="text-primary size-5" />,
+        }
+      );
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
