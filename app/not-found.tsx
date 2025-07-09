@@ -8,7 +8,7 @@ export default function NotFound() {
       <div className="flex flex-col justify-start items-center gap-6 max-w-sm text-center">
         <div className="relative w-[280px] h-[180px] sm:w-[424px] sm:h-[256px] rounded-xl overflow-hidden shadow-lg">
           <Image
-            src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGRsZjA4dnY0dXd4ZXp3ZjFwNjlqcWtqdmVuZTlxM29iczhhZW0waiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/g01ZnwAUvutuK8GIQn/giphy.gif"
+            src="/john-travolta-lost.gif"
             alt="John Travolta looking around confused"
             fill
             className="object-cover"
