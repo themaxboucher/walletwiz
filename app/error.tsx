@@ -11,7 +11,7 @@ export default function ErrorPage() {
       <div className="flex flex-col justify-start items-center gap-6 max-w-sm text-center">
         <div className="relative w-[280px] h-[180px] sm:w-[424px] sm:h-[256px] rounded-xl overflow-hidden shadow-lg">
           <Image
-            src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDlrenphMnAxYnQ1M2FvOXZ5cjg2aDd0bHJodjd3YWhlbzNtcjUzcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3ohs81rDuEz9ioJzAA/giphy.gif"
+            src="/angry-office.gif"
             alt="Angry man smashing computer"
             fill
             className="object-cover"
