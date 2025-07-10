@@ -37,7 +37,7 @@ export default function Transactions({
   const pageSize = 8;
 
   return (
-    <Card className={cn(transactions.length <= pageSize && "pb-0")}>
+    <Card className={cn("pb-4", transactions.length <= pageSize && "pb-0")}>
       <div className="flex justify-between pr-6">
         <CardHeader className="w-full">
           <CardTitle>Transactions</CardTitle>

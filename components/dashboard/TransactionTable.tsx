@@ -47,7 +47,7 @@ export default function TransactionTable({
 
   return (
     <div>
-      <Table>
+      <Table className={cn(transactions.length > pageSize && "border-b")}>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             <TableHead className="py-3 px-6 text-muted-foreground">
