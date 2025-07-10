@@ -32,7 +32,7 @@ interface TransactionTableProps {
 
 export default function TransactionTable({
   transactions,
-  pageSize = 7,
+  pageSize = 10,
   onEditClick,
 }: TransactionTableProps) {
   const [page, setPage] = useState(1);
