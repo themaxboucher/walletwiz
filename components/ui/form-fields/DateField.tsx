@@ -61,6 +61,7 @@ export function DateField({
                 if (maxDate && date > maxDate) return true;
                 return false;
               }}
+              captionLayout="dropdown"
               initialFocus
             />
           </PopoverContent>
