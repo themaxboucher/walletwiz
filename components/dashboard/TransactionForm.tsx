@@ -16,7 +16,7 @@ import {
   updateTransaction,
 } from "@/lib/actions/transaction.actions";
 import { LoaderCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
 
@@ -49,19 +49,36 @@ export default function TransactionForm({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Refined schema using .refine for category and amount
-  const refinedTransactionFormSchema = transactionFormSchema
-    .refine(
-      (data) => categories.some((cat: Category) => cat.name === data.category),
-      {
-        message: "Invalid category selected",
-        path: ["category"],
+  // Refine schema dynamically using the categories prop
+  const refinedTransactionFormSchema = transactionFormSchema.superRefine(
+    (data, ctx) => {
+      const category = categories.find(
+        (cat: Category) => cat.name === data.category
+      );
+      if (!category) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Invalid category selected",
+          path: ["category"],
+        });
+        return;
       }
-    )
-    .refine((data) => data.amount > 0, {
-      message: "Amount must be positive",
-      path: ["amount"],
-    });
+
+      if (category.type === "income" && data.amount <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `${category.name} amount must be positive`,
+          path: ["amount"],
+        });
+      } else if (category.type === "expense" && data.amount >= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `${category.name} amount must be negative`,
+          path: ["amount"],
+        });
+      }
+    }
+  );
 
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(refinedTransactionFormSchema),
@@ -82,6 +99,41 @@ export default function TransactionForm({
         },
   });
 
+  // Watch category and amount fields
+  const watchedCategory = form.watch("category");
+  const watchedAmount = form.watch("amount");
+
+  // Automatically format the amount field based on the selected category type
+  // If the category is an expense, ensure the amount is negative
+  // If the category is not an expense, ensure the amount is positive
+  useEffect(() => {
+    if (
+      !watchedCategory ||
+      watchedAmount === undefined ||
+      watchedAmount === null ||
+      isNaN(Number(watchedAmount))
+    )
+      return;
+    const selectedCategory = categories.find(
+      (cat) => cat.name === watchedCategory
+    );
+    if (!selectedCategory) return;
+    if (selectedCategory.type === "expense" && Number(watchedAmount) > 0) {
+      // Convert to negative for expenses
+      form.setValue("amount", -Math.abs(Number(watchedAmount)), {
+        shouldValidate: true,
+      });
+    } else if (
+      selectedCategory.type !== "expense" &&
+      Number(watchedAmount) < 0
+    ) {
+      // Convert to positive for income
+      form.setValue("amount", Math.abs(Number(watchedAmount)), {
+        shouldValidate: true,
+      });
+    }
+  }, [watchedCategory, watchedAmount, categories, form]);
+
   async function onSubmit(values: TransactionFormData) {
     setError(null);
     setLoading(true);
@@ -99,10 +151,7 @@ export default function TransactionForm({
 
       const transactionData = {
         merchantName: values.merchant,
-        amount:
-          selectedCategory.type === "expense"
-            ? -Math.abs(Number(values.amount.toFixed(2)))
-            : Number(values.amount.toFixed(2)),
+        amount: Number(values.amount.toFixed(2)),
         category: selectedCategory.$id,
         date: values.date.toISOString(),
         note: values.notes,
