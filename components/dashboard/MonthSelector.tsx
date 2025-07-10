@@ -37,13 +37,20 @@ export function MonthSelector({
   onYearChange,
   transactions,
 }: MonthSelectorProps) {
-  // Get unique years from transactions
+  // Get unique years from transactions and include current year
   const availableYears = useMemo(() => {
     const years = new Set<string>();
+    const currentYear = new Date().getFullYear().toString();
+
+    // Add current year by default
+    years.add(currentYear);
+
+    // Add years from transactions
     transactions.forEach((tx) => {
       const year = new Date(tx.date).getFullYear().toString();
       years.add(year);
     });
+
     return Array.from(years).sort((a, b) => Number(b) - Number(a)); // Sort descending
   }, [transactions]);
 
