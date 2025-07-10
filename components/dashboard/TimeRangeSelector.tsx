@@ -34,7 +34,7 @@ export default function TimeRangeSelector({
   onRangeChange,
 }: TimeRangeSelectorProps) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 flex-wrap-reverse sm:flex-nowrap">
       <div className="h-9 p-1 rounded-md flex gap-1 bg-card border shadow-xs">
         {RANGE_OPTIONS.map((option, idx) => (
           <button

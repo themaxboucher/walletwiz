@@ -102,7 +102,7 @@ export default function DashboardContent({
 
   return (
     <>
-      <div className="flex justify-between items-end gap-4">
+      <div className="flex flex-col md:flex-row justify-between md:items-end gap-4">
         <div className="space-y-0.5">
           <h1 className="text-lg font-bold md:text-xl">
             <Greeting />, {user.firstName}
@@ -118,9 +118,9 @@ export default function DashboardContent({
           onRangeChange={setSelectedRange}
         />
       </div>
-      <div className="grid grid-cols-3 gap-5">
-        <div className="flex flex-col gap-5 col-span-2">
-          <div className="grid grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="flex flex-col gap-5 lg:col-span-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <AmountCard
               title="Income"
               amount={income}
