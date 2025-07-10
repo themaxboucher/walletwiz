@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle } from "../ui/card";
 import TransactionTable from "./TransactionTable";
 import TransactionDialog from "./TransactionDialog";
 import EmptyState from "./EmptyState";
+import { cn } from "@/lib/utils";
 
 interface TransactionsProps {
   transactions: Transaction[];
@@ -33,8 +34,10 @@ export default function Transactions({
     setEditingTransaction(null);
   };
 
+  const pageSize = 8;
+
   return (
-    <Card>
+    <Card className={cn(transactions.length <= pageSize && "pb-0")}>
       <div className="flex justify-between pr-6">
         <CardHeader className="w-full">
           <CardTitle>Transactions</CardTitle>
@@ -66,7 +69,7 @@ export default function Transactions({
       ) : (
         <TransactionTable
           transactions={transactions}
-          pageSize={7}
+          pageSize={pageSize}
           onEditClick={handleOpenDialog}
         />
       )}

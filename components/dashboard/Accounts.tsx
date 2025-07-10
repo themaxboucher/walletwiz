@@ -1,31 +1,28 @@
-import { CreditCard } from "lucide-react";
+import { Landmark } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import EmptyState from "./EmptyState";
 import InfoBadge from "../InfoBadge";
-import { institutions } from "@/constants";
-import Image from "next/image";
 
-const placeholderAccounts = [
+const genericInstitutions = [
   {
-    bank: "RBC",
-    type: "Chequing",
+    name: "Atlas Bank",
+    type: "Checking",
     number: "**** 1234",
-    logo: institutions.find((i) => i.name === "RBC")?.url,
+    icon: Landmark,
     color: "bg-blue-500/10",
   },
   {
-    bank: "TD Canada Trust",
-    type: "Credit",
+    name: "Pioneer Trust",
+    type: "Savings",
     number: "**** 5678",
-    logo: institutions.find((i) => i.name === "TD Canada Trust")?.url,
+    icon: Landmark,
     color: "bg-green-500/10",
   },
   {
-    bank: "Scotiabank",
-    type: "Savings",
+    name: "Summit Financial",
+    type: "Credit",
     number: "**** 9012",
-    logo: institutions.find((i) => i.name === "Scotiabank")?.url,
-    color: "bg-red-500/10",
+    icon: Landmark,
+    color: "bg-violet-500/10",
   },
 ];
 
@@ -38,26 +35,16 @@ export default function Accounts() {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          {placeholderAccounts.map((acc) => (
+          {genericInstitutions.map((inst) => (
             <div
-              key={acc.number}
-              className={`flex items-center gap-4 rounded-xl p-4 shadow-sm border border-border border-dashed opacity-70 grayscale ${acc.color}`}
+              key={inst.number}
+              className={`flex items-center gap-4 rounded-xl p-4 shadow-sm border border-border border-dashed opacity-70 grayscale ${inst.color}`}
             >
-              {acc.logo ? (
-                <Image
-                  src={acc.logo}
-                  alt={acc.bank}
-                  width={40}
-                  height={40}
-                  className="rounded-full border bg-white"
-                />
-              ) : (
-                <CreditCard className="size-10 text-muted-foreground" />
-              )}
+              <inst.icon className="size-6 text-muted-foreground" />
               <div className="flex flex-col">
-                <span className="font-semibold text-base">{acc.bank}</span>
+                <span className="font-semibold text-base">{inst.name}</span>
                 <span className="text-xs text-muted-foreground">
-                  {acc.type} · {acc.number}
+                  {inst.type} · {inst.number}
                 </span>
               </div>
             </div>

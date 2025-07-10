@@ -22,6 +22,7 @@ import CategoryBadge from "./CategoryBadge";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { formatCurrency } from "@/lib/utils";
 import DeleteTransactionDialog from "./DeleteTransactionDialog";
+import { cn } from "@/lib/utils";
 
 interface TransactionTableProps {
   transactions: Transaction[];
@@ -31,7 +32,7 @@ interface TransactionTableProps {
 
 export default function TransactionTable({
   transactions,
-  pageSize = 7,
+  pageSize = 10,
   onEditClick,
 }: TransactionTableProps) {
   const [page, setPage] = useState(1);
@@ -73,7 +74,12 @@ export default function TransactionTable({
                 </Avatar>
                 {tx.merchantName}
               </TableCell>
-              <TableCell className="py-3 font-medium">
+              <TableCell
+                className={cn(
+                  "py-3 font-medium",
+                  tx.amount > 0 && "text-primary"
+                )}
+              >
                 {tx.amount > 0 ? "+" : ""}
                 {formatCurrency(tx.amount)}
               </TableCell>
