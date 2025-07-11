@@ -146,6 +146,7 @@ export default function DashboardContent({
           <Transactions
             transactions={filteredTransactions}
             categories={categories}
+            accounts={accounts}
             filteredOut={
               transactions.length > 0 && filteredTransactions.length === 0
             }

@@ -70,7 +70,7 @@ declare interface User {
 // Override the relationship fields in the main types with strings for the document IDs
 declare type TransactionDB = Override<
   Transaction,
-  { category: string; user: string }
+  { category: string; user: string; account?: string }
 >;
 
 declare type AccountDB = Override<Account, { type: string }>;

@@ -12,12 +12,14 @@ import { cn } from "@/lib/utils";
 interface TransactionsProps {
   transactions: Transaction[];
   categories: Category[];
+  accounts: Account[];
   filteredOut?: boolean;
 }
 
 export default function Transactions({
   transactions,
   categories,
+  accounts,
   filteredOut = false,
 }: TransactionsProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -79,6 +81,7 @@ export default function Transactions({
         onOpenChange={handleCloseDialog}
         transactionToEdit={editingTransaction}
         categories={categories}
+        accounts={accounts}
       />
     </Card>
   );

@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "../ui/form";
 import { createAccount, updateAccount } from "@/lib/actions/account.actions";
-import { LoaderCircle } from "lucide-react";
+import { CircleX, LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
@@ -20,6 +20,7 @@ import {
 } from "../ui/select";
 import { Label } from "../ui/label";
 import { getAccountTypes } from "@/lib/actions/accountType.actions";
+import { toast } from "sonner";
 
 // Define the Zod schema for the account form
 const accountFormSchema = z.object({
@@ -96,6 +97,9 @@ export default function AccountForm({
       setError(
         error instanceof Error ? error.message : "Failed to save account"
       );
+      toast("Error saving account", {
+        icon: <CircleX className="text-destructive size-5" />,
+      });
     } finally {
       setLoading(false);
     }

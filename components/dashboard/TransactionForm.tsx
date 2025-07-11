@@ -15,10 +15,20 @@ import {
   createTransaction,
   updateTransaction,
 } from "@/lib/actions/transaction.actions";
-import { LoaderCircle } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Label } from "../ui/label";
+import { CircleX, LoaderCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Controller } from "react-hook-form";
 
 // Define the Zod schema for the transaction form
 const transactionFormSchema = z.object({
@@ -30,6 +40,7 @@ const transactionFormSchema = z.object({
   category: z.string().min(1, { message: "Category is required" }),
   date: z.date({ required_error: "Date is required" }),
   notes: z.string().max(300, { message: "Note is too long" }).optional(),
+  account: z.string().min(1, { message: "Account is required" }),
 });
 
 type TransactionFormData = z.infer<typeof transactionFormSchema>;
@@ -38,12 +49,14 @@ interface TransactionFormProps {
   transactionToEdit?: Transaction | null;
   onCancel: () => void;
   categories: Category[];
+  accounts: Account[];
 }
 
 export default function TransactionForm({
   transactionToEdit,
   onCancel,
   categories,
+  accounts,
 }: TransactionFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -89,6 +102,7 @@ export default function TransactionForm({
           category: transactionToEdit.category.name,
           date: new Date(transactionToEdit.date),
           notes: transactionToEdit.note,
+          account: transactionToEdit.account?.$id ?? "",
         }
       : {
           merchant: "",
@@ -96,6 +110,7 @@ export default function TransactionForm({
           category: "",
           date: undefined,
           notes: "",
+          account: "",
         },
   });
 
@@ -137,7 +152,7 @@ export default function TransactionForm({
   async function onSubmit(values: TransactionFormData) {
     setError(null);
     setLoading(true);
-
+    console.log("Submitting transaction form with values:", values);
     try {
       const selectedCategory = categories.find(
         (cat: Category) => cat.name === values.category
@@ -156,6 +171,7 @@ export default function TransactionForm({
         date: values.date.toISOString(),
         note: values.notes,
         user: userId,
+        account: values.account,
       };
 
       if (transactionToEdit?.$id) {
@@ -171,6 +187,9 @@ export default function TransactionForm({
       setError(
         error instanceof Error ? error.message : "Failed to save transaction"
       );
+      toast("Error saving transaction", {
+        icon: <CircleX className="text-destructive size-5" />,
+      });
     } finally {
       setLoading(false);
     }
@@ -214,13 +233,39 @@ export default function TransactionForm({
             min={0.01}
             isCurrency={true}
           />
-          <DateField
-            form={form}
-            name="date"
-            label="Date"
-            minDate={new Date("1900-01-01")}
+          <Controller
+            control={form.control}
+            name="account"
+            render={({ field, fieldState }) => (
+              <div className="space-y-2">
+                <Label htmlFor="account">Account</Label>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select account" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {accounts.map((account) => (
+                      <SelectItem key={account.$id} value={account.$id!}>
+                        {account.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {fieldState.error && (
+                  <p className="text-destructive text-xs mt-1">
+                    {fieldState.error.message}
+                  </p>
+                )}
+              </div>
+            )}
           />
         </div>
+        <DateField
+          form={form}
+          name="date"
+          label="Date"
+          minDate={new Date("1900-01-01")}
+        />
 
         <TextareaField
           form={form}
