@@ -541,7 +541,6 @@ export const displayTransactions: Transaction[] = [
     $id: "1",
     merchantName: "Tim Hortons",
     amount: -4.25,
-    account: "Credit Card",
     category: {
       name: "Food and beverage",
       iconName: "Utensils",
@@ -556,7 +555,6 @@ export const displayTransactions: Transaction[] = [
     $id: "2",
     merchantName: "Wealthsimple",
     amount: 3000,
-    account: "Checking",
     category: {
       name: "Salary",
       iconName: "Briefcase",
@@ -571,7 +569,6 @@ export const displayTransactions: Transaction[] = [
     $id: "4",
     merchantName: "Uber",
     amount: -13.25,
-    account: "Credit Card",
     category: {
       name: "Transport",
       iconName: "Car",
@@ -586,7 +583,6 @@ export const displayTransactions: Transaction[] = [
     $id: "5",
     merchantName: "Rogers",
     amount: -85.0,
-    account: "Checking",
     category: {
       name: "Utilities",
       iconName: "Smartphone",
@@ -600,7 +596,6 @@ export const displayTransactions: Transaction[] = [
     $id: "3",
     merchantName: "Shoppers Drug Mart",
     amount: -32.75,
-    account: "Credit Card",
     category: {
       name: "Shopping",
       iconName: "ShoppingBag",

@@ -45,7 +45,7 @@ declare interface Transaction {
   merchantName: string;
   amount: number;
   category: Category; // Relationship field
-  account?: string; // Relationship field
+  account?: Account; // Relationship field
   date: string;
   note?: string;
   name?: string;

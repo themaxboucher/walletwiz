@@ -53,6 +53,9 @@ export default function TransactionTable({
             <TableHead className="py-3 px-6 text-muted-foreground">
               Merchant
             </TableHead>
+            <TableHead className="py-3 text-muted-foreground">
+              Account
+            </TableHead>
             <TableHead className="py-3 text-muted-foreground">Amount</TableHead>
             <TableHead className="py-3 text-muted-foreground">
               Category
@@ -74,6 +77,7 @@ export default function TransactionTable({
                 </Avatar>
                 {tx.merchantName}
               </TableCell>
+              <TableCell className="py-3">{tx.account?.name || "-"}</TableCell>
               <TableCell
                 className={cn(
                   "py-3 font-medium",
