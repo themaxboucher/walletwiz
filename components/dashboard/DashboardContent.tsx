@@ -25,12 +25,14 @@ interface DashboardContentProps {
   user: User;
   transactions: Transaction[];
   categories: Category[];
+  accounts: Account[];
 }
 
 export default function DashboardContent({
   user,
   transactions,
   categories,
+  accounts,
 }: DashboardContentProps) {
   // State for last date and range
   const [lastDate, setLastDate] = useState<Date>(new Date());
@@ -155,7 +157,7 @@ export default function DashboardContent({
             categories={categories}
             user={user}
           />
-          <Accounts />
+          <Accounts accounts={accounts} userId={user.$id} />
         </div>
       </div>
     </>

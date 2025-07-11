@@ -10,10 +10,7 @@ const {
   APPWRITE_CATEGORY_COLLECTION_ID: CATEGORY_COLLECTION_ID,
 } = process.env;
 
-export const createCategory = async (
-  category: Omit<Category, "$id">,
-  userId: string
-) => {
+export const createCategory = async (category: Category, userId: string) => {
   try {
     const { database } = await createAdminClient();
     const newCategory = await database.createDocument(
@@ -51,7 +48,7 @@ export const getCategories = async (userId: string) => {
 
 export const updateCategory = async (
   categoryId: string,
-  updatedCategory: Partial<Omit<Category, "$id">>
+  updatedCategory: Partial<Category>
 ) => {
   try {
     const { database } = await createAdminClient();

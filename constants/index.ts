@@ -53,6 +53,7 @@ import {
   LucideIcon,
   Bubbles,
   Coins,
+  Landmark,
 } from "lucide-react";
 
 export const categoryColors: Record<CategoryColor, string> = {
@@ -121,6 +122,12 @@ export const categoryIcons: Record<string, LucideIcon> = {
   Coins,
 };
 
+export const accountTypeIcons: Record<string, LucideIcon> = {
+  Landmark,
+  CreditCard,
+  Banknote,
+};
+
 export const defaultCategories: Category[] = [
   {
     name: "Salary",
@@ -175,6 +182,21 @@ export const defaultCategories: Category[] = [
     color: "red",
     iconName: "BanknoteArrowDown",
     type: "expense",
+  },
+];
+
+export const defaultAccounts: AccountDB[] = [
+  {
+    name: "Checking",
+    type: process.env.ACCOUNTTYPE_CHECKING_ID!,
+  },
+  {
+    name: "Savings",
+    type: process.env.ACCOUNTTYPE_SAVINGS_ID!,
+  },
+  {
+    name: "Credit Card",
+    type: process.env.ACCOUNTTYPE_CREDIT_CARD_ID!,
   },
 ];
 
@@ -516,7 +538,7 @@ export const categories: Category[] = [
 
 export const displayTransactions: Transaction[] = [
   {
-    $id: 1,
+    $id: "1",
     merchantName: "Tim Hortons",
     amount: -4.25,
     account: "Credit Card",
@@ -531,7 +553,7 @@ export const displayTransactions: Transaction[] = [
       "https://img.logo.dev/timhortons.ca?token=pk_aIln8e6dSBC2g0xYnOuCiA",
   },
   {
-    $id: 2,
+    $id: "2",
     merchantName: "Wealthsimple",
     amount: 3000,
     account: "Checking",
@@ -546,7 +568,7 @@ export const displayTransactions: Transaction[] = [
       "https://img.logo.dev/wealthsimple.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
   },
   {
-    $id: 4,
+    $id: "4",
     merchantName: "Uber",
     amount: -13.25,
     account: "Credit Card",
@@ -561,7 +583,7 @@ export const displayTransactions: Transaction[] = [
       "https://img.logo.dev/uber.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
   },
   {
-    $id: 5,
+    $id: "5",
     merchantName: "Rogers",
     amount: -85.0,
     account: "Checking",
@@ -575,7 +597,7 @@ export const displayTransactions: Transaction[] = [
     merchantLogo: "https://logo.clearbit.com/rogers.com",
   },
   {
-    $id: 3,
+    $id: "3",
     merchantName: "Shoppers Drug Mart",
     amount: -32.75,
     account: "Credit Card",
