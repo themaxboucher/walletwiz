@@ -1,63 +1,65 @@
-"use client";
-
+import React, { useState } from "react";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
 } from "../ui/alert-dialog";
 import { CircleX, LoaderCircle } from "lucide-react";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { deleteTransaction } from "@/lib/actions/transaction.actions";
+import { deleteFinancialAccount } from "@/lib/actions/account.actions";
 import { toast } from "sonner";
 
-interface DeleteTransactionDialogProps {
-  transactionId: string;
-  trigger: React.ReactNode;
+interface DeleteAccountDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  accountId: string;
 }
 
-export default function DeleteTransactionDialog({
-  transactionId,
-  trigger,
-}: DeleteTransactionDialogProps) {
-  const router = useRouter();
+export default function DeleteAccountDialog({
+  open,
+  onOpenChange,
+  accountId,
+}: DeleteAccountDialogProps) {
   const [deleting, setDeleting] = useState(false);
+  const router = useRouter();
 
   const handleDelete = async () => {
     setDeleting(true);
     try {
-      await deleteTransaction(transactionId);
+      await deleteFinancialAccount(accountId);
+      onOpenChange(false);
       router.refresh();
     } catch (error) {
-      toast("Error deleting transaction", {
+      toast("Error deleting account", {
         icon: <CircleX className="text-destructive size-5" />,
       });
-      console.error("Error deleting transaction:", error);
     } finally {
       setDeleting(false);
     }
   };
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent className="sm:max-w-[425px]">
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Transaction</AlertDialogTitle>
+          <AlertDialogTitle>Delete Account</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete this transaction? This action cannot
-            be undone.
+            Are you sure you want to delete this account? This action cannot be
+            undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} disabled={deleting}>
+          <AlertDialogAction
+            className="bg-destructive hover:bg-destructive/90"
+            onClick={handleDelete}
+            disabled={deleting}
+          >
             {deleting ? (
               <LoaderCircle className="h-4 w-4 animate-spin" />
             ) : (

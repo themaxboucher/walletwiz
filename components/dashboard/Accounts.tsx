@@ -1,10 +1,10 @@
-import { Landmark, Plus, Edit } from "lucide-react";
+import { Landmark, Plus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import EmptyState from "./EmptyState";
 import AccountDialog from "./AccountDialog";
 import { useState } from "react";
-import { accountTypeIcons } from "@/constants";
+import AccountItem from "./AccountItem";
 
 interface AccountsProps {
   accounts: Account[];
@@ -25,8 +25,6 @@ export default function Accounts({ accounts, userId }: AccountsProps) {
     setEditingAccount(null);
   };
 
-  console.log("Accounts:", accounts);
-
   return (
     <Card>
       <CardHeader className="flex items-center justify-between">
@@ -41,40 +39,13 @@ export default function Accounts({ accounts, userId }: AccountsProps) {
       <CardContent>
         {accounts.length > 0 ? (
           <div className="flex flex-col gap-4">
-            {accounts.map((account) => {
-              const Icon = accountTypeIcons[account.type?.name] || Landmark;
-              return (
-                <div
-                  key={account.$id}
-                  className="group flex items-center justify-between rounded-xl p-4 shadow-sm border border-border"
-                >
-                  <div className="flex items-center gap-4">
-                    <Icon className="size-6 text-muted-foreground" />
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-base">
-                        {account.name}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {account.type?.name} · {account.mask || "••••"}
-                      </span>
-                      {account.currentBalance && (
-                        <span className="text-sm font-medium">
-                          ${account.currentBalance.toLocaleString()}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleOpenDialog(account)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Edit className="size-4" />
-                  </Button>
-                </div>
-              );
-            })}
+            {accounts.map((account) => (
+              <AccountItem
+                key={account.$id}
+                account={account}
+                onEdit={handleOpenDialog}
+              />
+            ))}
           </div>
         ) : (
           <EmptyState
