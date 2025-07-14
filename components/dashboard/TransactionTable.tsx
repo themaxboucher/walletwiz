@@ -23,6 +23,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { formatCurrency } from "@/lib/utils";
 import DeleteTransactionDialog from "./DeleteTransactionDialog";
 import { cn } from "@/lib/utils";
+import { accountTypeIcons } from "@/constants";
 
 interface TransactionTableProps {
   transactions: Transaction[];
@@ -53,10 +54,10 @@ export default function TransactionTable({
             <TableHead className="py-3 px-6 text-muted-foreground">
               Merchant
             </TableHead>
+            <TableHead className="py-3 text-muted-foreground">Amount</TableHead>
             <TableHead className="py-3 text-muted-foreground">
               Account
             </TableHead>
-            <TableHead className="py-3 text-muted-foreground">Amount</TableHead>
             <TableHead className="py-3 text-muted-foreground">
               Category
             </TableHead>
@@ -77,7 +78,6 @@ export default function TransactionTable({
                 </Avatar>
                 {tx.merchantName}
               </TableCell>
-              <TableCell className="py-3">{tx.account?.name || "-"}</TableCell>
               <TableCell
                 className={cn(
                   "py-3 font-medium",
@@ -86,6 +86,23 @@ export default function TransactionTable({
               >
                 {tx.amount > 0 ? "+" : ""}
                 {formatCurrency(tx.amount)}
+              </TableCell>
+              <TableCell className="py-3">
+                {(() => {
+                  const iconName = tx.account?.type?.iconName;
+                  const Icon = iconName
+                    ? accountTypeIcons[iconName]
+                    : undefined;
+                  if (Icon && tx.account?.name) {
+                    return (
+                      <span className="inline-flex items-center gap-2">
+                        <Icon className="w-4 h-4 text-muted-foreground mr-1" />
+                        {tx.account.name}
+                      </span>
+                    );
+                  }
+                  return tx.account?.name || "-";
+                })()}
               </TableCell>
               <TableCell className="py-3">
                 <CategoryBadge
