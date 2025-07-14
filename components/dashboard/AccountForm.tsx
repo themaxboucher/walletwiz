@@ -11,16 +11,10 @@ import { CircleX, LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { Label } from "../ui/label";
+import { SelectField } from "../ui/form-fields/SelectField";
 import { getAccountTypes } from "@/lib/actions/accountType.actions";
 import { toast } from "sonner";
+import { accountTypeIcons } from "@/constants";
 
 // Define the Zod schema for the account form
 const accountFormSchema = z.object({
@@ -60,6 +54,12 @@ export default function AccountForm({
     }
     fetchAccountTypes();
   }, []);
+
+  const accountTypeOptions = accountTypes.map((type) => ({
+    value: type.$id!,
+    label: type.name,
+    icon: accountTypeIcons[type.iconName],
+  }));
 
   const form = useForm<AccountFormData>({
     resolver: zodResolver(accountFormSchema),
@@ -115,24 +115,13 @@ export default function AccountForm({
           placeholder="e.g. Edge Preferred Savings"
         />
 
-        <div className="space-y-2">
-          <Label htmlFor="type">Type</Label>
-          <Select
-            value={form.watch("type")}
-            onValueChange={(value) => form.setValue("type", value)}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select account type" />
-            </SelectTrigger>
-            <SelectContent>
-              {accountTypes.map((type) => (
-                <SelectItem key={type.$id} value={type.$id!}>
-                  {type.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <SelectField
+          form={form}
+          name="type"
+          label="Type"
+          options={accountTypeOptions}
+          placeholder="Select account type"
+        />
 
         {error && <FormAlert message={error} type="error" />}
         <div className="flex justify-end gap-2 mt-4">

@@ -3,32 +3,23 @@
 import { Button } from "../ui/button";
 import { TextField } from "../ui/form-fields/TextField";
 import { NumberField } from "../ui/form-fields/NumberField";
-import { CategoryField } from "../ui/form-fields/CategoryField";
 import { DateField } from "../ui/form-fields/DateField";
 import { TextareaField } from "../ui/form-fields/TextareaField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "../ui/form";
-import { categoryIcons } from "@/constants";
+import { categoryIcons, categoryColors, accountTypeIcons } from "@/constants";
 import {
   createTransaction,
   updateTransaction,
 } from "@/lib/actions/transaction.actions";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { Label } from "../ui/label";
 import { CircleX, LoaderCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Controller } from "react-hook-form";
+import { SelectField } from "../ui/form-fields/SelectField";
 
 // Define the Zod schema for the transaction form
 const transactionFormSchema = z.object({
@@ -195,11 +186,30 @@ export default function TransactionForm({
     }
   }
 
-  const categoryOptions = categories.map((cat: Category) => ({
-    name: cat.name,
-    icon: cat.iconName ? categoryIcons[cat.iconName] : undefined,
-    color: cat.color,
-    type: cat.type,
+  const categoryOptions = categories
+    .map((cat: Category) => ({
+      value: cat.name,
+      label: cat.name,
+      icon: cat.iconName ? categoryIcons[cat.iconName] : undefined,
+      color: cat.color ? categoryColors[cat.color] : undefined,
+      group:
+        cat.type === "income"
+          ? "Income"
+          : cat.type === "expense"
+          ? "Expense"
+          : undefined,
+    }))
+    .sort((a, b) => {
+      if (a.group === b.group) return 0;
+      if (a.group === "Income") return -1;
+      if (b.group === "Income") return 1;
+      return 0;
+    });
+
+  const accountOptions = accounts.map((account) => ({
+    value: account.$id!,
+    label: account.name,
+    icon: accountTypeIcons[account.type?.iconName],
   }));
 
   if (categories.length === 0) {
@@ -221,7 +231,13 @@ export default function TransactionForm({
             label="Merchant"
             placeholder="e.g. Amazon"
           />
-          <CategoryField form={form} options={categoryOptions} />
+          <SelectField
+            form={form}
+            name="category"
+            label="Category"
+            options={categoryOptions}
+            placeholder="Select a category"
+          />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <NumberField
@@ -233,31 +249,12 @@ export default function TransactionForm({
             min={0.01}
             isCurrency={true}
           />
-          <Controller
-            control={form.control}
+          <SelectField
+            form={form}
             name="account"
-            render={({ field, fieldState }) => (
-              <div className="space-y-2">
-                <Label htmlFor="account">Account</Label>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select account" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {accounts.map((account) => (
-                      <SelectItem key={account.$id} value={account.$id!}>
-                        {account.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {fieldState.error && (
-                  <p className="text-destructive text-xs mt-1">
-                    {fieldState.error.message}
-                  </p>
-                )}
-              </div>
-            )}
+            label="Account"
+            options={accountOptions}
+            placeholder="Select account"
           />
         </div>
         <DateField
