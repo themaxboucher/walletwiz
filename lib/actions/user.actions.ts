@@ -100,7 +100,13 @@ export const signup = async ({
 
     // Create default accounts for the new user
     for (const account of defaultAccounts) {
-      await createAccount(account, newUser.$id);
+      await createAccount(
+        {
+          ...account,
+          name: `${firstName}'s ${account.name}`,
+        },
+        newUser.$id
+      );
     }
 
     // Create session after successful signup
