@@ -3,22 +3,23 @@
 import { Button } from "../ui/button";
 import { TextField } from "../ui/form-fields/TextField";
 import { NumberField } from "../ui/form-fields/NumberField";
-import { CategoryField } from "../ui/form-fields/CategoryField";
 import { DateField } from "../ui/form-fields/DateField";
 import { TextareaField } from "../ui/form-fields/TextareaField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "../ui/form";
-import { categoryIcons } from "@/constants";
+import { categoryIcons, categoryColors, accountTypeIcons } from "@/constants";
 import {
   createTransaction,
   updateTransaction,
 } from "@/lib/actions/transaction.actions";
-import { LoaderCircle } from "lucide-react";
+import { CircleX, LoaderCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { SelectField } from "../ui/form-fields/SelectField";
 
 // Define the Zod schema for the transaction form
 const transactionFormSchema = z.object({
@@ -30,6 +31,7 @@ const transactionFormSchema = z.object({
   category: z.string().min(1, { message: "Category is required" }),
   date: z.date({ required_error: "Date is required" }),
   notes: z.string().max(300, { message: "Note is too long" }).optional(),
+  account: z.string().min(1, { message: "Account is required" }),
 });
 
 type TransactionFormData = z.infer<typeof transactionFormSchema>;
@@ -38,12 +40,14 @@ interface TransactionFormProps {
   transactionToEdit?: Transaction | null;
   onCancel: () => void;
   categories: Category[];
+  accounts: Account[];
 }
 
 export default function TransactionForm({
   transactionToEdit,
   onCancel,
   categories,
+  accounts,
 }: TransactionFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -89,6 +93,7 @@ export default function TransactionForm({
           category: transactionToEdit.category.name,
           date: new Date(transactionToEdit.date),
           notes: transactionToEdit.note,
+          account: transactionToEdit.account?.$id ?? "",
         }
       : {
           merchant: "",
@@ -96,6 +101,7 @@ export default function TransactionForm({
           category: "",
           date: undefined,
           notes: "",
+          account: "",
         },
   });
 
@@ -137,7 +143,7 @@ export default function TransactionForm({
   async function onSubmit(values: TransactionFormData) {
     setError(null);
     setLoading(true);
-
+    console.log("Submitting transaction form with values:", values);
     try {
       const selectedCategory = categories.find(
         (cat: Category) => cat.name === values.category
@@ -156,6 +162,7 @@ export default function TransactionForm({
         date: values.date.toISOString(),
         note: values.notes,
         user: userId,
+        account: values.account,
       };
 
       if (transactionToEdit?.$id) {
@@ -171,16 +178,38 @@ export default function TransactionForm({
       setError(
         error instanceof Error ? error.message : "Failed to save transaction"
       );
+      toast("Error saving transaction", {
+        icon: <CircleX className="text-destructive size-5" />,
+      });
     } finally {
       setLoading(false);
     }
   }
 
-  const categoryOptions = categories.map((cat: Category) => ({
-    name: cat.name,
-    icon: cat.iconName ? categoryIcons[cat.iconName] : undefined,
-    color: cat.color,
-    type: cat.type,
+  const categoryOptions = categories
+    .map((cat: Category) => ({
+      value: cat.name,
+      label: cat.name,
+      icon: cat.iconName ? categoryIcons[cat.iconName] : undefined,
+      color: cat.color ? categoryColors[cat.color] : undefined,
+      group:
+        cat.type === "income"
+          ? "Income"
+          : cat.type === "expense"
+          ? "Expense"
+          : undefined,
+    }))
+    .sort((a, b) => {
+      if (a.group === b.group) return 0;
+      if (a.group === "Income") return -1;
+      if (b.group === "Income") return 1;
+      return 0;
+    });
+
+  const accountOptions = accounts.map((account) => ({
+    value: account.$id!,
+    label: account.name,
+    icon: accountTypeIcons[account.type?.iconName],
   }));
 
   if (categories.length === 0) {
@@ -202,7 +231,13 @@ export default function TransactionForm({
             label="Merchant"
             placeholder="e.g. Amazon"
           />
-          <CategoryField form={form} options={categoryOptions} />
+          <SelectField
+            form={form}
+            name="category"
+            label="Category"
+            options={categoryOptions}
+            placeholder="Select a category"
+          />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <NumberField
@@ -214,13 +249,20 @@ export default function TransactionForm({
             min={0.01}
             isCurrency={true}
           />
-          <DateField
+          <SelectField
             form={form}
-            name="date"
-            label="Date"
-            minDate={new Date("1900-01-01")}
+            name="account"
+            label="Account"
+            options={accountOptions}
+            placeholder="Select account"
           />
         </div>
+        <DateField
+          form={form}
+          name="date"
+          label="Date"
+          minDate={new Date("1900-01-01")}
+        />
 
         <TextareaField
           form={form}

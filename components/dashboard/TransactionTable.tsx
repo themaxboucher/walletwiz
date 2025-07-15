@@ -23,6 +23,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { formatCurrency } from "@/lib/utils";
 import DeleteTransactionDialog from "./DeleteTransactionDialog";
 import { cn } from "@/lib/utils";
+import { accountTypeIcons } from "@/constants";
 
 interface TransactionTableProps {
   transactions: Transaction[];
@@ -55,6 +56,9 @@ export default function TransactionTable({
             </TableHead>
             <TableHead className="py-3 text-muted-foreground">Amount</TableHead>
             <TableHead className="py-3 text-muted-foreground">
+              Account
+            </TableHead>
+            <TableHead className="py-3 text-muted-foreground">
               Category
             </TableHead>
             <TableHead className="py-3 text-muted-foreground">Date</TableHead>
@@ -82,6 +86,23 @@ export default function TransactionTable({
               >
                 {tx.amount > 0 ? "+" : ""}
                 {formatCurrency(tx.amount)}
+              </TableCell>
+              <TableCell className="py-3">
+                {(() => {
+                  const iconName = tx.account?.type?.iconName;
+                  const Icon = iconName
+                    ? accountTypeIcons[iconName]
+                    : undefined;
+                  if (Icon && tx.account?.name) {
+                    return (
+                      <span className="inline-flex items-center gap-2">
+                        <Icon className="w-4 h-4 text-muted-foreground mr-1" />
+                        {tx.account.name}
+                      </span>
+                    );
+                  }
+                  return tx.account?.name || "-";
+                })()}
               </TableCell>
               <TableCell className="py-3">
                 <CategoryBadge

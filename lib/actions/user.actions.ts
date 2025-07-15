@@ -4,14 +4,16 @@ import { ID, Query } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite/server";
 import { cookies } from "next/headers";
 import { parseStringify } from "../utils";
-import { defaultCategories } from "@/constants";
+import { defaultCategories, defaultAccounts } from "@/constants";
 import { createCategory } from "./category.actions";
+import { createAccount } from "./account.actions";
 
 const {
   APPWRITE_DATABASE_ID: DATABASE_ID,
   APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID,
   APPWRITE_CATEGORY_COLLECTION_ID: CATEGORY_COLLECTION_ID,
   APPWRITE_TRANSACTION_COLLECTION_ID: TRANSACTION_COLLECTION_ID,
+  APPWRITE_ACCOUNT_COLLECTION_ID: ACCOUNT_COLLECTION_ID,
 } = process.env;
 
 export const getUserInfo = async ({ userId }: { userId: string }) => {
@@ -94,6 +96,17 @@ export const signup = async ({
     // Create default categories for the new user
     for (const category of defaultCategories) {
       await createCategory(category, newUser.$id);
+    }
+
+    // Create default accounts for the new user
+    for (const account of defaultAccounts) {
+      await createAccount(
+        {
+          ...account,
+          name: `${firstName}'s ${account.name}`,
+        },
+        newUser.$id
+      );
     }
 
     // Create session after successful signup
@@ -240,6 +253,19 @@ export const deleteAccount = async (authUserId: string, docUserId: string) => {
         DATABASE_ID!,
         CATEGORY_COLLECTION_ID!,
         cat.$id
+      );
+    }
+    // Delete all accounts for the user
+    const accounts = await database.listDocuments(
+      DATABASE_ID!,
+      ACCOUNT_COLLECTION_ID!,
+      [Query.equal("user", docUserId)]
+    );
+    for (const acc of accounts.documents) {
+      await database.deleteDocument(
+        DATABASE_ID!,
+        ACCOUNT_COLLECTION_ID!,
+        acc.$id
       );
     }
     // Delete the user document from the database

@@ -6,15 +6,17 @@ import TransactionForm from "./TransactionForm";
 interface TransactionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  transactionToEdit?: Transaction | null; // Optional prop for editing
+  transactionToEdit?: Transaction | null;
   categories: Category[];
+  accounts: Account[];
 }
 
 export default function TransactionDialog({
   open,
   onOpenChange,
   transactionToEdit,
-  categories, // Destructure categories prop
+  categories,
+  accounts,
 }: TransactionDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -28,6 +30,7 @@ export default function TransactionDialog({
           transactionToEdit={transactionToEdit}
           onCancel={() => onOpenChange(false)} // Pass close function to form's cancel button
           categories={categories}
+          accounts={accounts}
         />
       </DialogContent>
     </Dialog>
