@@ -54,6 +54,12 @@ import {
   Bubbles,
   Coins,
   Landmark,
+  HeartPlus,
+  BadgeCheck,
+  Sprout,
+  MousePointer,
+  WalletCards,
+  ShoppingBasket,
 } from "lucide-react";
 
 export const categoryColors: Record<CategoryColor, string> = {
@@ -126,6 +132,13 @@ export const accountTypeIcons: Record<string, LucideIcon> = {
   Landmark,
   CreditCard,
   Banknote,
+  PiggyBank,
+  HeartPlus,
+  BadgeCheck,
+  Sprout,
+  MousePointer,
+  WalletCards,
+  ShoppingBasket,
 };
 
 export const defaultCategories: Category[] = [

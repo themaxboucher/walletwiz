@@ -55,10 +55,18 @@ export default function AccountForm({
     fetchAccountTypes();
   }, []);
 
+  // Group labels for account types
+  const accountTypeGroupLabels: Record<string, string> = {
+    depository: "Depository",
+    credit: "Credit",
+    other: "Other",
+  };
+
   const accountTypeOptions = accountTypes.map((type) => ({
     value: type.$id!,
     label: type.name,
     icon: accountTypeIcons[type.iconName],
+    group: accountTypeGroupLabels[type.type] || "Other",
   }));
 
   const form = useForm<AccountFormData>({
