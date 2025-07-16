@@ -228,7 +228,7 @@ export default function TransactionForm({
           <TextField
             form={form}
             name="merchant"
-            label="Merchant"
+            label="Payee"
             placeholder="e.g. Amazon"
           />
           <SelectField

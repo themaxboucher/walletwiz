@@ -52,7 +52,7 @@ export default function TransactionTable({
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             <TableHead className="py-3 px-6 text-muted-foreground">
-              Merchant
+              Payee
             </TableHead>
             <TableHead className="py-3 text-muted-foreground">Amount</TableHead>
             <TableHead className="py-3 text-muted-foreground">
