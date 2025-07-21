@@ -21,7 +21,7 @@ export interface ComboboxOption {
   value: string;
   label: string;
   icon?: string;
-  previous?: boolean; // Indicates if this is a previously used payee
+  id?: string; // Appwrite payee document ID for previous payees
 }
 
 interface BrandfetchBrand {
@@ -90,10 +90,10 @@ export function PayeeField({
         const previousPayees = await getPayees(userId);
         if (previousPayees && previousPayees.length > 0) {
           const options = previousPayees.map((payee: Payee) => ({
-            value: payee.$id,
+            value: payee.brandId,
             label: payee.name,
             icon: payee.logo,
-            previous: true,
+            id: payee.$id,
           }));
           setPreviousPayeeOptions(options);
           setPayeeOptions(options);
@@ -127,40 +127,63 @@ export function PayeeField({
           query
         )}?c=${clientId}`
       );
-      if (!res.ok) throw new Error("Brandfetch API error");
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        // Filter: qualityScore >= 0.5, latin brand names only, deduplicate by name keeping highest qualityScore
-        const filtered = data
-          .filter(
-            (brand: BrandfetchBrand) =>
-              brand.qualityScore >= 0.5 &&
-              /^[A-Za-z\d\s\p{P}\p{S}]+$/u.test(brand.name)
-          )
-          .reduce(
-            (acc: Record<string, BrandfetchBrand>, brand: BrandfetchBrand) => {
-              if (
-                !acc[brand.name] ||
-                brand.qualityScore > acc[brand.name].qualityScore
-              ) {
-                acc[brand.name] = brand;
-              }
-              return acc;
-            },
-            {}
-          );
-        setPayeeOptions(
-          (Object.values(filtered) as BrandfetchBrand[]).map((brand) => ({
+      let brandfetchOptions: ComboboxOption[] = [];
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          // Filter: qualityScore >= 0.5, latin brand names only, deduplicate by name keeping highest qualityScore
+          const filtered = data
+            .filter(
+              (brand: BrandfetchBrand) =>
+                brand.qualityScore >= 0.5 &&
+                /^[A-Za-z\d\s\p{P}\p{S}]+$/u.test(brand.name)
+            )
+            .reduce(
+              (
+                acc: Record<string, BrandfetchBrand>,
+                brand: BrandfetchBrand
+              ) => {
+                if (
+                  !acc[brand.name] ||
+                  brand.qualityScore > acc[brand.name].qualityScore
+                ) {
+                  acc[brand.name] = brand;
+                }
+                return acc;
+              },
+              {}
+            );
+          brandfetchOptions = (
+            Object.values(filtered) as BrandfetchBrand[]
+          ).map((brand) => ({
             value: brand.brandId,
             label: brand.name,
             icon: brand.icon,
-          }))
-        );
-      } else {
-        setPayeeOptions([]);
+          }));
+        }
       }
+      // Filter previous payees by query (case-insensitive substring match on label)
+      const filteredPrevious = previousPayeeOptions.filter((option) =>
+        option.label.toLowerCase().includes(query.toLowerCase())
+      );
+      // Merge previous payees and brandfetch results, avoiding duplicates by label (case-insensitive)
+      const mergedOptions: ComboboxOption[] = [
+        ...filteredPrevious,
+        ...brandfetchOptions.filter(
+          (brandOpt) =>
+            !filteredPrevious.some(
+              (prevOpt) => prevOpt.value === brandOpt.value
+            )
+        ),
+      ];
+      setPayeeOptions(mergedOptions);
     } catch (e) {
-      setPayeeOptions(previousPayeeOptions);
+      // On error, fallback to filtered previous payees
+      setPayeeOptions(
+        previousPayeeOptions.filter((option) =>
+          option.label.toLowerCase().includes(query.toLowerCase())
+        )
+      );
     } finally {
       setPayeeLoading(false);
     }
@@ -246,8 +269,9 @@ export function PayeeField({
                             const selected = payeeOptions.find(
                               (opt) => opt.value === currentValue
                             );
-                            if (selected) field.onChange(selected);
-                            else field.onChange(null);
+                            if (selected) {
+                              field.onChange(selected);
+                            } else field.onChange(null);
                             setOpen(false);
                           }}
                         >
@@ -261,9 +285,7 @@ export function PayeeField({
                             />
                           )}
                           <span className="truncate">{option.label}</span>
-                          {option?.previous && (
-                            <Repeat className="ml-auto size-4" />
-                          )}
+                          {option?.id && <Repeat className="ml-auto size-4" />}
                         </CommandItem>
                       ))}
                     </CommandGroup>

@@ -27,6 +27,7 @@ const transactionFormSchema = z.object({
     value: z.string(), // brandId
     label: z.string(), // name
     icon: z.string().optional().nullable(),
+    id: z.string().optional(), // Appwrite payee document ID for previous payees
   }),
   amount: z.coerce.number(),
   category: z.string().min(1, { message: "Category is required" }),
@@ -94,6 +95,7 @@ export default function TransactionForm({
                 value: transactionToEdit.payee.brandId || "",
                 label: transactionToEdit.payee.name,
                 icon: transactionToEdit.payee.logo,
+                id: transactionToEdit.payee.$id,
               }
             : undefined,
           amount: transactionToEdit.amount,
@@ -163,14 +165,23 @@ export default function TransactionForm({
       if (!selectedCategory || !selectedCategory.$id)
         throw new Error("Category not found");
 
-      const transactionData = {
-        payee: {
-          name: values.payee.label,
-          brandId: values.payee.value,
-          logo: values.payee.icon,
+      let payeeField;
+      if (values.payee?.id) {
+        // Previous payee: use the Appwrite payee document ID
+        payeeField = values.payee.id;
+      } else {
+        // New payee: construct the payee object
+        payeeField = {
+          name: values.payee?.label,
+          brandId: values.payee?.value,
+          logo: values.payee?.icon,
           defaultCategory: null,
           user: userId,
-        } as PayeeDB,
+        } as PayeeDB;
+      }
+
+      const transactionData = {
+        payee: payeeField,
         amount: Number(values.amount.toFixed(2)),
         category: selectedCategory.$id,
         date: values.date.toISOString(),
