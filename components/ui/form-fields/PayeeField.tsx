@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { FormFieldWrapper } from "./FormFieldWrapper";
 import { UseFormReturn, ControllerRenderProps } from "react-hook-form";
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
+import { ChevronsUpDownIcon, Repeat } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../button";
 import {
@@ -16,12 +16,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import Image from "next/image";
 import { Skeleton } from "../skeleton";
 import { getPayees } from "@/lib/actions/payee.actions";
-import { set } from "date-fns";
 
 export interface ComboboxOption {
   value: string;
   label: string;
   icon?: string;
+  previous?: boolean; // Indicates if this is a previously used payee
 }
 
 interface BrandfetchBrand {
@@ -93,6 +93,7 @@ export function PayeeField({
             value: payee.$id,
             label: payee.name,
             icon: payee.logo,
+            previous: true,
           }));
           setPreviousPayeeOptions(options);
           setPayeeOptions(options);
@@ -259,13 +260,10 @@ export function PayeeField({
                               className="size-5 rounded-full object-cover"
                             />
                           )}
-                          {/* <CheckIcon
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            field.value?.value === option.value ? "opacity-100" : "opacity-0"
-                          )}
-                        /> */}
                           <span className="truncate">{option.label}</span>
+                          {option?.previous && (
+                            <Repeat className="ml-auto size-4" />
+                          )}
                         </CommandItem>
                       ))}
                     </CommandGroup>
