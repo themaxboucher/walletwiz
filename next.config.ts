@@ -14,6 +14,11 @@ const config: NextConfig = {
         port: "",
         pathname: "/v1/storage/buckets/**/preview",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.brandfetch.io",
+        pathname: "/**",
+      },
     ],
   },
 };

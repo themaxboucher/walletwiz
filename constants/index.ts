@@ -552,7 +552,12 @@ export const categories: Category[] = [
 export const displayTransactions: Transaction[] = [
   {
     $id: "1",
-    merchantName: "Tim Hortons",
+    payee: {
+      name: "Tim Hortons",
+      brandId: "timhortons.ca",
+      logo: "https://img.logo.dev/timhortons.ca?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+      defaultCategory: null,
+    },
     amount: -4.25,
     category: {
       name: "Food and beverage",
@@ -561,12 +566,16 @@ export const displayTransactions: Transaction[] = [
       type: "expense",
     },
     date: "2025-06-02",
-    merchantLogo:
-      "https://img.logo.dev/timhortons.ca?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    note: undefined,
   },
   {
     $id: "2",
-    merchantName: "Wealthsimple",
+    payee: {
+      name: "Wealthsimple",
+      brandId: "wealthsimple.com",
+      logo: "https://img.logo.dev/wealthsimple.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+      defaultCategory: null,
+    },
     amount: 3000,
     category: {
       name: "Salary",
@@ -575,12 +584,16 @@ export const displayTransactions: Transaction[] = [
       type: "income",
     },
     date: "2025-06-06",
-    merchantLogo:
-      "https://img.logo.dev/wealthsimple.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    note: undefined,
   },
   {
     $id: "4",
-    merchantName: "Uber",
+    payee: {
+      name: "Uber",
+      brandId: "uber.com",
+      logo: "https://img.logo.dev/uber.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+      defaultCategory: null,
+    },
     amount: -13.25,
     category: {
       name: "Transport",
@@ -589,12 +602,16 @@ export const displayTransactions: Transaction[] = [
       type: "expense",
     },
     date: "2025-06-04",
-    merchantLogo:
-      "https://img.logo.dev/uber.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    note: undefined,
   },
   {
     $id: "5",
-    merchantName: "Rogers",
+    payee: {
+      name: "Rogers",
+      brandId: "rogers.com",
+      logo: "https://logo.clearbit.com/rogers.com",
+      defaultCategory: null,
+    },
     amount: -85.0,
     category: {
       name: "Utilities",
@@ -603,11 +620,16 @@ export const displayTransactions: Transaction[] = [
       type: "expense",
     },
     date: "2025-06-05",
-    merchantLogo: "https://logo.clearbit.com/rogers.com",
+    note: undefined,
   },
   {
     $id: "3",
-    merchantName: "Shoppers Drug Mart",
+    payee: {
+      name: "Shoppers Drug Mart",
+      brandId: "shoppersdrugmart.ca",
+      logo: "https://logo.clearbit.com/shoppersdrugmart.ca",
+      defaultCategory: null,
+    },
     amount: -32.75,
     category: {
       name: "Shopping",
@@ -616,7 +638,7 @@ export const displayTransactions: Transaction[] = [
       type: "expense",
     },
     date: "2025-06-03",
-    merchantLogo: "https://logo.clearbit.com/shoppersdrugmart.ca",
+    note: undefined,
   },
 ];
 

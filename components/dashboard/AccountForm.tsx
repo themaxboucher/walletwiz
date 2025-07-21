@@ -116,20 +116,22 @@ export default function AccountForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <TextField
-          form={form}
-          name="name"
-          label="Name"
-          placeholder="e.g. Edge Preferred Savings"
-        />
+        <div className="grid grid-cols-2 gap-4">
+          <TextField
+            form={form}
+            name="name"
+            label="Name"
+            placeholder="e.g. Edge Savings"
+          />
 
-        <SelectField
-          form={form}
-          name="type"
-          label="Type"
-          options={accountTypeOptions}
-          placeholder="Select account type"
-        />
+          <SelectField
+            form={form}
+            name="type"
+            label="Type"
+            options={accountTypeOptions}
+            placeholder="Select account type"
+          />
+        </div>
 
         {error && <FormAlert message={error} type="error" />}
         <div className="flex justify-end gap-2 mt-4">

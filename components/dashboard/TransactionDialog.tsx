@@ -20,7 +20,7 @@ export default function TransactionDialog({
 }: TransactionDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[450px]">
         <DialogHeader className="mb-4">
           <DialogTitle>
             {transactionToEdit ? "Edit Transaction" : "Add Transaction"}

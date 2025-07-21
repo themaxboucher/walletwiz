@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "../ui/button";
-import { TextField } from "../ui/form-fields/TextField";
 import { NumberField } from "../ui/form-fields/NumberField";
 import { DateField } from "../ui/form-fields/DateField";
 import { TextareaField } from "../ui/form-fields/TextareaField";
@@ -20,13 +19,15 @@ import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SelectField } from "../ui/form-fields/SelectField";
+import { PayeeField } from "../ui/form-fields/PayeeField";
 
 // Define the Zod schema for the transaction form
 const transactionFormSchema = z.object({
-  merchant: z
-    .string()
-    .min(1, { message: "Merchant name is required" })
-    .max(50, { message: "Merchant name is too long" }),
+  payee: z.object({
+    value: z.string(), // brandId
+    label: z.string(), // name
+    icon: z.string().optional().nullable(),
+  }),
   amount: z.coerce.number(),
   category: z.string().min(1, { message: "Category is required" }),
   date: z.date({ required_error: "Date is required" }),
@@ -88,7 +89,13 @@ export default function TransactionForm({
     resolver: zodResolver(refinedTransactionFormSchema),
     defaultValues: transactionToEdit
       ? {
-          merchant: transactionToEdit.merchantName,
+          payee: transactionToEdit.payee
+            ? {
+                value: transactionToEdit.payee.brandId || "",
+                label: transactionToEdit.payee.name,
+                icon: transactionToEdit.payee.logo,
+              }
+            : undefined,
           amount: transactionToEdit.amount,
           category: transactionToEdit.category.name,
           date: new Date(transactionToEdit.date),
@@ -96,7 +103,7 @@ export default function TransactionForm({
           account: transactionToEdit.account?.$id ?? "",
         }
       : {
-          merchant: "",
+          payee: undefined,
           amount: undefined,
           category: "",
           date: undefined,
@@ -140,7 +147,12 @@ export default function TransactionForm({
     }
   }, [watchedCategory, watchedAmount, categories, form]);
 
+  // Get the users ID from the first category
+  const userId = categories[0]?.user?.$id;
+  if (!userId) throw new Error("User not found");
+
   async function onSubmit(values: TransactionFormData) {
+    console.log("Submitting transaction form with values:", values);
     setError(null);
     setLoading(true);
     console.log("Submitting transaction form with values:", values);
@@ -151,19 +163,21 @@ export default function TransactionForm({
       if (!selectedCategory || !selectedCategory.$id)
         throw new Error("Category not found");
 
-      // Get the users ID from the selected category
-      const userId = selectedCategory?.user?.$id;
-      if (!userId) throw new Error("User not found");
-
       const transactionData = {
-        merchantName: values.merchant,
+        payee: {
+          name: values.payee.label,
+          brandId: values.payee.value,
+          logo: values.payee.icon,
+          defaultCategory: null,
+          user: userId,
+        } as PayeeDB,
         amount: Number(values.amount.toFixed(2)),
         category: selectedCategory.$id,
         date: values.date.toISOString(),
         note: values.notes,
         user: userId,
         account: values.account,
-      };
+      } as TransactionDB;
 
       if (transactionToEdit?.$id) {
         await updateTransaction(String(transactionToEdit.$id), transactionData);
@@ -225,18 +239,18 @@ export default function TransactionForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <TextField
+          <PayeeField
             form={form}
-            name="merchant"
-            label="Payee"
-            placeholder="e.g. Amazon"
+            name="payee"
+            userId={userId}
+            placeholder="Select payee"
           />
           <SelectField
             form={form}
             name="category"
             label="Category"
             options={categoryOptions}
-            placeholder="Select a category"
+            placeholder="Select category"
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
