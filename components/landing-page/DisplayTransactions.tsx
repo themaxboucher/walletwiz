@@ -36,14 +36,14 @@ export default function DisplayTransactions() {
             <TableRow key={tx.$id} className="hover:bg-transparent">
               <TableCell className="py-3 px-6 font-medium flex items-center gap-3">
                 <Avatar className="size-6">
-                  {tx.merchantLogo && (
-                    <AvatarImage src={tx.merchantLogo} alt={tx.merchantName} />
+                  {tx.payee?.logo && (
+                    <AvatarImage src={tx.payee.logo} alt={tx.payee.name} />
                   )}
                   <AvatarFallback>
                     <Store className="size-4 text-muted-foreground" />
                   </AvatarFallback>
                 </Avatar>
-                {tx.merchantName}
+                {tx.payee?.name || "Unknown payee"}
               </TableCell>
               <TableCell className="py-3 font-medium text-left">
                 {tx.amount > 0 ? "+" : ""}
