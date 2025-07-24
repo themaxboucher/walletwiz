@@ -90,7 +90,13 @@ export function PayeeField({
       try {
         const previousPayees = await getPayees(userId);
         if (previousPayees && previousPayees.length > 0) {
-          const options = previousPayees.map((payee: Payee) => ({
+          // Sort by $updatedAt in descending order (latest first)
+          const sortedPayees = previousPayees.sort(
+            (a: Payee, b: Payee) =>
+              new Date(b.$updatedAt).getTime() -
+              new Date(a.$updatedAt).getTime()
+          );
+          const options = sortedPayees.map((payee: Payee) => ({
             value: payee.brandId,
             label: payee.name,
             icon: payee.logo,

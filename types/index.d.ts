@@ -42,6 +42,8 @@ declare interface Category {
 
 declare interface Payee {
   $id?: string;
+  $createdAt: string;
+  $updatedAt: string;
   name: string;
   logo?: string | null; // Is this necessary if we have the brand id?
   brandId?: string | null; // Brandfetch brand ID
