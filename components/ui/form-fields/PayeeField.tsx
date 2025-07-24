@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { FormFieldWrapper } from "./FormFieldWrapper";
 import { UseFormReturn, ControllerRenderProps } from "react-hook-form";
-import { ChevronsUpDownIcon, Repeat } from "lucide-react";
+import { ChevronsUpDownIcon, Repeat, Plus, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../button";
 import {
@@ -58,6 +58,7 @@ export function PayeeField({
   >([]);
   const [payeeLoading, setPayeeLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
   const payeeSearchTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Replace with frequiently used payees
@@ -191,6 +192,7 @@ export function PayeeField({
 
   // Debounced input handler for payee search
   const handlePayeeInput = (input: string) => {
+    setSearchInput(input);
     // Clear any existing debounce timeout
     if (payeeSearchTimeout.current) clearTimeout(payeeSearchTimeout.current);
     // Set a new timeout to fetch options after 200ms
@@ -223,15 +225,20 @@ export function PayeeField({
                 )}
               >
                 <span className="flex items-center gap-2">
-                  {selectedOption?.icon && (
-                    <Image
-                      width={24}
-                      height={24}
-                      src={selectedOption.icon}
-                      alt={`${selectedOption.label} logo`}
-                      className="size-5 rounded-full object-cover"
-                    />
-                  )}
+                  {selectedOption &&
+                    (selectedOption.icon ? (
+                      <Image
+                        width={24}
+                        height={24}
+                        src={selectedOption.icon}
+                        alt={`${selectedOption.label} logo`}
+                        className="size-5 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="size-5 rounded-full bg-muted flex items-center justify-center">
+                        <Store className="size-3 text-muted-foreground" />
+                      </div>
+                    ))}
                   <span>{selectedOption?.label || placeholder}</span>
                 </span>
                 <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -259,36 +266,76 @@ export function PayeeField({
                 )}
                 {!payeeLoading && (
                   <CommandList>
-                    <CommandEmpty>No option found.</CommandEmpty>
-                    <CommandGroup>
-                      {payeeOptions.map((option) => (
+                    {payeeOptions.length === 0 && !searchInput && (
+                      <CommandEmpty>No option found.</CommandEmpty>
+                    )}
+                    {payeeOptions.length === 0 && searchInput && (
+                      <CommandEmpty>No payee found.</CommandEmpty>
+                    )}
+                    {payeeOptions.length > 0 && (
+                      <CommandGroup>
+                        {payeeOptions.slice(0, 7).map((option) => (
+                          <CommandItem
+                            key={option.value}
+                            value={option.value}
+                            onSelect={(currentValue) => {
+                              const selected = payeeOptions.find(
+                                (opt) => opt.value === currentValue
+                              );
+                              if (selected) {
+                                field.onChange(selected);
+                              } else field.onChange(null);
+                              setOpen(false);
+                            }}
+                          >
+                            {option.icon ? (
+                              <Image
+                                width={24}
+                                height={24}
+                                src={option.icon}
+                                alt={`${option.label} logo`}
+                                className="size-5 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="size-5 rounded-full bg-muted flex items-center justify-center">
+                                <Store className="size-3 text-muted-foreground" />
+                              </div>
+                            )}
+                            <span className="truncate">{option.label}</span>
+                            {option?.id && (
+                              <Repeat className="ml-auto size-4" />
+                            )}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    )}
+                    {searchInput && searchInput.trim().length > 0 && (
+                      <CommandGroup>
                         <CommandItem
-                          key={option.value}
-                          value={option.value}
-                          onSelect={(currentValue) => {
-                            const selected = payeeOptions.find(
-                              (opt) => opt.value === currentValue
-                            );
-                            if (selected) {
-                              field.onChange(selected);
-                            } else field.onChange(null);
+                          value={`create-${searchInput}`}
+                          onSelect={() => {
+                            const newPayee = {
+                              value: searchInput.trim(),
+                              label: searchInput.trim(),
+                              icon: undefined,
+                              id: undefined,
+                            };
+                            field.onChange(newPayee);
                             setOpen(false);
                           }}
                         >
-                          {option.icon && (
-                            <Image
-                              width={24}
-                              height={24}
-                              src={option.icon}
-                              alt={`${option.label} logo`}
-                              className="size-5 rounded-full object-cover"
-                            />
-                          )}
-                          <span className="truncate">{option.label}</span>
-                          {option?.id && <Repeat className="ml-auto size-4" />}
+                          <span className="size-5 rounded-full flex items-center justify-center">
+                            <Plus className="size-4 text-muted-foreground" />
+                          </span>
+                          <span className="truncate">
+                            <span>Create </span>
+                            <span className="font-medium">
+                              "{searchInput.trim()}"
+                            </span>
+                          </span>
                         </CommandItem>
-                      ))}
-                    </CommandGroup>
+                      </CommandGroup>
+                    )}
                   </CommandList>
                 )}
               </Command>
