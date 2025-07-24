@@ -19,11 +19,11 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { format } from "date-fns";
 import CategoryBadge from "./CategoryBadge";
-import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { formatCurrency } from "@/lib/utils";
 import DeleteTransactionDialog from "./DeleteTransactionDialog";
 import { cn } from "@/lib/utils";
 import { accountTypeIcons } from "@/constants";
+import Image from "next/image";
 
 interface TransactionTableProps {
   transactions: Transaction[];
@@ -68,14 +68,19 @@ export default function TransactionTable({
           {paginated.map((tx) => (
             <TableRow key={tx.$id} className="hover:bg-muted/40">
               <TableCell className="py-3 px-6 font-medium flex items-center gap-3">
-                <Avatar className="size-6">
-                  {tx.payee?.logo && (
-                    <AvatarImage src={tx.payee.logo} alt={tx.payee.name} />
-                  )}
-                  <AvatarFallback>
+                {tx.payee?.logo ? (
+                  <Image
+                    width={24}
+                    height={24}
+                    src={tx.payee.logo}
+                    alt={`${tx.payee.name} logo`}
+                    className="size-6 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="size-6 rounded-full bg-muted flex items-center justify-center">
                     <Store className="size-4 text-muted-foreground" />
-                  </AvatarFallback>
-                </Avatar>
+                  </div>
+                )}
                 {tx.payee?.name || "Unknown payee"}
               </TableCell>
               <TableCell
