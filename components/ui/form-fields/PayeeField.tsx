@@ -92,7 +92,10 @@ export function PayeeField({
         if (previousPayees && previousPayees.length > 0) {
           // Sort by $updatedAt in descending order (latest first)
           const sortedPayees = previousPayees.sort(
-            (a: Payee, b: Payee) =>
+            (
+              a: Payee & { $updatedAt: string },
+              b: Payee & { $updatedAt: string }
+            ) =>
               new Date(b.$updatedAt).getTime() -
               new Date(a.$updatedAt).getTime()
           );
