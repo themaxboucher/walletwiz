@@ -27,14 +27,14 @@ export const createTransaction = async (transaction: TransactionDB) => {
   }
 };
 
-export const getTransactions = async (userId: string) => {
+export const getTransactions = async (userId: string, limit: number = 5000) => {
   try {
     const { database } = await createAdminClient();
 
     const transactions = await database.listDocuments(
       DATABASE_ID!,
       TRANSACTION_COLLECTION_ID!,
-      [Query.equal("user", [userId])]
+      [Query.equal("user", [userId]), Query.limit(limit)]
     );
 
     return parseStringify(transactions.documents);

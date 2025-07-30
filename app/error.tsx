@@ -16,6 +16,7 @@ export default function ErrorPage() {
             fill
             className="object-cover"
             priority
+            unoptimized
           />
         </div>
         <div className="space-y-2">

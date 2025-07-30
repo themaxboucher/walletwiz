@@ -10,10 +10,10 @@ import {
 } from "../ui/table";
 import { Store } from "lucide-react";
 import { format } from "date-fns";
-import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, createBrandfetchIconUrl, cn } from "@/lib/utils";
 import CategoryBadge from "../dashboard/CategoryBadge";
 import { displayTransactions } from "@/constants";
+import Image from "next/image";
 
 export default function DisplayTransactions() {
   return (
@@ -35,17 +35,28 @@ export default function DisplayTransactions() {
           {displayTransactions.map((tx) => (
             <TableRow key={tx.$id} className="hover:bg-transparent">
               <TableCell className="py-3 px-6 font-medium flex items-center gap-3">
-                <Avatar className="size-6">
-                  {tx.merchantLogo && (
-                    <AvatarImage src={tx.merchantLogo} alt={tx.merchantName} />
-                  )}
-                  <AvatarFallback>
+                {tx.payee?.domain ? (
+                  <Image
+                    width={24}
+                    height={24}
+                    src={createBrandfetchIconUrl(tx.payee.domain, 24)}
+                    alt={`${tx.payee.name} logo`}
+                    className="size-6 rounded-full object-cover"
+                    unoptimized // Necessary for brandfetch.io hotlinking guidelines
+                  />
+                ) : (
+                  <div className="size-6 rounded-full bg-muted flex items-center justify-center">
                     <Store className="size-4 text-muted-foreground" />
-                  </AvatarFallback>
-                </Avatar>
-                {tx.merchantName}
+                  </div>
+                )}
+                {tx.payee?.name || "Unknown payee"}
               </TableCell>
-              <TableCell className="py-3 font-medium text-left">
+              <TableCell
+                className={cn(
+                  "py-3 font-medium",
+                  tx.amount > 0 && "text-primary"
+                )}
+              >
                 {tx.amount > 0 ? "+" : ""}
                 {formatCurrency(tx.amount)}
               </TableCell>

@@ -552,7 +552,12 @@ export const categories: Category[] = [
 export const displayTransactions: Transaction[] = [
   {
     $id: "1",
-    merchantName: "Tim Hortons",
+    payee: {
+      name: "Starbucks",
+      brandId: "starbucks.com",
+      domain: "starbucks.com",
+      defaultCategory: null,
+    },
     amount: -4.25,
     category: {
       name: "Food and beverage",
@@ -561,13 +566,17 @@ export const displayTransactions: Transaction[] = [
       type: "expense",
     },
     date: "2025-06-02",
-    merchantLogo:
-      "https://img.logo.dev/timhortons.ca?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    note: undefined,
   },
   {
     $id: "2",
-    merchantName: "Wealthsimple",
-    amount: 3000,
+    payee: {
+      name: "Amazon",
+      brandId: "amazon.com",
+      domain: "amazon.com",
+      defaultCategory: null,
+    },
+    amount: 3250,
     category: {
       name: "Salary",
       iconName: "Briefcase",
@@ -575,12 +584,16 @@ export const displayTransactions: Transaction[] = [
       type: "income",
     },
     date: "2025-06-06",
-    merchantLogo:
-      "https://img.logo.dev/wealthsimple.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    note: undefined,
   },
   {
     $id: "4",
-    merchantName: "Uber",
+    payee: {
+      name: "Uber",
+      brandId: "uber.com",
+      domain: "uber.com",
+      defaultCategory: null,
+    },
     amount: -13.25,
     category: {
       name: "Transport",
@@ -589,13 +602,17 @@ export const displayTransactions: Transaction[] = [
       type: "expense",
     },
     date: "2025-06-04",
-    merchantLogo:
-      "https://img.logo.dev/uber.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    note: undefined,
   },
   {
     $id: "5",
-    merchantName: "Rogers",
-    amount: -85.0,
+    payee: {
+      name: "Rogers",
+      brandId: "rogers.com",
+      domain: "rogers.com",
+      defaultCategory: null,
+    },
+    amount: -55.0,
     category: {
       name: "Utilities",
       iconName: "Smartphone",
@@ -603,11 +620,16 @@ export const displayTransactions: Transaction[] = [
       type: "expense",
     },
     date: "2025-06-05",
-    merchantLogo: "https://logo.clearbit.com/rogers.com",
+    note: undefined,
   },
   {
     $id: "3",
-    merchantName: "Shoppers Drug Mart",
+    payee: {
+      name: "Shoppers Drug Mart",
+      brandId: "shoppersdrugmart.ca",
+      domain: "shoppersdrugmart.ca",
+      defaultCategory: null,
+    },
     amount: -32.75,
     category: {
       name: "Shopping",
@@ -616,81 +638,81 @@ export const displayTransactions: Transaction[] = [
       type: "expense",
     },
     date: "2025-06-03",
-    merchantLogo: "https://logo.clearbit.com/shoppersdrugmart.ca",
+    note: undefined,
   },
 ];
 
 export const institutions = [
   {
     name: "RBC",
-    url: "https://img.logo.dev/rbccm.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "rbc.com",
   },
   {
     name: "TD Canada Trust",
-    url: "https://img.logo.dev/td.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "td.com",
   },
   {
     name: "Scotiabank",
-    url: "https://img.logo.dev/scotiabank.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "scotiabank.com",
   },
   {
     name: "BMO",
-    url: "https://img.logo.dev/bmo.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "bmo.com",
   },
   {
     name: "CIBC",
-    url: "https://img.logo.dev/cibc.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "cibc.com",
   },
   {
     name: "National Bank",
-    url: "https://img.logo.dev/fbngp.ca?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "fbngp.ca",
   },
   {
     name: "Desjardins",
-    url: "https://img.logo.dev/desjardins.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "desjardins.com",
   },
   {
     name: "EQ Bank",
-    url: "https://img.logo.dev/eqbank.ca?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "eqbank.ca",
   },
   {
     name: "Wealthsimple",
-    url: "https://img.logo.dev/wealthsimple.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "wealthsimple.com",
   },
   {
     name: "Tangerine",
-    url: "https://img.logo.dev/tangerine.ca?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "tangerine.ca",
   },
   {
     name: "Chase",
-    url: "https://img.logo.dev/chase.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "chase.com",
   },
   {
     name: "Bank of America",
-    url: "https://img.logo.dev/bankofamerica.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "bankofamerica.com",
   },
   {
     name: "Wells Fargo",
-    url: "https://img.logo.dev/wellsfargo.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "wellsfargo.com",
   },
   {
     name: "Citi",
-    url: "https://img.logo.dev/citibankonline.pl?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "citi.com",
   },
   {
     name: "Capital One",
-    url: "https://img.logo.dev/capitalone.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "capitalone.com",
   },
   {
     name: "Ally",
-    url: "https://img.logo.dev/ally.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "ally.com",
   },
   {
     name: "SoFi",
-    url: "https://img.logo.dev/sofi.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "sofi.com",
   },
   {
     name: "Robinhood",
-    url: "https://img.logo.dev/robinhood.com?token=pk_aIln8e6dSBC2g0xYnOuCiA",
+    domain: "robinhood.com",
   },
 ];

@@ -18,7 +18,7 @@ export default function AccountDialog({
 }: AccountDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[450px]">
         <DialogHeader className="mb-4">
           <DialogTitle>
             {accountToEdit ? "Edit Account" : "Add Account"}
