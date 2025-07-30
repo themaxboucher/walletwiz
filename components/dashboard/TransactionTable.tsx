@@ -19,7 +19,7 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { format } from "date-fns";
 import CategoryBadge from "./CategoryBadge";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, createBrandfetchIconUrl } from "@/lib/utils";
 import DeleteTransactionDialog from "./DeleteTransactionDialog";
 import { cn } from "@/lib/utils";
 import { accountTypeIcons } from "@/constants";
@@ -68,13 +68,14 @@ export default function TransactionTable({
           {paginated.map((tx) => (
             <TableRow key={tx.$id} className="hover:bg-muted/40">
               <TableCell className="py-3 px-6 font-medium flex items-center gap-3">
-                {tx.payee?.logo ? (
+                {tx.payee?.domain ? (
                   <Image
                     width={24}
                     height={24}
-                    src={tx.payee.logo}
+                    src={createBrandfetchIconUrl(tx.payee.domain, 24)}
                     alt={`${tx.payee.name} logo`}
                     className="size-6 rounded-full object-cover"
+                    unoptimized // Necessary for brandfetch.io hotlinking guidelines
                   />
                 ) : (
                   <div className="size-6 rounded-full bg-muted flex items-center justify-center">

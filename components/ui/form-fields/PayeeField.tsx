@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { FormFieldWrapper } from "./FormFieldWrapper";
 import { UseFormReturn, ControllerRenderProps } from "react-hook-form";
 import { ChevronsUpDownIcon, Repeat, Plus, Store } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, createBrandfetchIconUrl } from "@/lib/utils";
 import { Button } from "../button";
 import {
   Command,
@@ -20,7 +20,7 @@ import { getPayees } from "@/lib/actions/payee.actions";
 export interface ComboboxOption {
   value: string;
   label: string;
-  icon?: string;
+  domain: string;
   id?: string; // Appwrite payee document ID for previous payees
 }
 
@@ -66,22 +66,22 @@ export function PayeeField({
     {
       value: "Amazon",
       label: "Amazon",
-      icon: "https://cdn.brandfetch.io/idawOgYOsG/w/128/h/128/fallback/lettermark/icon.webp?c=1ax1752763590942bfumLaCV7m4ip2Vpur",
+      domain: "amazon.com",
     },
     {
       value: "Walmart",
       label: "Walmart",
-      icon: "https://cdn.brandfetch.io/idoGsFQrHx/w/128/h/128/fallback/lettermark/icon.webp?c=1ax1752763656084bfumLaCV7ml-WJiLYd",
+      domain: "walmart.com",
     },
     {
       value: "Starbucks",
       label: "Starbucks",
-      icon: "https://cdn.brandfetch.io/idwBSkfVb3/w/128/h/128/fallback/lettermark/icon.webp?c=1ax1752763732504bfumLaCV7mV8U1XvbW",
+      domain: "starbucks.com",
     },
     {
       value: "Apple",
       label: "Apple",
-      icon: "https://cdn.brandfetch.io/idnrCPuv87/w/128/h/128/fallback/lettermark/icon.webp?c=1ax1752760398528bfumLaCV7m-J_KKPWt",
+      domain: "apple.com",
     },
   ];
 
@@ -99,12 +99,14 @@ export function PayeeField({
               new Date(b.$updatedAt).getTime() -
               new Date(a.$updatedAt).getTime()
           );
-          const options = sortedPayees.map((payee: Payee) => ({
-            value: payee.brandId,
-            label: payee.name,
-            icon: payee.logo,
-            id: payee.$id,
-          }));
+          const options: ComboboxOption[] = sortedPayees.map(
+            (payee: Payee) => ({
+              value: payee.brandId,
+              label: payee.name,
+              domain: payee.domain,
+              id: payee.$id,
+            })
+          );
           setPreviousPayeeOptions(options);
           setPayeeOptions(options);
         } else {
@@ -168,7 +170,7 @@ export function PayeeField({
           ).map((brand) => ({
             value: brand.brandId,
             label: brand.name,
-            icon: brand.icon,
+            domain: brand.domain,
           }));
         }
       }
@@ -235,13 +237,14 @@ export function PayeeField({
               >
                 <span className="flex items-center gap-2">
                   {selectedOption &&
-                    (selectedOption.icon ? (
+                    (selectedOption.domain ? (
                       <Image
                         width={24}
                         height={24}
-                        src={selectedOption.icon}
+                        src={createBrandfetchIconUrl(selectedOption.domain, 24)}
                         alt={`${selectedOption.label} logo`}
                         className="size-5 rounded-full object-cover"
+                        unoptimized // Necessary for brandfetch.io hotlinking guidelines
                       />
                     ) : (
                       <div className="size-5 rounded-full bg-muted flex items-center justify-center">
@@ -297,13 +300,14 @@ export function PayeeField({
                               setOpen(false);
                             }}
                           >
-                            {option.icon ? (
+                            {option.domain ? (
                               <Image
                                 width={24}
                                 height={24}
-                                src={option.icon}
+                                src={createBrandfetchIconUrl(option.domain, 24)}
                                 alt={`${option.label} logo`}
                                 className="size-5 rounded-full object-cover"
+                                unoptimized // Necessary for brandfetch.io hotlinking guidelines
                               />
                             ) : (
                               <div className="size-5 rounded-full bg-muted flex items-center justify-center">
@@ -326,7 +330,7 @@ export function PayeeField({
                             const newPayee = {
                               value: searchInput.trim(),
                               label: searchInput.trim(),
-                              icon: undefined,
+                              domain: undefined,
                               id: undefined,
                             };
                             field.onChange(newPayee);

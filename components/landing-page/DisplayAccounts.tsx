@@ -1,4 +1,5 @@
 import { institutions } from "@/constants";
+import { createBrandfetchIconUrl } from "@/lib/utils";
 import Image from "next/image";
 
 export default function DisplayAccounts() {
@@ -10,11 +11,12 @@ export default function DisplayAccounts() {
           className="flex size-16 items-center justify-center"
         >
           <Image
-            src={inst.url}
+            src={createBrandfetchIconUrl(inst.domain, 120)}
             alt={inst.name}
             width={120}
             height={120}
             className="object-contain rounded-full border-2 border-white shadow-md"
+            unoptimized // Necessary for brandfetch.io hotlinking guidelines
           />
         </div>
       ))}

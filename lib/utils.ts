@@ -347,3 +347,75 @@ export function sortCategories(categories: Category[]): Category[] {
     ...categories.filter((cat) => cat.name === "Other Expense"),
   ];
 }
+
+// Brandfetch Logo Functions //
+
+/**
+ * Creates a Brandfetch logo URL from a domain using the Logo Link feature
+ * @param domain - The domain of the brand (e.g., "apple.com", "amazon.com")
+ * @param options - Optional configuration for the logo
+ * @returns The Brandfetch logo URL
+ */
+export const createBrandfetchLogoUrl = (
+  domain: string,
+  options: {
+    type?: "icon" | "logo" | "symbol";
+    theme?: "light" | "dark";
+    fallback?: boolean;
+    width?: number;
+    height?: number;
+  } = {}
+): string => {
+  const clientId = process.env.NEXT_PUBLIC_BRANDFETCH_CLIENT_ID;
+  const { type = "icon", theme, fallback = true, width, height } = options;
+
+  // Use the simple Logo Link format - it handles fallbacks internally
+  let url = `https://cdn.brandfetch.io/${domain}`;
+
+  // Add query parameters
+  const params = new URLSearchParams();
+  if (clientId) params.append("c", clientId);
+  if (theme) params.append("theme", theme);
+  if (width) params.append("w", width.toString());
+  if (height) params.append("h", height.toString());
+
+  return `${url}?${params.toString()}`;
+};
+
+/**
+ * Creates a Brandfetch logo URL optimized for icons (small, square format)
+ * @param domain - The domain of the brand
+ * @param size - Size in pixels (defaults to 128)
+ * @returns The Brandfetch icon URL
+ */
+export const createBrandfetchIconUrl = (
+  domain: string,
+  size: number = 128
+): string => {
+  return createBrandfetchLogoUrl(domain, {
+    type: "icon",
+    width: size,
+    height: size,
+    fallback: true,
+  });
+};
+
+/**
+ * Creates a Brandfetch logo URL for horizontal logos with theme support
+ * @param domain - The domain of the brand
+ * @param theme - Light or dark theme (optional)
+ * @param height - Height in pixels (optional)
+ * @returns The Brandfetch logo URL
+ */
+export const createBrandfetchLogoUrlWithTheme = (
+  domain: string,
+  theme?: "light" | "dark",
+  height?: number
+): string => {
+  return createBrandfetchLogoUrl(domain, {
+    type: "logo",
+    theme,
+    height,
+    fallback: true,
+  });
+};

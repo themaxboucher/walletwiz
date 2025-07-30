@@ -26,7 +26,7 @@ const transactionFormSchema = z.object({
   payee: z.object({
     value: z.string(), // brandId
     label: z.string(), // name
-    icon: z.string().optional().nullable(),
+    domain: z.string().optional().nullable(),
     id: z.string().optional(), // Appwrite payee document ID for previous payees
   }),
   amount: z.coerce.number(),
@@ -94,7 +94,7 @@ export default function TransactionForm({
             ? {
                 value: transactionToEdit.payee.brandId || "",
                 label: transactionToEdit.payee.name,
-                icon: transactionToEdit.payee.logo,
+                domain: transactionToEdit.payee.domain,
                 id: transactionToEdit.payee.$id,
               }
             : undefined,
@@ -174,7 +174,7 @@ export default function TransactionForm({
         payeeField = {
           name: values.payee?.label,
           brandId: values.payee?.value,
-          logo: values.payee?.icon,
+          domain: values.payee?.domain,
           defaultCategory: null,
           user: userId,
         } as PayeeDB;

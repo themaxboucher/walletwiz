@@ -43,8 +43,8 @@ declare interface Category {
 declare interface Payee {
   $id?: string;
   name: string;
-  logo?: string | null; // Is this necessary if we have the brand id?
   brandId?: string | null; // Brandfetch brand ID
+  domain: string | null; // Brandfetch domain
   user?: User; // Relationship field
   defaultCategory: Category | null; // Relationship field
 }
