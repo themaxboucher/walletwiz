@@ -9,11 +9,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "../ui/form";
 import { categoryIcons, categoryColors, accountTypeIcons } from "@/constants";
+import { getAccountIcon, createBrandfetchIconUrl } from "@/lib/utils";
 import {
   createTransaction,
   updateTransaction,
 } from "@/lib/actions/transaction.actions";
-import { CircleX, LoaderCircle } from "lucide-react";
+import { CircleX, LoaderCircle, Landmark } from "lucide-react";
 import { useState, useEffect } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
@@ -231,11 +232,28 @@ export default function TransactionForm({
       return 0;
     });
 
-  const accountOptions = accounts.map((account) => ({
-    value: account.$id!,
-    label: account.name,
-    icon: accountTypeIcons[account.type?.iconName],
-  }));
+  const accountOptions = accounts.map((account) => {
+    const iconResult = getAccountIcon(account);
+
+    if (iconResult.type === "brandfetch") {
+      return {
+        value: account.$id!,
+        label: account.name,
+        imageSrc: createBrandfetchIconUrl(iconResult.value, 18),
+      };
+    } else {
+      // Handle Lucide icon
+      const Icon =
+        iconResult.value === "Landmark"
+          ? Landmark
+          : accountTypeIcons[iconResult.value];
+      return {
+        value: account.$id!,
+        label: account.name,
+        icon: Icon,
+      };
+    }
+  });
 
   if (categories.length === 0) {
     return (

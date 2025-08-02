@@ -14,12 +14,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { MoreVertical, Edit, Trash2, Store } from "lucide-react";
+import { MoreVertical, Edit, Trash2, Store, Landmark } from "lucide-react";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { format } from "date-fns";
 import CategoryBadge from "./CategoryBadge";
-import { formatCurrency, createBrandfetchIconUrl } from "@/lib/utils";
+import {
+  formatCurrency,
+  createBrandfetchIconUrl,
+  getAccountIcon,
+} from "@/lib/utils";
 import DeleteTransactionDialog from "./DeleteTransactionDialog";
 import { cn } from "@/lib/utils";
 import { accountTypeIcons } from "@/constants";
@@ -95,19 +99,37 @@ export default function TransactionTable({
               </TableCell>
               <TableCell className="py-3">
                 {(() => {
-                  const iconName = tx.account?.type?.iconName;
-                  const Icon = iconName
-                    ? accountTypeIcons[iconName]
-                    : undefined;
-                  if (Icon && tx.account?.name) {
+                  if (!tx.account?.name) return "-";
+
+                  const iconResult = getAccountIcon(tx.account);
+
+                  if (iconResult.type === "brandfetch") {
+                    return (
+                      <span className="inline-flex items-center gap-2 max-w-[8rem]">
+                        <Image
+                          width={18}
+                          height={18}
+                          src={createBrandfetchIconUrl(iconResult.value, 18)}
+                          alt={`${tx.account.name} logo`}
+                          className="size-4.5 rounded-[0.188rem] object-cover"
+                          unoptimized
+                        />
+                        <span className="truncate">{tx.account.name}</span>
+                      </span>
+                    );
+                  } else {
+                    // Handle Lucide icon
+                    const Icon =
+                      iconResult.value === "Landmark"
+                        ? Landmark
+                        : accountTypeIcons[iconResult.value];
                     return (
                       <span className="inline-flex items-center gap-2">
-                        <Icon className="w-4 h-4 text-muted-foreground mr-1" />
+                        <Icon className="w-4 h-4 text-muted-foreground" />
                         {tx.account.name}
                       </span>
                     );
                   }
-                  return tx.account?.name || "-";
                 })()}
               </TableCell>
               <TableCell className="py-3">

@@ -419,3 +419,49 @@ export const createBrandfetchLogoUrlWithTheme = (
     fallback: true,
   });
 };
+
+// Account Icon Helper //
+
+/**
+ * Determines what icon/logo to display for an account based on priority:
+ * 1. AccountType brandDomain (if available)
+ * 2. Institution domain (if available)
+ * 3. AccountType icon (if available)
+ * 4. Landmark icon (fallback)
+ */
+export interface AccountIconResult {
+  type: "brandfetch" | "icon";
+  value: string; // Either domain for brandfetch or icon name for Lucide icon
+}
+
+export const getAccountIcon = (account: Account): AccountIconResult => {
+  // Priority 1: AccountType brandDomain
+  if (account.type?.brandDomain) {
+    return {
+      type: "brandfetch",
+      value: account.type.brandDomain,
+    };
+  }
+
+  // Priority 2: Institution domain
+  if (account.institution?.domain) {
+    return {
+      type: "brandfetch",
+      value: account.institution.domain,
+    };
+  }
+
+  // Priority 3: AccountType icon
+  if (account.type?.iconName) {
+    return {
+      type: "icon",
+      value: account.type.iconName,
+    };
+  }
+
+  // Priority 4: Fallback to Landmark
+  return {
+    type: "icon",
+    value: "Landmark",
+  };
+};

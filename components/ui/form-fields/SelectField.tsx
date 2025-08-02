@@ -81,7 +81,7 @@ export function SelectField({
                         className={cn("h-4 w-4", selectedOption.color)}
                       />
                     ) : null}
-                    <span>{selectedOption.label}</span>
+                    <span className="truncate">{selectedOption.label}</span>
                   </div>
                 )}
               </SelectValue>
@@ -134,7 +134,7 @@ export function SelectField({
                       ) : option.icon ? (
                         <option.icon className={cn("h-4 w-4", option.color)} />
                       ) : null}
-                      <span>{option.label}</span>
+                      <span className="truncate">{option.label}</span>
                     </SelectItem>
                   ))
                 )
