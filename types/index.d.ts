@@ -15,6 +15,7 @@ declare type CategoryColor =
 declare interface Account {
   $id?: string;
   name: string;
+  institution?: FinancialInstitution; // Relationship field
   type: AccountType; // Relationship field
   user?: User; // Relationship field
   currentBalance?: number;
@@ -28,6 +29,7 @@ declare interface AccountType {
   name: string;
   type: "credit" | "depository" | "other";
   iconName: string;
+  brandDomain: string | null;
 }
 
 declare interface Category {
@@ -38,6 +40,12 @@ declare interface Category {
   type: "income" | "expense";
   budget?: number | null;
   user?: User; // Relationship field
+}
+
+declare interface FinancialInstitution {
+  $id?: string;
+  name: string;
+  domain: string;
 }
 
 declare interface Payee {
@@ -81,6 +89,9 @@ declare type TransactionDB = Override<
   { category: string; user: string; account?: string; payee: PayeeDB }
 >;
 
-declare type AccountDB = Override<Account, { type: string }>;
+declare type AccountDB = Override<
+  Account,
+  { type: string; institution?: string | FinancialInstitution }
+>;
 
 declare type PayeeDB = Override<Payee, { user: string }>;
