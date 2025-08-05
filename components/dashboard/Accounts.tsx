@@ -9,9 +9,14 @@ import AccountItem from "./AccountItem";
 interface AccountsProps {
   accounts: Account[];
   userId: string;
+  transactions?: Transaction[];
 }
 
-export default function Accounts({ accounts, userId }: AccountsProps) {
+export default function Accounts({
+  accounts,
+  userId,
+  transactions = [],
+}: AccountsProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<Account | null>(null);
 
@@ -44,6 +49,7 @@ export default function Accounts({ accounts, userId }: AccountsProps) {
                 key={account.$id}
                 account={account}
                 onEdit={handleOpenDialog}
+                transactions={transactions}
               />
             ))}
           </div>

@@ -1,72 +1,141 @@
 import { accountTypeIcons } from "@/constants";
-import { Landmark, Edit, Trash2, MoreHorizontal } from "lucide-react";
-import { Button } from "../ui/button";
+import { Landmark, Info, CircleCheck } from "lucide-react";
+import { createBrandfetchIconUrl, formatCurrency } from "@/lib/utils";
+import Image from "next/image";
 import React, { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { useRouter } from "next/navigation";
 import DeleteAccountDialog from "./DeleteAccountDialog";
 
 interface AccountItemProps {
-  account: any; // fallback to any to avoid linter error
-  onEdit: (account: any) => void;
+  account: Account;
+  onEdit: (account: Account) => void;
+  transactions?: Transaction[];
 }
 
-export default function AccountItem({ account, onEdit }: AccountItemProps) {
-  const Icon = accountTypeIcons[account.type?.iconName] || Landmark;
+export default function AccountItem({
+  account,
+  onEdit,
+  transactions = [],
+}: AccountItemProps) {
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const router = useRouter();
+
+  // Calculate the sum of all transactions for this account
+  const accountTransactions = transactions.filter(
+    (tx) => tx.account?.$id === account.$id
+  );
+  const transactionSum = accountTransactions.reduce(
+    (sum, tx) => sum + tx.amount,
+    0
+  );
+  const currentBalance = account.currentBalance || 0;
+  const balanceDifference = currentBalance - transactionSum;
+  const balancesMatch = Math.abs(balanceDifference) < 0.01; // Account for floating point precision
 
   return (
-    <div className="group flex items-center justify-between rounded-xl p-4 shadow-sm border border-border">
-      <div className="flex items-center gap-4">
-        <Icon className="size-6 text-muted-foreground" />
-        <div className="flex flex-col">
-          <span className="font-semibold text-base">{account.name}</span>
-          <span className="text-xs text-muted-foreground">
-            {account.type?.name}
-          </span>
-          {account.currentBalance && (
-            <span className="text-sm font-medium">
-              ${account.currentBalance.toLocaleString()}
-            </span>
-          )}
+    <div
+      className="group relative overflow-hidden rounded-xl border transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer aspect-[1.8] max-w-md bg-gradient-to-br from-zinc-900 to-zinc-700 text-white border-zinc-600"
+      onClick={() => onEdit(account)}
+    >
+      <div className="p-5 flex flex-col justify-start gap-4.5">
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <div className="font-semibold text-white/95">{account.name}</div>
+          <div className="flex items-center gap-3 min-w-0 w-fit">
+            <div className="text-sm font-medium truncate">
+              {account.mask && (
+                <>
+                  <span className="tracking-tighter">••••</span> {account.mask}
+                </>
+              )}
+            </div>
+            <div className="flex-shrink-0">
+              {account.institution?.domain ? (
+                <Image
+                  width={28}
+                  height={28}
+                  src={createBrandfetchIconUrl(account.institution.domain, 28)}
+                  alt={`${account.institution.name} logo`}
+                  className="size-7 rounded-sm object-cover"
+                  title={account.institution.name}
+                  unoptimized
+                />
+              ) : (
+                <Landmark className="size-8 text-white/80" />
+              )}
+            </div>
+          </div>
         </div>
+
+        <div className="flex items-end justify-between gap-5">
+          <div className="space-y-2.5">
+            <h3 className="text-2xl font-semibold text-white leading-tight w-fit">
+              {formatCurrency(account.currentBalance || 0)}
+            </h3>
+            <div className="flex items-center gap-2">
+              {account.type && (
+                <div className="text-white/95 text-xs flex items-center gap-1.5">
+                  {account.type.brandDomain ? (
+                    <Image
+                      width={16}
+                      height={16}
+                      src={createBrandfetchIconUrl(
+                        account.type.brandDomain,
+                        16
+                      )}
+                      alt={`${account.type.name} logo`}
+                      className="size-4 rounded-[0.125rem] object-cover"
+                      unoptimized
+                    />
+                  ) : account.type.iconName &&
+                    accountTypeIcons[account.type.iconName] ? (
+                    React.createElement(
+                      accountTypeIcons[account.type.iconName],
+                      {
+                        className: "size-4 text-white/80",
+                      }
+                    )
+                  ) : (
+                    <Landmark className="size-4 text-white/80" />
+                  )}
+                  {account.type.name === "Other"
+                    ? account.type.type === "credit"
+                      ? "Credit Card"
+                      : account.type.type === "depository"
+                      ? "Depository"
+                      : account.type.name
+                    : account.type.name}
+                </div>
+              )}
+              <span className="text-white/50">|</span>
+              {balancesMatch ? (
+                <div className="flex items-center gap-1.5">
+                  <CircleCheck className="size-4 text-white/90" />
+                  <p className="text-xs text-white/90">
+                    Balance matches transactions
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1.5">
+                  <Info className="size-4 text-white/90" />
+                  <p className="text-xs text-white/90">
+                    <span className="font-semibold">
+                      {formatCurrency(Math.abs(balanceDifference))}
+                    </span>{" "}
+                    missing from transactions
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute bottom-0 left-0 right-0 h-13 bg-gradient-to-r from-white/20 to-white/8" />
       </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="size-7">
-            <MoreHorizontal className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            className="font-medium"
-            onClick={() => onEdit(account)}
-          >
-            <Edit className="size-4 mr-2" /> Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="font-medium"
-            variant="destructive"
-            onSelect={(e) => {
-              e.preventDefault();
-              setDeleteOpen(true);
-            }}
-          >
-            <Trash2 className="size-4 mr-2" /> Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <DeleteAccountDialog
-        open={deleteOpen}
-        onOpenChange={setDeleteOpen}
-        accountId={account.$id}
-      />
+      {account.$id && (
+        <DeleteAccountDialog
+          open={deleteOpen}
+          onOpenChange={setDeleteOpen}
+          accountId={account.$id}
+        />
+      )}
     </div>
   );
 }

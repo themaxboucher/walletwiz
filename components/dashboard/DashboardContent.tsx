@@ -158,7 +158,11 @@ export default function DashboardContent({
             categories={categories}
             user={user}
           />
-          <Accounts accounts={accounts} userId={user.$id} />
+          <Accounts
+            accounts={accounts}
+            userId={user.$id}
+            transactions={transactions}
+          />
         </div>
       </div>
     </>

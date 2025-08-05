@@ -114,7 +114,15 @@ export default function TransactionTable({
                           className="size-4.5 rounded-[0.188rem] object-cover"
                           unoptimized
                         />
-                        <span className="truncate">{tx.account.name}</span>
+                        <span className="truncate">
+                          {(tx.account.mask && (
+                            <>
+                              <span className="tracking-tighter">••••</span>{" "}
+                              {tx.account.mask}
+                            </>
+                          )) ||
+                            tx.account.name}
+                        </span>
                       </span>
                     );
                   } else {
