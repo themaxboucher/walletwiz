@@ -10,7 +10,7 @@ import { z } from "zod";
 import { Form } from "../ui/form";
 import { createAccount, updateAccount } from "@/lib/actions/account.actions";
 import { createBrandfetchIconUrl } from "@/lib/utils";
-import { CircleX, LoaderCircle, Trash2 } from "lucide-react";
+import { CircleX, Info, LoaderCircle, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
@@ -188,6 +188,12 @@ export default function AccountForm({
           label="Current Balance"
           placeholder="0.00"
           isCurrency={true}
+          description={
+            <span className="flex items-center">
+              <Info className="size-3 mr-1" />
+              Updates automatically with new transactions.
+            </span>
+          }
         />
 
         {error && <FormAlert message={error} type="error" />}
