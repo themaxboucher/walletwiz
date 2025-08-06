@@ -18,12 +18,14 @@ interface DeleteAccountDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   accountId: string;
+  onAccountDeleted?: () => void;
 }
 
 export default function DeleteAccountDialog({
   open,
   onOpenChange,
   accountId,
+  onAccountDeleted,
 }: DeleteAccountDialogProps) {
   const [deleting, setDeleting] = useState(false);
   const router = useRouter();
@@ -33,6 +35,7 @@ export default function DeleteAccountDialog({
     try {
       await deleteFinancialAccount(accountId);
       onOpenChange(false);
+      onAccountDeleted?.(); // Close the parent account form dialog
       router.refresh();
     } catch (error) {
       toast("Error deleting account", {

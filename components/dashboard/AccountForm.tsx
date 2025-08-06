@@ -10,7 +10,7 @@ import { z } from "zod";
 import { Form } from "../ui/form";
 import { createAccount, updateAccount } from "@/lib/actions/account.actions";
 import { createBrandfetchIconUrl } from "@/lib/utils";
-import { CircleX, LoaderCircle } from "lucide-react";
+import { CircleX, LoaderCircle, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
@@ -18,6 +18,7 @@ import { SelectField } from "../ui/form-fields/SelectField";
 import { getAccountTypes } from "@/lib/actions/accountType.actions";
 import { toast } from "sonner";
 import { accountTypeIcons } from "@/constants";
+import DeleteAccountDialog from "./DeleteAccountDialog";
 
 // Define the Zod schema for the account form
 const accountFormSchema = z.object({
@@ -55,6 +56,7 @@ export default function AccountForm({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [accountTypes, setAccountTypes] = useState<AccountType[]>([]);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchAccountTypes() {
@@ -189,16 +191,38 @@ export default function AccountForm({
         />
 
         {error && <FormAlert message={error} type="error" />}
-        <div className="flex justify-end gap-2 mt-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={loading}>
-            {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
-            {!loading && "Save"}
-          </Button>
+        <div className="flex justify-between mt-4">
+          {accountToEdit && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(true)}
+              disabled={loading}
+            >
+              <Trash2 className="h-4 w-4" />
+              Delete Account
+            </Button>
+          )}
+          <div className={`flex gap-2 ${!accountToEdit ? "ml-auto" : ""}`}>
+            <Button type="button" variant="outline" onClick={onCancel}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
+              {!loading && "Save"}
+            </Button>
+          </div>
         </div>
       </form>
+
+      {accountToEdit && (
+        <DeleteAccountDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          accountId={accountToEdit.$id!}
+          onAccountDeleted={onCancel}
+        />
+      )}
     </Form>
   );
 }

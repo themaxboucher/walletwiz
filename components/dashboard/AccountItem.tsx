@@ -3,7 +3,6 @@ import { Landmark, Info, CircleCheck } from "lucide-react";
 import { createBrandfetchIconUrl, formatCurrency, cn } from "@/lib/utils";
 import Image from "next/image";
 import React, { useState } from "react";
-import DeleteAccountDialog from "./DeleteAccountDialog";
 
 interface AccountItemProps {
   account: Account;
@@ -145,13 +144,6 @@ export default function AccountItem({
 
         <div className="absolute bottom-0 left-0 right-0 h-13 bg-gradient-to-r from-white/20 to-white/8" />
       </div>
-      {account.$id && (
-        <DeleteAccountDialog
-          open={deleteOpen}
-          onOpenChange={setDeleteOpen}
-          accountId={account.$id}
-        />
-      )}
     </div>
   );
 }
