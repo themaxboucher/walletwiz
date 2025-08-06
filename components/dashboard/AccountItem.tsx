@@ -132,6 +132,7 @@ export default function AccountItem({
                   <Info className="size-4 text-white/90" />
                   <p className="text-xs text-white/90">
                     <span className="font-semibold">
+                      {balanceDifference < 0 && "-"}
                       {formatCurrency(Math.abs(balanceDifference))}
                     </span>{" "}
                     missing from transactions
