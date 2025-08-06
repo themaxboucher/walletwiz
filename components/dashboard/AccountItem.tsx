@@ -45,7 +45,7 @@ export default function AccountItem({
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-xl border-2 transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 cursor-pointer aspect-[1.75] w-full max-w-md text-white",
+        "group relative overflow-hidden rounded-xl border-2 transition-all duration-100 ease-out shadow-xl hover:shadow-2xl hover:-translate-y-1 cursor-pointer aspect-[1.75] w-full max-w-md text-white",
         getCardColorClasses()
       )}
       onClick={onClick}

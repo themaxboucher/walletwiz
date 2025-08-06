@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import EmptyState from "./EmptyState";
 import AccountDialog from "./AccountDialog";
 import { useState, useEffect, useRef } from "react";
+import { motion } from "motion/react";
 import AccountItem from "./AccountItem";
 
 interface AccountsProps {
@@ -87,7 +88,7 @@ export default function Accounts({
       <CardContent>
         {accounts.length > 0 ? (
           <div
-            className="relative w-full"
+            className="relative w-full transition-all duration-400 ease-out"
             style={{
               height: `${cardHeight + (accounts.length - 1) * cardOffset}px`,
             }}
@@ -100,16 +101,23 @@ export default function Accounts({
               const isTopCard = index === 0;
 
               return (
-                <div
+                <motion.div
                   key={account.$id}
                   ref={isTopCard ? topCardRef : undefined}
-                  className={`absolute flex flex-col items-center transition-all duration-300 ease-out w-full ${
+                  layout
+                  className={`absolute flex flex-col items-center w-full ${
                     !isTopCard ? "hover:cursor-pointer" : ""
                   }`}
                   style={{
                     top: `${stackIndex * cardOffset}px`,
                     zIndex: stackIndex + 1,
                   }}
+                  transition={{
+                    type: "spring",
+                    bounce: 0.3,
+                    duration: 0.6,
+                  }}
+                  whileTap={!isTopCard ? { scale: 1.05 } : undefined}
                   onClick={(e) => {
                     e.stopPropagation();
                     if (!isTopCard && account.$id) {
@@ -124,7 +132,7 @@ export default function Accounts({
                     }
                     transactions={transactions}
                   />
-                </div>
+                </motion.div>
               );
             })}
           </div>
