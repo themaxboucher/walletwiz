@@ -46,6 +46,15 @@ declare interface FinancialInstitution {
   $id?: string;
   name: string;
   domain: string;
+  cardColor?:
+    | "red"
+    | "yellow"
+    | "orange"
+    | "blue"
+    | "violet"
+    | "pink"
+    | "green"
+    | null;
 }
 
 declare interface Payee {

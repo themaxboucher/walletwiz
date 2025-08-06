@@ -1,19 +1,19 @@
-import { accountTypeIcons } from "@/constants";
+import { accountTypeIcons, cardColors } from "@/constants";
 import { Landmark, Info, CircleCheck } from "lucide-react";
-import { createBrandfetchIconUrl, formatCurrency } from "@/lib/utils";
+import { createBrandfetchIconUrl, formatCurrency, cn } from "@/lib/utils";
 import Image from "next/image";
 import React, { useState } from "react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
 
 interface AccountItemProps {
   account: Account;
-  onEdit: (account: Account) => void;
+  onClick?: () => void;
   transactions?: Transaction[];
 }
 
 export default function AccountItem({
   account,
-  onEdit,
+  onClick,
   transactions = [],
 }: AccountItemProps) {
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -30,12 +30,27 @@ export default function AccountItem({
   const balanceDifference = currentBalance - transactionSum;
   const balancesMatch = Math.abs(balanceDifference) < 0.01; // Account for floating point precision
 
+  // Get card color based on institution's cardColor
+  const getCardColorClasses = () => {
+    if (
+      account.institution?.cardColor &&
+      cardColors[account.institution.cardColor]
+    ) {
+      return cardColors[account.institution.cardColor];
+    }
+    // Default fallback color
+    return "bg-gradient-to-br from-zinc-600 to-zinc-800 border-zinc-500";
+  };
+
   return (
     <div
-      className="group relative overflow-hidden rounded-xl border transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer aspect-[1.8] max-w-md bg-gradient-to-br from-zinc-900 to-zinc-700 text-white border-zinc-600"
-      onClick={() => onEdit(account)}
+      className={cn(
+        "group relative overflow-hidden rounded-xl border-2 transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1 cursor-pointer aspect-[1.75] w-full max-w-md text-white",
+        getCardColorClasses()
+      )}
+      onClick={onClick}
     >
-      <div className="p-5 flex flex-col justify-start gap-4.5">
+      <div className="p-5 flex flex-col justify-between gap-5 h-[calc(100%-3.25rem)]">
         <div className="flex items-center justify-between gap-4 mb-4">
           <div className="font-semibold text-white/95">{account.name}</div>
           <div className="flex items-center gap-3 min-w-0 w-fit">
