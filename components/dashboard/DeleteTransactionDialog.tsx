@@ -57,7 +57,11 @@ export default function DeleteTransactionDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} disabled={deleting}>
+          <AlertDialogAction
+            className="bg-destructive hover:bg-destructive/90"
+            onClick={handleDelete}
+            disabled={deleting}
+          >
             {deleting ? (
               <LoaderCircle className="h-4 w-4 animate-spin" />
             ) : (
