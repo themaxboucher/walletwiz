@@ -83,7 +83,7 @@ export const cardColors: Record<CategoryColor, string> = {
     "bg-gradient-to-br from-[hsl(270,65%,60%)] to-[hsl(270,55%,50%)] border-[hsl(270,70%,45%)] dark:bg-gradient-to-br dark:from-[hsl(270,30%,25%)] dark:to-[hsl(270,25%,20%)] dark:border-[hsl(270,45%,35%)]",
   pink: "bg-gradient-to-br from-[hsl(330,65%,60%)] to-[hsl(330,55%,50%)] border-[hsl(330,70%,45%)] dark:bg-gradient-to-br dark:from-[hsl(330,30%,25%)] dark:to-[hsl(330,25%,20%)] dark:border-[hsl(330,45%,35%)]",
   green:
-    "bg-gradient-to-br from-[hsl(120,65%,60%)] to-[hsl(120,55%,50%)] border-[hsl(120,70%,45%)] dark:bg-gradient-to-br dark:from-[hsl(120,30%,25%)] dark:to-[hsl(120,25%,20%)] dark:border-[hsl(120,45%,35%)]",
+    "bg-gradient-to-br from-[hsl(120,50%,60%)] to-[hsl(120,40%,45%)] border-[hsl(120,70%,45%)] dark:bg-gradient-to-br dark:from-[hsl(120,30%,25%)] dark:to-[hsl(120,25%,20%)] dark:border-[hsl(120,45%,35%)]",
 };
 
 export const categoryIcons: Record<string, LucideIcon> = {
