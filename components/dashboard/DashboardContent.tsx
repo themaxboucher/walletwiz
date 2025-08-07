@@ -9,7 +9,7 @@ import {
   calculateIncome,
   calculateExpenses,
   calculateNetChange,
-  calculateTotalBalance,
+  calculateTotalAccountBalance,
   calculatePreviousPeriodMetrics,
   getPeriodText,
   percentageChange,
@@ -54,11 +54,15 @@ export default function DashboardContent({
   const chartToDate = lastDate;
   const filteredChartData = useMemo(
     () =>
-      generateBalanceChartData(transactions, {
-        from: chartFromDate,
-        to: chartToDate,
-      }),
-    [transactions, chartFromDate, chartToDate]
+      generateBalanceChartData(
+        transactions,
+        {
+          from: chartFromDate,
+          to: chartToDate,
+        },
+        accounts
+      ),
+    [transactions, chartFromDate, chartToDate, accounts]
   );
 
   // Calculate totals from filtered transactions
@@ -75,10 +79,10 @@ export default function DashboardContent({
     [income, expenses]
   );
 
-  // Calculate total balance from all transactions up to the selected day
+  // Calculate total balance from all account balances
   const totalBalance = useMemo(
-    () => calculateTotalBalance(transactions, lastDate),
-    [transactions, lastDate]
+    () => calculateTotalAccountBalance(accounts),
+    [accounts]
   );
 
   // Calculate previous period metrics for comparison

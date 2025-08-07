@@ -85,10 +85,12 @@ export function filterTransactionsByDateRange(
 
 /**
  * Generates running balance chart data for all transactions within a date range.
+ * Applies balance adjustment to align with actual account balances.
  */
 export function generateBalanceChartData(
   transactions: Transaction[],
-  dateRange?: { from?: Date; to?: Date }
+  dateRange?: { from?: Date; to?: Date },
+  accounts?: Account[]
 ) {
   if (transactions.length === 0) return [];
   const sortedTransactions = [...transactions].sort(
@@ -97,6 +99,12 @@ export function generateBalanceChartData(
   let balance = 0;
   let txIndex = 0;
   const dates: Date[] = [];
+
+  // Calculate balance adjustment (difference between account balances and transaction sums)
+  const balanceAdjustment = accounts
+    ? calculateTotalAccountBalance(accounts) -
+      calculateTotalBalance(transactions)
+    : 0;
 
   // Determine the date range to use
   const from = dateRange?.from
@@ -123,7 +131,7 @@ export function generateBalanceChartData(
     }
     return {
       date: date.toISOString(),
-      balance,
+      balance: balance + balanceAdjustment,
     };
   });
 }
@@ -181,6 +189,16 @@ export function calculateTotalBalance(
   return transactions
     .filter((tx) => new Date(tx.date) <= date)
     .reduce((sum, tx) => sum + tx.amount, 0);
+}
+
+/**
+ * Calculates total balance from all account balances.
+ */
+export function calculateTotalAccountBalance(accounts: Account[]) {
+  return accounts.reduce(
+    (sum, account) => sum + (account.currentBalance || 0),
+    0
+  );
 }
 
 /**
