@@ -37,7 +37,7 @@ declare interface Category {
   name: string;
   iconName: string;
   color: CategoryColor;
-  type: "income" | "expense";
+  type: "income" | "expense" | "transfer";
   budget?: number | null;
   user?: User; // Relationship field
 }

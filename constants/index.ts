@@ -60,6 +60,7 @@ import {
   MousePointer,
   WalletCards,
   ShoppingBasket,
+  ArrowRightLeft,
 } from "lucide-react";
 
 export const categoryColors: Record<CategoryColor, string> = {
@@ -140,6 +141,7 @@ export const categoryIcons: Record<string, LucideIcon> = {
   CircleEllipsis,
   Bubbles,
   Coins,
+  ArrowRightLeft,
 };
 
 export const accountTypeIcons: Record<string, LucideIcon> = {
@@ -209,6 +211,12 @@ export const defaultCategories: Category[] = [
     color: "red",
     iconName: "BanknoteArrowDown",
     type: "expense",
+  },
+  {
+    name: "Transfer",
+    color: "blue",
+    iconName: "ArrowRightLeft",
+    type: "transfer",
   },
 ];
 
