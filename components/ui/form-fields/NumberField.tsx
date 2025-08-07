@@ -15,6 +15,7 @@ interface NumberFieldProps {
   min?: number;
   max?: number;
   isCurrency?: boolean;
+  description?: React.ReactNode;
 }
 
 export function NumberField({
@@ -27,6 +28,7 @@ export function NumberField({
   min,
   max,
   isCurrency = false,
+  description,
 }: NumberFieldProps) {
   const [displayValue, setDisplayValue] = useState<string>("");
   const [isFocused, setIsFocused] = useState(false);
@@ -65,6 +67,7 @@ export function NumberField({
       name={name}
       label={label}
       className={className}
+      description={description}
     >
       {({ field }) => (
         <div className="relative">

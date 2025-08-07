@@ -72,6 +72,20 @@ export const categoryColors: Record<CategoryColor, string> = {
   green: "text-primary",
 };
 
+export const cardColors: Record<CategoryColor, string> = {
+  red: "bg-gradient-to-br from-[hsl(0,65%,60%)] to-[hsl(0,55%,50%)] border-[hsl(0,70%,45%)] dark:bg-gradient-to-br dark:from-[hsl(0,30%,25%)] dark:to-[hsl(0,25%,20%)] dark:border-[hsl(0,45%,35%)]",
+  yellow:
+    "bg-gradient-to-br from-[hsl(45,65%,60%)] to-[hsl(45,55%,50%)] border-[hsl(45,70%,45%)] dark:bg-gradient-to-br dark:from-[hsl(45,30%,25%)] dark:to-[hsl(45,25%,20%)] dark:border-[hsl(45,45%,35%)]",
+  orange:
+    "bg-gradient-to-br from-[hsl(25,65%,60%)] to-[hsl(25,55%,50%)] border-[hsl(25,70%,45%)] dark:bg-gradient-to-br dark:from-[hsl(25,30%,25%)] dark:to-[hsl(25,25%,20%)] dark:border-[hsl(25,45%,35%)]",
+  blue: "bg-gradient-to-br from-[hsl(220,65%,60%)] to-[hsl(220,55%,50%)] border-[hsl(220,70%,45%)] dark:bg-gradient-to-br dark:from-[hsl(220,30%,25%)] dark:to-[hsl(220,25%,20%)] dark:border-[hsl(220,45%,35%)]",
+  violet:
+    "bg-gradient-to-br from-[hsl(270,65%,60%)] to-[hsl(270,55%,50%)] border-[hsl(270,70%,45%)] dark:bg-gradient-to-br dark:from-[hsl(270,30%,25%)] dark:to-[hsl(270,25%,20%)] dark:border-[hsl(270,45%,35%)]",
+  pink: "bg-gradient-to-br from-[hsl(330,65%,60%)] to-[hsl(330,55%,50%)] border-[hsl(330,70%,45%)] dark:bg-gradient-to-br dark:from-[hsl(330,30%,25%)] dark:to-[hsl(330,25%,20%)] dark:border-[hsl(330,45%,35%)]",
+  green:
+    "bg-gradient-to-br from-[hsl(120,50%,60%)] to-[hsl(120,40%,45%)] border-[hsl(120,70%,45%)] dark:bg-gradient-to-br dark:from-[hsl(120,30%,25%)] dark:to-[hsl(120,25%,20%)] dark:border-[hsl(120,45%,35%)]",
+};
+
 export const categoryIcons: Record<string, LucideIcon> = {
   DollarSign,
   Home,

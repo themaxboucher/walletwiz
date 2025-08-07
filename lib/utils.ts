@@ -85,10 +85,12 @@ export function filterTransactionsByDateRange(
 
 /**
  * Generates running balance chart data for all transactions within a date range.
+ * Applies balance adjustment to align with actual account balances.
  */
 export function generateBalanceChartData(
   transactions: Transaction[],
-  dateRange?: { from?: Date; to?: Date }
+  dateRange?: { from?: Date; to?: Date },
+  accounts?: Account[]
 ) {
   if (transactions.length === 0) return [];
   const sortedTransactions = [...transactions].sort(
@@ -97,6 +99,12 @@ export function generateBalanceChartData(
   let balance = 0;
   let txIndex = 0;
   const dates: Date[] = [];
+
+  // Calculate balance adjustment (difference between account balances and transaction sums)
+  const balanceAdjustment = accounts
+    ? calculateTotalAccountBalance(accounts) -
+      calculateTotalBalance(transactions)
+    : 0;
 
   // Determine the date range to use
   const from = dateRange?.from
@@ -123,7 +131,7 @@ export function generateBalanceChartData(
     }
     return {
       date: date.toISOString(),
-      balance,
+      balance: balance + balanceAdjustment,
     };
   });
 }
@@ -181,6 +189,16 @@ export function calculateTotalBalance(
   return transactions
     .filter((tx) => new Date(tx.date) <= date)
     .reduce((sum, tx) => sum + tx.amount, 0);
+}
+
+/**
+ * Calculates total balance from all account balances.
+ */
+export function calculateTotalAccountBalance(accounts: Account[]) {
+  return accounts.reduce(
+    (sum, account) => sum + (account.currentBalance || 0),
+    0
+  );
 }
 
 /**
@@ -418,4 +436,50 @@ export const createBrandfetchLogoUrlWithTheme = (
     height,
     fallback: true,
   });
+};
+
+// Account Icon Helper //
+
+/**
+ * Determines what icon/logo to display for an account based on priority:
+ * 1. AccountType brandDomain (if available)
+ * 2. Institution domain (if available)
+ * 3. AccountType icon (if available)
+ * 4. Landmark icon (fallback)
+ */
+export interface AccountIconResult {
+  type: "brandfetch" | "icon";
+  value: string; // Either domain for brandfetch or icon name for Lucide icon
+}
+
+export const getAccountIcon = (account: Account): AccountIconResult => {
+  // Priority 1: AccountType brandDomain
+  if (account.type?.brandDomain) {
+    return {
+      type: "brandfetch",
+      value: account.type.brandDomain,
+    };
+  }
+
+  // Priority 2: Institution domain
+  if (account.institution?.domain) {
+    return {
+      type: "brandfetch",
+      value: account.institution.domain,
+    };
+  }
+
+  // Priority 3: AccountType icon
+  if (account.type?.iconName) {
+    return {
+      type: "icon",
+      value: account.type.iconName,
+    };
+  }
+
+  // Priority 4: Fallback to Landmark
+  return {
+    type: "icon",
+    value: "Landmark",
+  };
 };

@@ -78,3 +78,37 @@ export const deleteFinancialAccount = async (accountId: string) => {
     throw error;
   }
 };
+
+/**
+ * Adjust account balance by a specific amount (add or subtract)
+ */
+export const adjustAccountBalance = async (
+  accountId: string,
+  amount: number
+) => {
+  try {
+    const { database } = await createAdminClient();
+
+    // Get current account to retrieve current balance
+    const currentAccount = await database.getDocument(
+      DATABASE_ID!,
+      ACCOUNT_COLLECTION_ID!,
+      accountId
+    );
+
+    const currentBalance = currentAccount.currentBalance || 0;
+    const newBalance = currentBalance + amount;
+
+    const updatedAccount = await database.updateDocument(
+      DATABASE_ID!,
+      ACCOUNT_COLLECTION_ID!,
+      accountId,
+      { currentBalance: newBalance }
+    );
+
+    return parseStringify(updatedAccount);
+  } catch (error) {
+    console.error("Error adjusting account balance:", error);
+    throw error;
+  }
+};
