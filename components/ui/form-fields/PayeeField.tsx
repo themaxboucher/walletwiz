@@ -1,7 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { FormFieldWrapper } from "./FormFieldWrapper";
 import { UseFormReturn, ControllerRenderProps } from "react-hook-form";
-import { ChevronsUpDownIcon, Repeat, Plus, Store } from "lucide-react";
+import {
+  ChevronsUpDownIcon,
+  Repeat,
+  Plus,
+  Store,
+  ArrowLeftRight,
+} from "lucide-react";
 import { cn, createBrandfetchIconUrl } from "@/lib/utils";
 import { Button } from "../button";
 import {
@@ -22,6 +28,7 @@ export interface ComboboxOption {
   label: string;
   domain: string;
   id?: string; // Appwrite payee document ID for previous payees
+  isAccount?: boolean; // Flag to indicate if this is an account-based payee
 }
 
 interface BrandfetchBrand {
@@ -99,14 +106,25 @@ export function PayeeField({
               new Date(b.$updatedAt).getTime() -
               new Date(a.$updatedAt).getTime()
           );
-          const options: ComboboxOption[] = sortedPayees.map(
-            (payee: Payee) => ({
-              value: payee.brandId,
-              label: payee.name,
-              domain: payee.domain,
-              id: payee.$id,
-            })
-          );
+          const options: ComboboxOption[] = sortedPayees.map((payee: Payee) => {
+            if (payee.account) {
+              return {
+                value: payee.account.$id,
+                label: payee.account.name,
+                domain: payee.account.institution?.domain,
+                id: payee.$id,
+                isAccount: true,
+              };
+            } else {
+              return {
+                value: payee.brandId || payee.name,
+                label: payee.name,
+                domain: payee.domain,
+                id: payee.$id,
+                isAccount: false,
+              };
+            }
+          });
           setPreviousPayeeOptions(options);
           setPayeeOptions(options);
         } else {
@@ -230,7 +248,7 @@ export function PayeeField({
                 role="combobox"
                 aria-expanded={open}
                 className={cn(
-                  "w-full justify-between active:scale-100 font-normal truncate",
+                  "w-full justify-between active:scale-100 font-normal",
                   !selectedOption &&
                     "text-muted-foreground hover:text-muted-foreground"
                 )}
@@ -251,9 +269,11 @@ export function PayeeField({
                         <Store className="size-3 text-muted-foreground" />
                       </div>
                     ))}
-                  <span>{selectedOption?.label || placeholder}</span>
+                  <span className="truncate max-w-[120px]">
+                    {selectedOption?.label || placeholder}
+                  </span>
                 </span>
-                <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                <ChevronsUpDownIcon className="h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[192px] p-0">
@@ -315,9 +335,12 @@ export function PayeeField({
                               </div>
                             )}
                             <span className="truncate">{option.label}</span>
-                            {option?.id && (
-                              <Repeat className="ml-auto size-4" />
-                            )}
+                            {option?.id &&
+                              (option.isAccount ? (
+                                <ArrowLeftRight className="ml-auto size-4" />
+                              ) : (
+                                <Repeat className="ml-auto size-4" />
+                              ))}
                           </CommandItem>
                         ))}
                       </CommandGroup>

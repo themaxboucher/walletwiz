@@ -81,7 +81,9 @@ export function SelectField({
                         className={cn("h-4 w-4", selectedOption.color)}
                       />
                     ) : null}
-                    <span className="truncate">{selectedOption.label}</span>
+                    <span className="truncate max-w-[120px]">
+                      {selectedOption.label}
+                    </span>
                   </div>
                 )}
               </SelectValue>

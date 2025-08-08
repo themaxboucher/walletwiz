@@ -72,7 +72,19 @@ export default function TransactionTable({
           {paginated.map((tx) => (
             <TableRow key={tx.$id} className="hover:bg-muted/40">
               <TableCell className="py-3 px-6 font-medium flex items-center gap-3">
-                {tx.payee?.domain ? (
+                {tx.payee?.account?.institution?.domain ? (
+                  <Image
+                    width={24}
+                    height={24}
+                    src={createBrandfetchIconUrl(
+                      tx.payee.account.institution.domain,
+                      24
+                    )}
+                    alt={`${tx.payee.account.name} logo`}
+                    className="size-6 rounded-full object-cover"
+                    unoptimized // Necessary for brandfetch.io hotlinking guidelines
+                  />
+                ) : tx.payee?.domain ? (
                   <Image
                     width={24}
                     height={24}
@@ -86,7 +98,7 @@ export default function TransactionTable({
                     <Store className="size-4 text-muted-foreground" />
                   </div>
                 )}
-                {tx.payee?.name || "Unknown payee"}
+                {tx.payee?.account?.name || tx.payee?.name || "Unknown payee"}
               </TableCell>
               <TableCell
                 className={cn(

@@ -64,6 +64,7 @@ declare interface Payee {
   domain: string | null; // Brandfetch domain
   user?: User; // Relationship field
   defaultCategory: Category | null; // Relationship field
+  account?: Account; // Relationship field
 }
 
 declare interface Transaction {
@@ -103,4 +104,4 @@ declare type AccountDB = Override<
   { type: string; institution?: string | FinancialInstitution }
 >;
 
-declare type PayeeDB = Override<Payee, { user: string }>;
+declare type PayeeDB = Override<Payee, { user: string; account?: string }>;

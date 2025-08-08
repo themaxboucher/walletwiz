@@ -72,3 +72,24 @@ export const deletePayee = async (payeeId: string) => {
     throw error;
   }
 };
+
+/**
+ * Find a payee by its linked account ID
+ */
+export const getPayeeByAccount = async (accountId: string) => {
+  try {
+    const { database } = await createAdminClient();
+    const payees = await database.listDocuments(
+      DATABASE_ID!,
+      PAYEE_COLLECTION_ID!,
+      [Query.equal("account", accountId)]
+    );
+
+    return payees.documents.length > 0
+      ? parseStringify(payees.documents[0])
+      : null;
+  } catch (error) {
+    console.error("Error getting payee by account:", error);
+    throw error;
+  }
+};
