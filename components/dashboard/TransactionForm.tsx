@@ -30,6 +30,7 @@ const transactionFormSchema = z.object({
     domain: z.string().optional().nullable(),
     id: z.string().optional(), // Appwrite payee document ID for previous payees
     defaultCategoryId: z.string().optional().nullable(),
+    isAccount: z.boolean().optional(),
   }),
   amount: z.coerce.number(),
   category: z.string().min(1, { message: "Category is required" }),
@@ -84,10 +85,10 @@ export default function TransactionForm({
           message: `${category.name} amount must be negative`,
           path: ["amount"],
         });
-      } else if (category.type === "transfer" && data.amount === 0) {
+      } else if (category.type === "transfer" && data.amount <= 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: `${category.name} amount cannot be zero`,
+          message: `${category.name} amount must be positive`,
           path: ["amount"],
         });
       }
@@ -99,12 +100,26 @@ export default function TransactionForm({
     defaultValues: transactionToEdit
       ? {
           payee: transactionToEdit.payee
-            ? {
-                value: transactionToEdit.payee.brandId || "",
-                label: transactionToEdit.payee.name,
-                domain: transactionToEdit.payee.domain,
-                id: transactionToEdit.payee.$id,
-              }
+            ? (() => {
+                const isAccountPayee = Boolean(transactionToEdit.payee.account);
+                return {
+                  value: isAccountPayee
+                    ? transactionToEdit.payee.account?.$id || ""
+                    : transactionToEdit.payee.brandId || "",
+                  label: isAccountPayee
+                    ? transactionToEdit.payee.account?.name ||
+                      transactionToEdit.payee.name
+                    : transactionToEdit.payee.name,
+                  domain: isAccountPayee
+                    ? transactionToEdit.payee.account?.institution?.domain ||
+                      undefined
+                    : transactionToEdit.payee.domain || undefined,
+                  id: transactionToEdit.payee.$id,
+                  defaultCategoryId:
+                    transactionToEdit.payee.defaultCategory?.$id || undefined,
+                  isAccount: isAccountPayee || undefined,
+                };
+              })()
             : undefined,
           amount: transactionToEdit.amount,
           category: transactionToEdit.category.name,
@@ -128,8 +143,8 @@ export default function TransactionForm({
   const watchedPayee = form.watch("payee");
 
   // Automatically format the amount field based on the selected category type
-  // If the category is an expense, ensure the amount is negative
-  // If the category is not an expense, ensure the amount is positive
+  // - Expense: ensure negative
+  // - Income or Transfer: ensure positive
   useEffect(() => {
     if (
       !watchedCategory ||
@@ -148,31 +163,48 @@ export default function TransactionForm({
         shouldValidate: true,
       });
     } else if (
-      selectedCategory.type === "income" &&
+      (selectedCategory.type === "income" ||
+        selectedCategory.type === "transfer") &&
       Number(watchedAmount) < 0
     ) {
-      // Convert to positive for income
+      // Convert to positive for income and transfer
       form.setValue("amount", Math.abs(Number(watchedAmount)), {
         shouldValidate: true,
       });
     }
-    // For transfer type, allow both positive and negative amounts without auto-formatting
   }, [watchedCategory, watchedAmount, categories, form]);
 
-  // When a payee is selected, auto-set the category to the payee's default category (if present)
+  // When a payee is selected, auto-set the category
   useEffect(() => {
-    if (!watchedPayee || !watchedPayee.defaultCategoryId) return;
-    const defaultCategoryId = watchedPayee.defaultCategoryId as string;
-    const defaultCategory = categories.find(
-      (cat) => cat.$id === defaultCategoryId
-    );
-    if (!defaultCategory) return;
-    const defaultCategoryName = defaultCategory.name;
-    if (form.getValues("category") !== defaultCategoryName) {
-      form.setValue("category", defaultCategoryName, {
-        shouldValidate: true,
-        shouldDirty: true,
-      });
+    if (!watchedPayee) return;
+    // If the payee is an account-based payee, force the Transfer category
+    if (watchedPayee.isAccount) {
+      const transferCategory = categories.find(
+        (cat) => cat.type === "transfer"
+      );
+      if (!transferCategory) return;
+      const transferName = transferCategory.name;
+      if (form.getValues("category") !== transferName) {
+        form.setValue("category", transferName, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+      }
+      return;
+    }
+    // Otherwise, if the payee has a defaultCategoryId, use it
+    if (watchedPayee.defaultCategoryId) {
+      const defaultCategory = categories.find(
+        (cat) => cat.$id === watchedPayee.defaultCategoryId
+      );
+      if (!defaultCategory) return;
+      const defaultCategoryName = defaultCategory.name;
+      if (form.getValues("category") !== defaultCategoryName) {
+        form.setValue("category", defaultCategoryName, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+      }
     }
   }, [watchedPayee, categories, form]);
 
@@ -238,7 +270,14 @@ export default function TransactionForm({
     }
   }
 
-  const categoryOptions = categories
+  const isNonAccountPayeeSelected = Boolean(
+    watchedPayee && !watchedPayee.isAccount
+  );
+  const visibleCategories = isNonAccountPayeeSelected
+    ? categories.filter((cat) => cat.type !== "transfer")
+    : categories;
+
+  const categoryOptions = visibleCategories
     .map((cat: Category) => ({
       value: cat.name,
       label: cat.name,
@@ -261,6 +300,22 @@ export default function TransactionForm({
       if (b.group === "Transfer") return -1;
       return 0;
     });
+
+  // If a non-account payee is selected and current category is Transfer, clear it
+  useEffect(() => {
+    if (!watchedPayee || watchedPayee.isAccount) return;
+    const currentCategoryName = form.getValues("category");
+    if (!currentCategoryName) return;
+    const currentCategory = categories.find(
+      (c) => c.name === currentCategoryName
+    );
+    if (currentCategory?.type === "transfer") {
+      form.setValue("category", "", {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+  }, [watchedPayee, categories, form]);
 
   const accountOptions = accounts.map((account) => {
     const iconResult = getAccountIcon(account);
@@ -302,6 +357,7 @@ export default function TransactionForm({
             form={form}
             name="payee"
             userId={userId}
+            label={watchedPayee?.isAccount ? "From" : "Payee"}
             placeholder="Select payee"
           />
           <SelectField
@@ -310,6 +366,7 @@ export default function TransactionForm({
             label="Category"
             options={categoryOptions}
             placeholder="Select category"
+            disabled={Boolean(watchedPayee?.isAccount)}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -325,7 +382,7 @@ export default function TransactionForm({
           <SelectField
             form={form}
             name="account"
-            label="Account"
+            label={watchedPayee?.isAccount ? "To" : "Account"}
             options={accountOptions}
             placeholder="Select account"
           />

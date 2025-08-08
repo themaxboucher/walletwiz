@@ -29,6 +29,7 @@ interface SelectFieldProps {
   options: SelectFieldOption[];
   placeholder?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 export function SelectField({
@@ -38,6 +39,7 @@ export function SelectField({
   options,
   placeholder = "Select an option",
   className,
+  disabled = false,
 }: SelectFieldProps) {
   // Group options if group is provided
   const groupedOptions = options.reduce<Record<string, SelectFieldOption[]>>(
@@ -63,7 +65,10 @@ export function SelectField({
         );
         return (
           <Select value={field.value} onValueChange={field.onChange}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger
+              className="w-full disabled:opacity-100"
+              disabled={disabled}
+            >
               <SelectValue placeholder={placeholder}>
                 {selectedOption && (
                   <div className="flex items-center gap-2">
