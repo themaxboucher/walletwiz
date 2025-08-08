@@ -30,7 +30,6 @@ export const createAccount = async (account: AccountDB, userId: string) => {
         brandId: null,
         domain: null,
         user: userId,
-        defaultCategory: null,
         account: newAccount.$id,
       };
       await createPayee(payeeData, userId);
