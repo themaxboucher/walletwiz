@@ -21,6 +21,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SelectField } from "../ui/form-fields/SelectField";
 import { PayeeField } from "../ui/form-fields/PayeeField";
+import { Label } from "../ui/label";
+import { Checkbox } from "../ui/checkbox";
 
 // Define the Zod schema for the transaction form
 const transactionFormSchema = z.object({
@@ -387,6 +389,24 @@ export default function TransactionForm({
             placeholder="Select account"
           />
         </div>
+        {watchedPayee?.isAccount && (
+          <Label className="dark:bg-input/30 hover:bg-accent dark:hover:bg-input/50 flex items-start gap-3 rounded-lg border border-input p-3 has-[[aria-checked=true]]:border-primary has-[[aria-checked=true]]:bg-primary/10 dark:has-[[aria-checked=true]]:border-primary dark:has-[[aria-checked=true]]:bg-primary/10 transition-all duration-200 ease-in-out">
+            <Checkbox
+              id="toggle-2"
+              defaultChecked
+              className="data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white dark:data-[state=checked]:border-primary dark:data-[state=checked]:bg-primary"
+            />
+            <div className="grid gap-1.5 font-normal">
+              <p className="text-sm leading-none font-medium">
+                Create opposing transaction
+              </p>
+              <p className="text-muted-foreground text-sm">
+                Automatically create the corresponding withdrawal from{" "}
+                <span className="font-medium">{watchedPayee?.label}</span>
+              </p>
+            </div>
+          </Label>
+        )}
         <DateField
           form={form}
           name="date"
