@@ -26,9 +26,10 @@ import { getPayees } from "@/lib/actions/payee.actions";
 export interface ComboboxOption {
   value: string;
   label: string;
-  domain: string;
+  domain?: string;
   id?: string; // Appwrite payee document ID for previous payees
   isAccount?: boolean; // Flag to indicate if this is an account-based payee
+  defaultCategoryId?: string; // Only for previous payees
 }
 
 interface BrandfetchBrand {
@@ -114,6 +115,7 @@ export function PayeeField({
                 domain: payee.account.institution?.domain,
                 id: payee.$id,
                 isAccount: true,
+                defaultCategoryId: payee.defaultCategory?.$id,
               };
             } else {
               return {
@@ -122,6 +124,7 @@ export function PayeeField({
                 domain: payee.domain,
                 id: payee.$id,
                 isAccount: false,
+                defaultCategoryId: payee.defaultCategory?.$id,
               };
             }
           });

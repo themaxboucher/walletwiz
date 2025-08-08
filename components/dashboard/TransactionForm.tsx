@@ -29,6 +29,7 @@ const transactionFormSchema = z.object({
     label: z.string(), // name
     domain: z.string().optional().nullable(),
     id: z.string().optional(), // Appwrite payee document ID for previous payees
+    defaultCategoryId: z.string().optional().nullable(),
   }),
   amount: z.coerce.number(),
   category: z.string().min(1, { message: "Category is required" }),
@@ -124,6 +125,7 @@ export default function TransactionForm({
   // Watch category and amount fields
   const watchedCategory = form.watch("category");
   const watchedAmount = form.watch("amount");
+  const watchedPayee = form.watch("payee");
 
   // Automatically format the amount field based on the selected category type
   // If the category is an expense, ensure the amount is negative
@@ -157,6 +159,23 @@ export default function TransactionForm({
     // For transfer type, allow both positive and negative amounts without auto-formatting
   }, [watchedCategory, watchedAmount, categories, form]);
 
+  // When a payee is selected, auto-set the category to the payee's default category (if present)
+  useEffect(() => {
+    if (!watchedPayee || !watchedPayee.defaultCategoryId) return;
+    const defaultCategoryId = watchedPayee.defaultCategoryId as string;
+    const defaultCategory = categories.find(
+      (cat) => cat.$id === defaultCategoryId
+    );
+    if (!defaultCategory) return;
+    const defaultCategoryName = defaultCategory.name;
+    if (form.getValues("category") !== defaultCategoryName) {
+      form.setValue("category", defaultCategoryName, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+  }, [watchedPayee, categories, form]);
+
   // Get the users ID from the first category
   const userId = categories[0]?.user?.$id;
   if (!userId) throw new Error("User not found");
@@ -183,7 +202,7 @@ export default function TransactionForm({
           name: values.payee?.label,
           brandId: values.payee?.value,
           domain: values.payee?.domain,
-          defaultCategory: null,
+          defaultCategory: selectedCategory.$id,
           user: userId,
         } as PayeeDB;
       }
