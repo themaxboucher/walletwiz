@@ -14,6 +14,7 @@ const {
   APPWRITE_CATEGORY_COLLECTION_ID: CATEGORY_COLLECTION_ID,
   APPWRITE_TRANSACTION_COLLECTION_ID: TRANSACTION_COLLECTION_ID,
   APPWRITE_ACCOUNT_COLLECTION_ID: ACCOUNT_COLLECTION_ID,
+  APPWRITE_PAYEE_COLLECTION_ID: PAYEE_COLLECTION_ID,
 } = process.env;
 
 export const getUserInfo = async ({ userId }: { userId: string }) => {
@@ -240,6 +241,19 @@ export const deleteAccount = async (authUserId: string, docUserId: string) => {
         DATABASE_ID!,
         TRANSACTION_COLLECTION_ID!,
         tx.$id
+      );
+    }
+    // Delete all payees for the user
+    const payees = await database.listDocuments(
+      DATABASE_ID!,
+      PAYEE_COLLECTION_ID!,
+      [Query.equal("user", docUserId), Query.limit(5000)]
+    );
+    for (const payee of payees.documents) {
+      await database.deleteDocument(
+        DATABASE_ID!,
+        PAYEE_COLLECTION_ID!,
+        payee.$id
       );
     }
     // Delete all categories for the user
