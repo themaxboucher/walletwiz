@@ -23,6 +23,7 @@ import { SelectField } from "../ui/form-fields/SelectField";
 import { PayeeField } from "../ui/form-fields/PayeeField";
 import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
+import { getPayeeByAccount, createPayee } from "@/lib/actions/payee.actions";
 
 // Define the Zod schema for the transaction form
 const transactionFormSchema = z.object({
@@ -59,6 +60,7 @@ export default function TransactionForm({
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [createOpposing, setCreateOpposing] = useState<boolean>(true);
 
   // Refine schema dynamically using the categories prop
   const refinedTransactionFormSchema = transactionFormSchema.superRefine(
@@ -253,7 +255,56 @@ export default function TransactionForm({
       if (transactionToEdit?.$id) {
         await updateTransaction(String(transactionToEdit.$id), transactionData);
       } else {
+        // Create the primary transaction first
         await createTransaction(transactionData);
+
+        // If enabled and this is a transfer between accounts, create the opposing transaction
+        if (createOpposing && watchedPayee?.isAccount) {
+          const sourceAccountId = String(watchedPayee.value); // From account
+          const destinationAccountId = String(values.account); // To account
+
+          // Find or create a payee for the destination account
+          let opposingPayeeId: string | null = null;
+          try {
+            const existingPayee = await getPayeeByAccount(destinationAccountId);
+            if (existingPayee?.$id) {
+              opposingPayeeId = existingPayee.$id as string;
+            } else {
+              const destinationAccount = accounts.find(
+                (a) => a.$id === destinationAccountId
+              );
+              const newPayee = await createPayee(
+                {
+                  name: destinationAccount?.name || "Account",
+                  account: destinationAccountId,
+                } as PayeeDB,
+                userId!
+              );
+              opposingPayeeId = newPayee?.$id as string;
+            }
+          } catch (e) {
+            console.error(
+              "Failed to get/create payee for opposing transaction",
+              e
+            );
+          }
+
+          const opposingTransactionData = {
+            payee: opposingPayeeId || {
+              name: "Account",
+              account: destinationAccountId,
+              user: userId!,
+            },
+            amount: -Number(values.amount.toFixed(2)),
+            category: selectedCategory.$id,
+            date: values.date.toISOString(),
+            note: "Automatically created transfer transaction",
+            user: userId,
+            account: sourceAccountId,
+          } as TransactionDB;
+
+          await createTransaction(opposingTransactionData);
+        }
       }
 
       router.refresh();
@@ -392,8 +443,8 @@ export default function TransactionForm({
         {watchedPayee?.isAccount && !transactionToEdit && (
           <Label className="dark:bg-input/30 hover:bg-accent dark:hover:bg-input/50 flex items-start gap-3 rounded-lg border border-input p-3 has-[[aria-checked=true]]:border-primary has-[[aria-checked=true]]:bg-primary/10 dark:has-[[aria-checked=true]]:border-primary dark:has-[[aria-checked=true]]:bg-primary/10 transition-all duration-200 ease-in-out">
             <Checkbox
-              id="toggle-2"
-              defaultChecked
+              checked={createOpposing}
+              onCheckedChange={(checked) => setCreateOpposing(Boolean(checked))}
               className="data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white dark:data-[state=checked]:border-primary dark:data-[state=checked]:bg-primary"
             />
             <div className="grid gap-1.5 font-normal">
