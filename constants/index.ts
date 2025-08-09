@@ -61,6 +61,7 @@ import {
   WalletCards,
   ShoppingBasket,
   ArrowRightLeft,
+  PartyPopper,
 } from "lucide-react";
 
 export const categoryColors: Record<CategoryColor, string> = {
@@ -142,6 +143,7 @@ export const categoryIcons: Record<string, LucideIcon> = {
   Bubbles,
   Coins,
   ArrowRightLeft,
+  PartyPopper,
 };
 
 export const accountTypeIcons: Record<string, LucideIcon> = {
@@ -531,6 +533,12 @@ export const categories: Category[] = [
     name: "Cleaning",
     color: "yellow",
     iconName: "Bubbles",
+    type: "expense",
+  },
+  {
+    name: "Fun",
+    color: "pink",
+    iconName: "PartyPopper",
     type: "expense",
   },
   {
