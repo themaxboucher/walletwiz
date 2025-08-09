@@ -157,7 +157,7 @@ export function filterChartDataByDateRange<T extends { date: string }>(
  */
 export function calculateIncome(transactions: Transaction[]) {
   return transactions
-    .filter((tx) => tx.amount > 0)
+    .filter((tx) => tx.amount > 0 && tx.category?.type !== "transfer")
     .reduce((sum, tx) => sum + tx.amount, 0);
 }
 
@@ -166,7 +166,7 @@ export function calculateIncome(transactions: Transaction[]) {
  */
 export function calculateExpenses(transactions: Transaction[]) {
   return transactions
-    .filter((tx) => tx.amount < 0)
+    .filter((tx) => tx.amount < 0 && tx.category?.type !== "transfer")
     .reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
 }
 
