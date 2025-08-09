@@ -87,10 +87,10 @@ export default function TransactionForm({
           message: `${category.name} amount must be negative`,
           path: ["amount"],
         });
-      } else if (category.type === "transfer" && data.amount <= 0) {
+      } else if (category.type === "transfer" && data.amount === 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: `${category.name} amount must be positive`,
+          message: `${category.name} amount must not be zero`,
           path: ["amount"],
         });
       }
@@ -165,8 +165,7 @@ export default function TransactionForm({
         shouldValidate: true,
       });
     } else if (
-      (selectedCategory.type === "income" ||
-        selectedCategory.type === "transfer") &&
+      selectedCategory.type === "income" &&
       Number(watchedAmount) < 0
     ) {
       // Convert to positive for income and transfer
