@@ -3,11 +3,11 @@ import { FormFieldWrapper } from "./FormFieldWrapper";
 import { UseFormReturn, ControllerRenderProps } from "react-hook-form";
 import {
   ChevronsUpDownIcon,
-  Repeat,
   Plus,
   Store,
   ArrowLeftRight,
   Landmark,
+  RefreshCcw,
 } from "lucide-react";
 import { cn, createBrandfetchIconUrl, getLucideIconByName } from "@/lib/utils";
 import { accountTypeIcons } from "@/constants";
@@ -351,51 +351,61 @@ export function PayeeField({
                               } else field.onChange(null);
                               setOpen(false);
                             }}
+                            className="group"
                           >
-                            {option.domain ? (
-                              <Image
-                                width={20}
-                                height={20}
-                                src={createBrandfetchIconUrl(option.domain, 20)}
-                                alt={`${option.label} logo`}
-                                className={cn(
-                                  "size-5 object-cover",
-                                  option.isAccount
-                                    ? "rounded-[0.188rem]"
-                                    : "rounded-full"
-                                )}
-                                unoptimized // Necessary for brandfetch.io hotlinking guidelines
-                              />
-                            ) : option.isAccount &&
-                              option.accountTypeIconName &&
-                              accountTypeIcons[option.accountTypeIconName] ? (
-                              <div className="size-5 rounded-[0.188rem] bg-muted flex items-center justify-center">
-                                {(() => {
-                                  const Icon = getLucideIconByName(
-                                    accountTypeIcons,
-                                    option.accountTypeIconName
-                                  );
-                                  return Icon ? (
-                                    <Icon className="size-3 text-muted-foreground" />
-                                  ) : null;
-                                })()}
-                              </div>
-                            ) : option.isAccount ? (
-                              <div className="size-5 rounded-[0.188rem] bg-muted flex items-center justify-center">
-                                <Landmark className="size-3 text-muted-foreground" />
-                              </div>
-                            ) : (
-                              <div className="size-5 rounded-full bg-muted flex items-center justify-center">
-                                <Store className="size-3 text-muted-foreground" />
-                              </div>
-                            )}
-                            <span className="truncate">{option.label}</span>
-                            {option?.id &&
-                              (option.isAccount ? (
-                                <ArrowLeftRight className="ml-auto size-4" />
+                            <span className="relative">
+                              {option.domain ? (
+                                <Image
+                                  width={20}
+                                  height={20}
+                                  src={createBrandfetchIconUrl(
+                                    option.domain,
+                                    20
+                                  )}
+                                  alt={`${option.label} logo`}
+                                  className={cn(
+                                    "size-5 object-cover",
+                                    option.isAccount
+                                      ? "rounded-[0.188rem]"
+                                      : "rounded-full"
+                                  )}
+                                  unoptimized // Necessary for brandfetch.io hotlinking guidelines
+                                />
+                              ) : option.isAccount &&
+                                option.accountTypeIconName &&
+                                accountTypeIcons[option.accountTypeIconName] ? (
+                                <div className="size-5 rounded-[0.188rem] bg-muted flex items-center justify-center">
+                                  {(() => {
+                                    const Icon = getLucideIconByName(
+                                      accountTypeIcons,
+                                      option.accountTypeIconName
+                                    );
+                                    return Icon ? (
+                                      <Icon className="size-3 text-muted-foreground" />
+                                    ) : null;
+                                  })()}
+                                </div>
+                              ) : option.isAccount ? (
+                                <div className="size-5 rounded-[0.188rem] bg-muted flex items-center justify-center">
+                                  <Landmark className="size-3 text-muted-foreground" />
+                                </div>
                               ) : (
-                                <Repeat className="ml-auto size-4" />
-                              ))}
+                                <div className="size-5 rounded-full bg-muted flex items-center justify-center">
+                                  <Store className="size-3 text-muted-foreground" />
+                                </div>
+                              )}
+                              {option?.id && !option.isAccount && (
+                                <span className="absolute -bottom-[0.2rem] -right-[0.2rem] size-3 bg-primary shadow-xs rounded-full flex items-center justify-center">
+                                  <RefreshCcw className="text-white size-2" />
+                                </span>
+                              )}
+                              {option?.id && option.isAccount && (
+                                <span className="absolute -bottom-[0.2rem] -right-[0.2rem] size-3 bg-blue-500 shadow-xs rounded-xs flex items-center justify-center">
+                                  <ArrowLeftRight className="text-white size-2" />
+                                </span>
+                              )}
+                            </span>
+                            <span className="truncate">{option.label}</span>
                           </CommandItem>
                         ))}
                       </CommandGroup>
