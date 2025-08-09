@@ -7,8 +7,10 @@ import {
   Plus,
   Store,
   ArrowLeftRight,
+  Landmark,
 } from "lucide-react";
-import { cn, createBrandfetchIconUrl } from "@/lib/utils";
+import { cn, createBrandfetchIconUrl, getLucideIconByName } from "@/lib/utils";
+import { accountTypeIcons } from "@/constants";
 import { Button } from "../button";
 import {
   Command,
@@ -30,6 +32,7 @@ export interface ComboboxOption {
   id?: string; // Appwrite payee document ID for previous payees
   isAccount?: boolean; // Flag to indicate if this is an account-based payee
   defaultCategoryId?: string; // Only for previous payees
+  accountTypeIconName?: string; // For account payees without domain
 }
 
 interface BrandfetchBrand {
@@ -112,10 +115,13 @@ export function PayeeField({
               return {
                 value: payee.account.$id,
                 label: payee.account.name,
-                domain: payee.account.institution?.domain,
+                domain:
+                  payee.account.type?.brandDomain ||
+                  payee.account.institution?.domain,
                 id: payee.$id,
                 isAccount: true,
                 defaultCategoryId: payee.defaultCategory?.$id,
+                accountTypeIconName: payee.account.type?.iconName,
               };
             } else {
               return {
@@ -260,13 +266,36 @@ export function PayeeField({
                   {selectedOption &&
                     (selectedOption.domain ? (
                       <Image
-                        width={24}
-                        height={24}
-                        src={createBrandfetchIconUrl(selectedOption.domain, 24)}
+                        width={20}
+                        height={20}
+                        src={createBrandfetchIconUrl(selectedOption.domain, 20)}
                         alt={`${selectedOption.label} logo`}
-                        className="size-5 rounded-full object-cover"
+                        className={cn(
+                          "size-5 object-cover",
+                          selectedOption.isAccount
+                            ? "rounded-[0.188rem]"
+                            : "rounded-full"
+                        )}
                         unoptimized // Necessary for brandfetch.io hotlinking guidelines
                       />
+                    ) : selectedOption.isAccount &&
+                      selectedOption.accountTypeIconName &&
+                      accountTypeIcons[selectedOption.accountTypeIconName] ? (
+                      <div className="size-5 rounded-[0.188rem] bg-muted flex items-center justify-center">
+                        {(() => {
+                          const Icon = getLucideIconByName(
+                            accountTypeIcons,
+                            selectedOption.accountTypeIconName
+                          );
+                          return Icon ? (
+                            <Icon className="size-3 text-muted-foreground" />
+                          ) : null;
+                        })()}
+                      </div>
+                    ) : selectedOption.isAccount ? (
+                      <div className="size-5 rounded-[0.188rem] bg-muted flex items-center justify-center">
+                        <Landmark className="size-3 text-muted-foreground" />
+                      </div>
                     ) : (
                       <div className="size-5 rounded-full bg-muted flex items-center justify-center">
                         <Store className="size-3 text-muted-foreground" />
@@ -325,13 +354,36 @@ export function PayeeField({
                           >
                             {option.domain ? (
                               <Image
-                                width={24}
-                                height={24}
-                                src={createBrandfetchIconUrl(option.domain, 24)}
+                                width={20}
+                                height={20}
+                                src={createBrandfetchIconUrl(option.domain, 20)}
                                 alt={`${option.label} logo`}
-                                className="size-5 rounded-full object-cover"
+                                className={cn(
+                                  "size-5 object-cover",
+                                  option.isAccount
+                                    ? "rounded-[0.188rem]"
+                                    : "rounded-full"
+                                )}
                                 unoptimized // Necessary for brandfetch.io hotlinking guidelines
                               />
+                            ) : option.isAccount &&
+                              option.accountTypeIconName &&
+                              accountTypeIcons[option.accountTypeIconName] ? (
+                              <div className="size-5 rounded-[0.188rem] bg-muted flex items-center justify-center">
+                                {(() => {
+                                  const Icon = getLucideIconByName(
+                                    accountTypeIcons,
+                                    option.accountTypeIconName
+                                  );
+                                  return Icon ? (
+                                    <Icon className="size-3 text-muted-foreground" />
+                                  ) : null;
+                                })()}
+                              </div>
+                            ) : option.isAccount ? (
+                              <div className="size-5 rounded-[0.188rem] bg-muted flex items-center justify-center">
+                                <Landmark className="size-3 text-muted-foreground" />
+                              </div>
                             ) : (
                               <div className="size-5 rounded-full bg-muted flex items-center justify-center">
                                 <Store className="size-3 text-muted-foreground" />

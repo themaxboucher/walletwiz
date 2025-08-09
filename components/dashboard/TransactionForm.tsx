@@ -106,16 +106,26 @@ export default function TransactionForm({
           payee: transactionToEdit.payee
             ? (() => {
                 const isAccountPayee = Boolean(transactionToEdit.payee.account);
+                // Resolve full Account from props to get institution details (Appwrite limits nested depth)
+                const accountFromProps = isAccountPayee
+                  ? accounts.find(
+                      (a) => a.$id === transactionToEdit.payee.account?.$id
+                    )
+                  : undefined;
                 return {
                   value: isAccountPayee
-                    ? transactionToEdit.payee.account?.$id || ""
+                    ? accountFromProps?.$id ||
+                      transactionToEdit.payee.account?.$id ||
+                      ""
                     : transactionToEdit.payee.brandId || "",
                   label: isAccountPayee
-                    ? transactionToEdit.payee.account?.name ||
+                    ? accountFromProps?.name ||
+                      transactionToEdit.payee.account?.name ||
                       transactionToEdit.payee.name
                     : transactionToEdit.payee.name,
                   domain: isAccountPayee
-                    ? transactionToEdit.payee.account?.institution?.domain ||
+                    ? accountFromProps?.type?.brandDomain ||
+                      accountFromProps?.institution?.domain ||
                       undefined
                     : transactionToEdit.payee.domain || undefined,
                   id: transactionToEdit.payee.$id,
@@ -377,7 +387,7 @@ export default function TransactionForm({
       return {
         value: account.$id!,
         label: account.name,
-        imageSrc: createBrandfetchIconUrl(iconResult.value, 18),
+        imageSrc: createBrandfetchIconUrl(iconResult.value, 20),
       };
     } else {
       // Handle Lucide icon

@@ -22,7 +22,7 @@ import CategoryBadge from "./CategoryBadge";
 import {
   formatCurrency,
   createBrandfetchIconUrl,
-  getAccountIcon,
+  getLucideIconByName,
 } from "@/lib/utils";
 import DeleteTransactionDialog from "./DeleteTransactionDialog";
 import { cn } from "@/lib/utils";
@@ -31,12 +31,14 @@ import Image from "next/image";
 
 interface TransactionTableProps {
   transactions: Transaction[];
+  accounts: Account[];
   pageSize?: number;
   onEditClick: (transaction: Transaction) => void;
 }
 
 export default function TransactionTable({
   transactions,
+  accounts,
   pageSize = 10,
   onEditClick,
 }: TransactionTableProps) {
@@ -72,33 +74,74 @@ export default function TransactionTable({
           {paginated.map((tx) => (
             <TableRow key={tx.$id} className="hover:bg-muted/40">
               <TableCell className="py-3 px-6 font-medium flex items-center gap-3">
-                {tx.payee?.account?.institution?.domain ? (
-                  <Image
-                    width={24}
-                    height={24}
-                    src={createBrandfetchIconUrl(
-                      tx.payee.account.institution.domain,
-                      24
-                    )}
-                    alt={`${tx.payee.account.name} logo`}
-                    className="size-6 rounded-full object-cover"
-                    unoptimized // Necessary for brandfetch.io hotlinking guidelines
-                  />
-                ) : tx.payee?.domain ? (
-                  <Image
-                    width={24}
-                    height={24}
-                    src={createBrandfetchIconUrl(tx.payee.domain, 24)}
-                    alt={`${tx.payee.name} logo`}
-                    className="size-6 rounded-full object-cover"
-                    unoptimized // Necessary for brandfetch.io hotlinking guidelines
-                  />
-                ) : (
-                  <div className="size-6 rounded-full bg-muted flex items-center justify-center">
-                    <Store className="size-4 text-muted-foreground" />
-                  </div>
-                )}
-                {tx.payee?.account?.name || tx.payee?.name || "Unknown payee"}
+                {(() => {
+                  const payeeAccountId = tx.payee?.account?.$id;
+                  const payeeAccount = payeeAccountId
+                    ? accounts.find((a) => a.$id === payeeAccountId)
+                    : undefined;
+                  const brandDomain = payeeAccount?.type?.brandDomain;
+                  const institutionDomain = payeeAccount?.institution?.domain;
+                  if (brandDomain || institutionDomain) {
+                    return (
+                      <Image
+                        width={24}
+                        height={24}
+                        src={createBrandfetchIconUrl(
+                          brandDomain || institutionDomain!,
+                          24
+                        )}
+                        alt={`${
+                          payeeAccount?.name || tx.payee?.name || "Account"
+                        } logo`}
+                        className="size-6 p-[2px] rounded-[0.35rem] object-cover"
+                        unoptimized
+                      />
+                    );
+                  }
+                  const typeIconName = payeeAccount?.type?.iconName;
+                  if (typeIconName && accountTypeIcons[typeIconName]) {
+                    const Icon = getLucideIconByName(
+                      accountTypeIcons,
+                      typeIconName
+                    );
+                    return (
+                      <div className="size-[22px] m-[2px] rounded-[0.35rem] bg-muted flex items-center justify-center">
+                        {Icon ? (
+                          <Icon className="size-3.5 text-muted-foreground" />
+                        ) : null}
+                      </div>
+                    );
+                  }
+                  if (tx.payee?.domain) {
+                    return (
+                      <Image
+                        width={24}
+                        height={24}
+                        src={createBrandfetchIconUrl(tx.payee.domain, 24)}
+                        alt={`${tx.payee.name} logo`}
+                        className="size-6 rounded-full object-cover"
+                        unoptimized
+                      />
+                    );
+                  }
+                  return (
+                    <div className="size-6 rounded-full bg-muted flex items-center justify-center">
+                      <Store className="size-4 text-muted-foreground" />
+                    </div>
+                  );
+                })()}
+                {(() => {
+                  const payeeAccountId = tx.payee?.account?.$id;
+                  const payeeAccount = payeeAccountId
+                    ? accounts.find((a) => a.$id === payeeAccountId)
+                    : undefined;
+                  return (
+                    payeeAccount?.name ||
+                    tx.payee?.account?.name ||
+                    tx.payee?.name ||
+                    "Unknown payee"
+                  );
+                })()}
               </TableCell>
               <TableCell
                 className={cn(
@@ -113,15 +156,17 @@ export default function TransactionTable({
                 {(() => {
                   if (!tx.account?.name) return "-";
 
-                  const iconResult = getAccountIcon(tx.account);
+                  const brandDomain =
+                    tx.account.type?.brandDomain ||
+                    tx.account.institution?.domain;
 
-                  if (iconResult.type === "brandfetch") {
+                  if (brandDomain) {
                     return (
                       <span className="inline-flex items-center gap-2 max-w-[8rem]">
                         <Image
                           width={18}
                           height={18}
-                          src={createBrandfetchIconUrl(iconResult.value, 18)}
+                          src={createBrandfetchIconUrl(brandDomain, 18)}
                           alt={`${tx.account.name} logo`}
                           className="size-4.5 rounded-[0.188rem] object-cover"
                           unoptimized
@@ -137,19 +182,25 @@ export default function TransactionTable({
                         </span>
                       </span>
                     );
-                  } else {
-                    // Handle Lucide icon
-                    const Icon =
-                      iconResult.value === "Landmark"
-                        ? Landmark
-                        : accountTypeIcons[iconResult.value];
-                    return (
-                      <span className="inline-flex items-center gap-2">
-                        <Icon className="w-4 h-4 text-muted-foreground" />
-                        {tx.account.name}
-                      </span>
-                    );
                   }
+
+                  const typeIconName = tx.account.type?.iconName;
+                  const TypeIcon = getLucideIconByName(
+                    accountTypeIcons,
+                    typeIconName
+                  );
+                  return (
+                    <div className="inline-flex items-center gap-2">
+                      <div className="size-4.5 rounded-[0.188rem] bg-muted flex items-center justify-center">
+                        {TypeIcon ? (
+                          <TypeIcon className="size-3 text-muted-foreground" />
+                        ) : (
+                          <Landmark className="size-3 text-muted-foreground" />
+                        )}
+                      </div>
+                      {tx.account.name}
+                    </div>
+                  );
                 })()}
               </TableCell>
               <TableCell className="py-3">

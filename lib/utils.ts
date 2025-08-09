@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import type { LucideIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import { differenceInDays } from "date-fns";
 
@@ -437,6 +438,20 @@ export const createBrandfetchLogoUrlWithTheme = (
     fallback: true,
   });
 };
+
+// Lucide helpers //
+
+/**
+ * Returns a Lucide icon component from a map by its string name.
+ * Consumers can render it like: `const Icon = getLucideIconByName(map, name); return Icon ? <Icon className=... /> : null`.
+ */
+export function getLucideIconByName(
+  iconMap: Record<string, LucideIcon>,
+  iconName?: string
+): LucideIcon | undefined {
+  if (!iconName) return undefined;
+  return iconMap[iconName];
+}
 
 // Account Icon Helper //
 

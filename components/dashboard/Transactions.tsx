@@ -71,6 +71,7 @@ export default function Transactions({
       ) : (
         <TransactionTable
           transactions={transactions}
+          accounts={accounts}
           pageSize={pageSize}
           onEditClick={handleOpenDialog}
         />
