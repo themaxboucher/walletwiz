@@ -313,9 +313,10 @@ export default function TransactionForm({
     );
     if (currentCategory?.type === "transfer") {
       form.setValue("category", "", {
-        shouldValidate: true,
+        shouldValidate: false,
         shouldDirty: true,
       });
+      form.clearErrors("category");
     }
   }, [watchedPayee, categories, form]);
 
