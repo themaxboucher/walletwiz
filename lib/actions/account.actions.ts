@@ -3,6 +3,7 @@
 import { ID, Query } from "node-appwrite";
 import { createAdminClient } from "../appwrite/server";
 import { parseStringify } from "../utils";
+import { createPayee, deletePayee, getPayeeByAccount } from "./payee.actions";
 
 const {
   APPWRITE_DATABASE_ID: DATABASE_ID,
@@ -21,6 +22,22 @@ export const createAccount = async (account: AccountDB, userId: string) => {
         user: userId,
       }
     );
+
+    // Create corresponding payee for this account
+    try {
+      const payeeData: PayeeDB = {
+        name: newAccount.name,
+        brandId: null,
+        domain: null,
+        user: userId,
+        account: newAccount.$id,
+      };
+      await createPayee(payeeData, userId);
+    } catch (payeeError) {
+      console.error("Error creating corresponding payee:", payeeError);
+      throw payeeError;
+    }
+
     return parseStringify(newAccount);
   } catch (error) {
     console.error("Error creating account:", error);
@@ -57,6 +74,7 @@ export const updateAccount = async (
       accountId,
       updatedAccount
     );
+
     return parseStringify(account);
   } catch (error) {
     console.error("Error updating account:", error);
@@ -66,6 +84,17 @@ export const updateAccount = async (
 
 export const deleteFinancialAccount = async (accountId: string) => {
   try {
+    // Delete corresponding payee first
+    try {
+      const linkedPayee = await getPayeeByAccount(accountId);
+      if (linkedPayee) {
+        await deletePayee(linkedPayee.$id);
+      }
+    } catch (payeeError) {
+      console.error("Error deleting corresponding payee:", payeeError);
+      throw payeeError;
+    }
+
     const { database } = await createAdminClient();
     await database.deleteDocument(
       DATABASE_ID!,

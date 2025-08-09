@@ -11,13 +11,11 @@ import { FormFieldWrapper } from "./FormFieldWrapper";
 import { UseFormReturn, ControllerRenderProps } from "react-hook-form";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 
 interface SelectFieldOption {
   value: string;
   label: string;
   icon?: LucideIcon;
-  imageSrc?: string;
   color?: string;
   group?: string;
 }
@@ -29,6 +27,7 @@ interface SelectFieldProps {
   options: SelectFieldOption[];
   placeholder?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 export function SelectField({
@@ -38,6 +37,7 @@ export function SelectField({
   options,
   placeholder = "Select an option",
   className,
+  disabled = false,
 }: SelectFieldProps) {
   // Group options if group is provided
   const groupedOptions = options.reduce<Record<string, SelectFieldOption[]>>(
@@ -63,25 +63,21 @@ export function SelectField({
         );
         return (
           <Select value={field.value} onValueChange={field.onChange}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger
+              className="w-full disabled:opacity-100"
+              disabled={disabled}
+            >
               <SelectValue placeholder={placeholder}>
                 {selectedOption && (
                   <div className="flex items-center gap-2">
-                    {selectedOption.imageSrc ? (
-                      <Image
-                        width={18}
-                        height={18}
-                        src={selectedOption.imageSrc}
-                        alt={`${selectedOption.label} logo`}
-                        className="size-4.5 rounded-[0.188rem] object-cover"
-                        unoptimized
-                      />
-                    ) : selectedOption.icon ? (
+                    {selectedOption.icon ? (
                       <selectedOption.icon
-                        className={cn("h-4 w-4", selectedOption.color)}
+                        className={cn("size-4", selectedOption.color)}
                       />
                     ) : null}
-                    <span className="truncate">{selectedOption.label}</span>
+                    <span className="truncate max-w-[120px]">
+                      {selectedOption.label}
+                    </span>
                   </div>
                 )}
               </SelectValue>
@@ -97,19 +93,8 @@ export function SelectField({
                         value={option.value}
                         className="flex items-center gap-2"
                       >
-                        {option.imageSrc ? (
-                          <Image
-                            width={18}
-                            height={18}
-                            src={option.imageSrc}
-                            alt={`${option.label} logo`}
-                            className="size-4.5 rounded-[0.188rem] object-cover"
-                            unoptimized
-                          />
-                        ) : option.icon ? (
-                          <option.icon
-                            className={cn("h-4 w-4", option.color)}
-                          />
+                        {option.icon ? (
+                          <option.icon className={cn("size-4", option.color)} />
                         ) : null}
                         <span>{option.label}</span>
                       </SelectItem>
@@ -122,17 +107,8 @@ export function SelectField({
                       value={option.value}
                       className="flex items-center gap-2"
                     >
-                      {option.imageSrc ? (
-                        <Image
-                          width={18}
-                          height={18}
-                          src={option.imageSrc}
-                          alt={`${option.label} logo`}
-                          className="size-4.5 rounded-[0.188rem] object-cover"
-                          unoptimized
-                        />
-                      ) : option.icon ? (
-                        <option.icon className={cn("h-4 w-4", option.color)} />
+                      {option.icon ? (
+                        <option.icon className={cn("size-4", option.color)} />
                       ) : null}
                       <span className="truncate">{option.label}</span>
                     </SelectItem>

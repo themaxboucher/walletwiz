@@ -1,8 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { FormFieldWrapper } from "./FormFieldWrapper";
 import { UseFormReturn, ControllerRenderProps } from "react-hook-form";
-import { ChevronsUpDownIcon, Repeat, Plus, Store } from "lucide-react";
-import { cn, createBrandfetchIconUrl } from "@/lib/utils";
+import {
+  ChevronsUpDownIcon,
+  Plus,
+  Store,
+  ArrowLeftRight,
+  Landmark,
+  RefreshCcw,
+} from "lucide-react";
+import { cn, createBrandfetchIconUrl, getLucideIconByName } from "@/lib/utils";
+import { accountTypeIcons } from "@/constants";
 import { Button } from "../button";
 import {
   Command,
@@ -20,8 +28,11 @@ import { getPayees } from "@/lib/actions/payee.actions";
 export interface ComboboxOption {
   value: string;
   label: string;
-  domain: string;
+  domain?: string;
   id?: string; // Appwrite payee document ID for previous payees
+  isAccount?: boolean; // Flag to indicate if this is an account-based payee
+  defaultCategoryId?: string; // Only for previous payees
+  accountTypeIconName?: string; // For account payees without domain
 }
 
 interface BrandfetchBrand {
@@ -56,7 +67,7 @@ export function PayeeField({
   const [previousPayeeOptions, setPreviousPayeeOptions] = useState<
     ComboboxOption[]
   >([]);
-  const [payeeLoading, setPayeeLoading] = useState(false);
+  const [payeeLoading, setPayeeLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const payeeSearchTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -87,6 +98,7 @@ export function PayeeField({
 
   useEffect(() => {
     const fetchPreviousPayees = async () => {
+      setPayeeLoading(true);
       try {
         const previousPayees = await getPayees(userId);
         if (previousPayees && previousPayees.length > 0) {
@@ -99,14 +111,30 @@ export function PayeeField({
               new Date(b.$updatedAt).getTime() -
               new Date(a.$updatedAt).getTime()
           );
-          const options: ComboboxOption[] = sortedPayees.map(
-            (payee: Payee) => ({
-              value: payee.brandId,
-              label: payee.name,
-              domain: payee.domain,
-              id: payee.$id,
-            })
-          );
+          const options: ComboboxOption[] = sortedPayees.map((payee: Payee) => {
+            if (payee.account) {
+              return {
+                value: payee.account.$id,
+                label: payee.account.name,
+                domain:
+                  payee.account.type?.brandDomain ||
+                  payee.account.institution?.domain,
+                id: payee.$id,
+                isAccount: true,
+                defaultCategoryId: payee.defaultCategory?.$id,
+                accountTypeIconName: payee.account.type?.iconName,
+              };
+            } else {
+              return {
+                value: payee.brandId || payee.name,
+                label: payee.name,
+                domain: payee.domain,
+                id: payee.$id,
+                isAccount: false,
+                defaultCategoryId: payee.defaultCategory?.$id,
+              };
+            }
+          });
           setPreviousPayeeOptions(options);
           setPayeeOptions(options);
         } else {
@@ -117,6 +145,8 @@ export function PayeeField({
       } catch (error) {
         setPreviousPayeeOptions(staticPayeeOptions);
         setPayeeOptions(staticPayeeOptions);
+      } finally {
+        setPayeeLoading(false);
       }
     };
 
@@ -230,7 +260,7 @@ export function PayeeField({
                 role="combobox"
                 aria-expanded={open}
                 className={cn(
-                  "w-full justify-between active:scale-100 font-normal truncate",
+                  "w-full justify-between active:scale-100 font-normal",
                   !selectedOption &&
                     "text-muted-foreground hover:text-muted-foreground"
                 )}
@@ -239,21 +269,46 @@ export function PayeeField({
                   {selectedOption &&
                     (selectedOption.domain ? (
                       <Image
-                        width={24}
-                        height={24}
-                        src={createBrandfetchIconUrl(selectedOption.domain, 24)}
+                        width={20}
+                        height={20}
+                        src={createBrandfetchIconUrl(selectedOption.domain, 20)}
                         alt={`${selectedOption.label} logo`}
-                        className="size-5 rounded-full object-cover"
+                        className={cn(
+                          "size-5 object-cover",
+                          selectedOption.isAccount
+                            ? "rounded-[0.188rem]"
+                            : "rounded-full"
+                        )}
                         unoptimized // Necessary for brandfetch.io hotlinking guidelines
                       />
+                    ) : selectedOption.isAccount &&
+                      selectedOption.accountTypeIconName &&
+                      accountTypeIcons[selectedOption.accountTypeIconName] ? (
+                      <div className="size-5 rounded-[0.188rem] bg-muted flex items-center justify-center">
+                        {(() => {
+                          const Icon = getLucideIconByName(
+                            accountTypeIcons,
+                            selectedOption.accountTypeIconName
+                          );
+                          return Icon ? (
+                            <Icon className="size-3 text-muted-foreground" />
+                          ) : null;
+                        })()}
+                      </div>
+                    ) : selectedOption.isAccount ? (
+                      <div className="size-5 rounded-[0.188rem] bg-muted flex items-center justify-center">
+                        <Landmark className="size-3 text-muted-foreground" />
+                      </div>
                     ) : (
                       <div className="size-5 rounded-full bg-muted flex items-center justify-center">
                         <Store className="size-3 text-muted-foreground" />
                       </div>
                     ))}
-                  <span>{selectedOption?.label || placeholder}</span>
+                  <span className="truncate max-w-[120px]">
+                    {selectedOption?.label || placeholder}
+                  </span>
                 </span>
-                <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                <ChevronsUpDownIcon className="h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[192px] p-0">
@@ -278,10 +333,7 @@ export function PayeeField({
                 )}
                 {!payeeLoading && (
                   <CommandList>
-                    {payeeOptions.length === 0 && !searchInput && (
-                      <CommandEmpty>No option found.</CommandEmpty>
-                    )}
-                    {payeeOptions.length === 0 && searchInput && (
+                    {payeeOptions.length === 0 && (
                       <CommandEmpty>No payee found.</CommandEmpty>
                     )}
                     {payeeOptions.length > 0 && (
@@ -299,25 +351,61 @@ export function PayeeField({
                               } else field.onChange(null);
                               setOpen(false);
                             }}
+                            className="group"
                           >
-                            {option.domain ? (
-                              <Image
-                                width={24}
-                                height={24}
-                                src={createBrandfetchIconUrl(option.domain, 24)}
-                                alt={`${option.label} logo`}
-                                className="size-5 rounded-full object-cover"
-                                unoptimized // Necessary for brandfetch.io hotlinking guidelines
-                              />
-                            ) : (
-                              <div className="size-5 rounded-full bg-muted flex items-center justify-center">
-                                <Store className="size-3 text-muted-foreground" />
-                              </div>
-                            )}
+                            <span className="relative">
+                              {option.domain ? (
+                                <Image
+                                  width={20}
+                                  height={20}
+                                  src={createBrandfetchIconUrl(
+                                    option.domain,
+                                    20
+                                  )}
+                                  alt={`${option.label} logo`}
+                                  className={cn(
+                                    "size-5 object-cover",
+                                    option.isAccount
+                                      ? "rounded-[0.188rem]"
+                                      : "rounded-full"
+                                  )}
+                                  unoptimized // Necessary for brandfetch.io hotlinking guidelines
+                                />
+                              ) : option.isAccount &&
+                                option.accountTypeIconName &&
+                                accountTypeIcons[option.accountTypeIconName] ? (
+                                <div className="size-5 rounded-[0.188rem] bg-muted flex items-center justify-center">
+                                  {(() => {
+                                    const Icon = getLucideIconByName(
+                                      accountTypeIcons,
+                                      option.accountTypeIconName
+                                    );
+                                    return Icon ? (
+                                      <Icon className="size-3 text-muted-foreground" />
+                                    ) : null;
+                                  })()}
+                                </div>
+                              ) : option.isAccount ? (
+                                <div className="size-5 rounded-[0.188rem] bg-muted flex items-center justify-center">
+                                  <Landmark className="size-3 text-muted-foreground" />
+                                </div>
+                              ) : (
+                                <div className="size-5 rounded-full bg-muted flex items-center justify-center">
+                                  <Store className="size-3 text-muted-foreground" />
+                                </div>
+                              )}
+                              {option?.id && !option.isAccount && (
+                                <span className="absolute -bottom-[0.2rem] -right-[0.2rem] size-3 bg-primary shadow-xs rounded-full flex items-center justify-center">
+                                  <RefreshCcw className="text-white size-2" />
+                                </span>
+                              )}
+                              {option?.id && option.isAccount && (
+                                <span className="absolute -bottom-[0.2rem] -right-[0.2rem] size-3 bg-blue-500 shadow-xs rounded-xs flex items-center justify-center">
+                                  <ArrowLeftRight className="text-white size-2" />
+                                </span>
+                              )}
+                            </span>
                             <span className="truncate">{option.label}</span>
-                            {option?.id && (
-                              <Repeat className="ml-auto size-4" />
-                            )}
                           </CommandItem>
                         ))}
                       </CommandGroup>

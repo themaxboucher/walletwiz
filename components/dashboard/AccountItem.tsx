@@ -72,7 +72,9 @@ export default function AccountItem({
                   unoptimized
                 />
               ) : (
-                <Landmark className="size-8 text-white/80" />
+                <div className="size-7 rounded-sm bg-white/10 flex items-center justify-center">
+                  <Landmark className="size-4 text-white/80" />
+                </div>
               )}
             </div>
           </div>

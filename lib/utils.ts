@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import type { LucideIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import { differenceInDays } from "date-fns";
 
@@ -157,7 +158,7 @@ export function filterChartDataByDateRange<T extends { date: string }>(
  */
 export function calculateIncome(transactions: Transaction[]) {
   return transactions
-    .filter((tx) => tx.amount > 0)
+    .filter((tx) => tx.amount > 0 && tx.category?.type !== "transfer")
     .reduce((sum, tx) => sum + tx.amount, 0);
 }
 
@@ -166,7 +167,7 @@ export function calculateIncome(transactions: Transaction[]) {
  */
 export function calculateExpenses(transactions: Transaction[]) {
   return transactions
-    .filter((tx) => tx.amount < 0)
+    .filter((tx) => tx.amount < 0 && tx.category?.type !== "transfer")
     .reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
 }
 
@@ -437,6 +438,20 @@ export const createBrandfetchLogoUrlWithTheme = (
     fallback: true,
   });
 };
+
+// Lucide helpers //
+
+/**
+ * Returns a Lucide icon component from a map by its string name.
+ * Consumers can render it like: `const Icon = getLucideIconByName(map, name); return Icon ? <Icon className=... /> : null`.
+ */
+export function getLucideIconByName(
+  iconMap: Record<string, LucideIcon>,
+  iconName?: string
+): LucideIcon | undefined {
+  if (!iconName) return undefined;
+  return iconMap[iconName];
+}
 
 // Account Icon Helper //
 
