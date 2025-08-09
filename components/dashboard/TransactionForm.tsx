@@ -478,7 +478,7 @@ export default function TransactionForm({
             form={form}
             name="payee"
             userId={userId}
-            label={watchedPayee?.isAccount ? "From" : "Payee"}
+            label="Payee"
             placeholder="Select payee"
           />
           <SelectField
@@ -503,13 +503,13 @@ export default function TransactionForm({
           <SelectField
             form={form}
             name="account"
-            label={watchedPayee?.isAccount ? "To" : "Account"}
+            label="Account"
             options={accountOptions}
             placeholder="Select account"
           />
         </div>
         {watchedPayee?.isAccount && !transactionToEdit && (
-          <Label className="dark:bg-input/30 hover:bg-accent dark:hover:bg-input/50 flex items-start gap-3 rounded-lg border border-input p-3 has-[[aria-checked=true]]:border-primary has-[[aria-checked=true]]:bg-primary/10 dark:has-[[aria-checked=true]]:border-primary dark:has-[[aria-checked=true]]:bg-primary/10 transition-all duration-200 ease-in-out">
+          <Label className="shadow-xs dark:bg-input/30 hover:bg-accent dark:hover:bg-input/50 flex items-start gap-3 rounded-lg border border-input p-3 has-[[aria-checked=true]]:border-primary has-[[aria-checked=true]]:bg-primary/10 dark:has-[[aria-checked=true]]:border-primary dark:has-[[aria-checked=true]]:bg-primary/10 transition-all duration-200 ease-in-out">
             <Checkbox
               checked={createOpposing}
               onCheckedChange={(checked) => setCreateOpposing(Boolean(checked))}
@@ -517,10 +517,10 @@ export default function TransactionForm({
             />
             <div className="grid gap-1.5 font-normal">
               <p className="text-sm leading-none font-medium">
-                Create opposing transaction
+                Match transaction
               </p>
-              <p className="text-muted-foreground text-sm">
-                Automatically create the corresponding withdrawal from{" "}
+              <p className="text-muted-foreground text-xs">
+                Automatically add the corresponding transaction for{" "}
                 <span className="font-medium">{watchedPayee?.label}</span>
               </p>
             </div>
