@@ -8,19 +8,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "../ui/form";
-import { categoryIcons, categoryColors, accountTypeIcons } from "@/constants";
-import { getAccountIcon, createBrandfetchIconUrl } from "@/lib/utils";
+import { categoryIcons, categoryColors } from "@/constants";
 import {
   createTransaction,
   updateTransaction,
 } from "@/lib/actions/transaction.actions";
-import { CircleX, LoaderCircle, Landmark } from "lucide-react";
+import { CircleX, LoaderCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SelectField } from "../ui/form-fields/SelectField";
 import { PayeeField } from "../ui/form-fields/PayeeField";
+import { AccountField } from "../ui/form-fields/AccountField";
 import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -425,29 +425,6 @@ export default function TransactionForm({
     ? accounts.filter((account) => account.$id !== watchedPayee.value)
     : accounts;
 
-  const accountOptions = selectableAccounts.map((account) => {
-    const iconResult = getAccountIcon(account);
-
-    if (iconResult.type === "brandfetch") {
-      return {
-        value: account.$id!,
-        label: account.name,
-        imageSrc: createBrandfetchIconUrl(iconResult.value, 20),
-      };
-    } else {
-      // Handle Lucide icon
-      const Icon =
-        iconResult.value === "Landmark"
-          ? Landmark
-          : accountTypeIcons[iconResult.value];
-      return {
-        value: account.$id!,
-        label: account.name,
-        icon: Icon,
-      };
-    }
-  });
-
   // If transfer payee is selected and selected account matches payee account, clear the account field
   useEffect(() => {
     if (!watchedPayee?.isAccount) return;
@@ -500,11 +477,11 @@ export default function TransactionForm({
             min={0.01}
             isCurrency={true}
           />
-          <SelectField
+          <AccountField
             form={form}
             name="account"
             label="Account"
-            options={accountOptions}
+            accounts={selectableAccounts}
             placeholder="Select account"
           />
         </div>
