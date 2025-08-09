@@ -96,6 +96,20 @@ export default function TransactionForm({
           path: ["amount"],
         });
       }
+
+      // Prevent selecting the same account for payee (source) and selected account (destination)
+      if (
+        data.payee?.isAccount &&
+        data.payee?.value &&
+        data.account &&
+        data.account === data.payee.value
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Destination account must be different from source account`,
+          path: ["account"],
+        });
+      }
     }
   );
 
@@ -380,7 +394,12 @@ export default function TransactionForm({
     }
   }, [watchedPayee, categories, form]);
 
-  const accountOptions = accounts.map((account) => {
+  // Exclude the payee account from the destination account options for transfers
+  const selectableAccounts = watchedPayee?.isAccount
+    ? accounts.filter((account) => account.$id !== watchedPayee.value)
+    : accounts;
+
+  const accountOptions = selectableAccounts.map((account) => {
     const iconResult = getAccountIcon(account);
 
     if (iconResult.type === "brandfetch") {
@@ -402,6 +421,19 @@ export default function TransactionForm({
       };
     }
   });
+
+  // If transfer payee is selected and selected account matches payee account, clear the account field
+  useEffect(() => {
+    if (!watchedPayee?.isAccount) return;
+    const selectedAccount = form.getValues("account");
+    if (selectedAccount && selectedAccount === watchedPayee.value) {
+      form.setValue("account", "", {
+        shouldValidate: false,
+        shouldDirty: true,
+      });
+      form.clearErrors("account");
+    }
+  }, [watchedPayee, form]);
 
   if (categories.length === 0) {
     return (
