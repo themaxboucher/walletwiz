@@ -28,13 +28,13 @@ export const createPayee = async (payee: PayeeDB, userId: string) => {
   }
 };
 
-export const getPayees = async (userId: string) => {
+export const getPayees = async (userId: string, limit: number = 5000) => {
   try {
     const { database } = await createAdminClient();
     const payees = await database.listDocuments(
       DATABASE_ID!,
       PAYEE_COLLECTION_ID!,
-      [Query.equal("user", userId)]
+      [Query.equal("user", userId), Query.limit(limit)]
     );
     return parseStringify(payees.documents);
   } catch (error) {
