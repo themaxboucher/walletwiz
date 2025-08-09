@@ -29,14 +29,14 @@ export const createCategory = async (category: Category, userId: string) => {
   }
 };
 
-export const getCategories = async (userId: string) => {
+export const getCategories = async (userId: string, limit: number = 5000) => {
   try {
     const { database } = await createAdminClient();
 
     const categories = await database.listDocuments(
       DATABASE_ID!,
       CATEGORY_COLLECTION_ID!,
-      [Query.equal("user", userId)]
+      [Query.equal("user", userId), Query.limit(limit)]
     );
 
     return parseStringify(categories.documents);

@@ -45,14 +45,14 @@ export const createAccount = async (account: AccountDB, userId: string) => {
   }
 };
 
-export const getAccounts = async (userId: string) => {
+export const getAccounts = async (userId: string, limit: number = 5000) => {
   try {
     const { database } = await createAdminClient();
 
     const accounts = await database.listDocuments(
       DATABASE_ID!,
       ACCOUNT_COLLECTION_ID!,
-      [Query.equal("user", userId)]
+      [Query.equal("user", userId), Query.limit(limit)]
     );
 
     return parseStringify(accounts.documents);

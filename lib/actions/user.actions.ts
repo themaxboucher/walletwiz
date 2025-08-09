@@ -233,7 +233,7 @@ export const deleteAccount = async (authUserId: string, docUserId: string) => {
     const transactions = await database.listDocuments(
       DATABASE_ID!,
       TRANSACTION_COLLECTION_ID!,
-      [Query.equal("user", [docUserId])]
+      [Query.equal("user", [docUserId]), Query.limit(5000)]
     );
     for (const tx of transactions.documents) {
       await database.deleteDocument(
@@ -246,7 +246,7 @@ export const deleteAccount = async (authUserId: string, docUserId: string) => {
     const categories = await database.listDocuments(
       DATABASE_ID!,
       CATEGORY_COLLECTION_ID!,
-      [Query.equal("user", docUserId)]
+      [Query.equal("user", docUserId), Query.limit(5000)]
     );
     for (const cat of categories.documents) {
       await database.deleteDocument(
@@ -259,7 +259,7 @@ export const deleteAccount = async (authUserId: string, docUserId: string) => {
     const accounts = await database.listDocuments(
       DATABASE_ID!,
       ACCOUNT_COLLECTION_ID!,
-      [Query.equal("user", docUserId)]
+      [Query.equal("user", docUserId), Query.limit(5000)]
     );
     for (const acc of accounts.documents) {
       await database.deleteDocument(
