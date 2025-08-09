@@ -390,7 +390,7 @@ export default function TransactionForm({
             placeholder="Select account"
           />
         </div>
-        {watchedPayee?.isAccount && (
+        {watchedPayee?.isAccount && !transactionToEdit && (
           <Label className="dark:bg-input/30 hover:bg-accent dark:hover:bg-input/50 flex items-start gap-3 rounded-lg border border-input p-3 has-[[aria-checked=true]]:border-primary has-[[aria-checked=true]]:bg-primary/10 dark:has-[[aria-checked=true]]:border-primary dark:has-[[aria-checked=true]]:bg-primary/10 transition-all duration-200 ease-in-out">
             <Checkbox
               id="toggle-2"
