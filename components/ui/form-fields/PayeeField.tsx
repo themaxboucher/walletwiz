@@ -67,7 +67,7 @@ export function PayeeField({
   const [previousPayeeOptions, setPreviousPayeeOptions] = useState<
     ComboboxOption[]
   >([]);
-  const [payeeLoading, setPayeeLoading] = useState(false);
+  const [payeeLoading, setPayeeLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const payeeSearchTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -98,6 +98,7 @@ export function PayeeField({
 
   useEffect(() => {
     const fetchPreviousPayees = async () => {
+      setPayeeLoading(true);
       try {
         const previousPayees = await getPayees(userId);
         if (previousPayees && previousPayees.length > 0) {
@@ -144,6 +145,8 @@ export function PayeeField({
       } catch (error) {
         setPreviousPayeeOptions(staticPayeeOptions);
         setPayeeOptions(staticPayeeOptions);
+      } finally {
+        setPayeeLoading(false);
       }
     };
 
@@ -330,10 +333,7 @@ export function PayeeField({
                 )}
                 {!payeeLoading && (
                   <CommandList>
-                    {payeeOptions.length === 0 && !searchInput && (
-                      <CommandEmpty>No option found.</CommandEmpty>
-                    )}
-                    {payeeOptions.length === 0 && searchInput && (
+                    {payeeOptions.length === 0 && (
                       <CommandEmpty>No payee found.</CommandEmpty>
                     )}
                     {payeeOptions.length > 0 && (
