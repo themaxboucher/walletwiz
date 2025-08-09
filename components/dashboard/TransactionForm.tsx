@@ -23,7 +23,11 @@ import { SelectField } from "../ui/form-fields/SelectField";
 import { PayeeField } from "../ui/form-fields/PayeeField";
 import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
-import { getPayeeByAccount, createPayee } from "@/lib/actions/payee.actions";
+import {
+  getPayeeByAccount,
+  createPayee,
+  updatePayee,
+} from "@/lib/actions/payee.actions";
 
 // Define the Zod schema for the transaction form
 const transactionFormSchema = z.object({
@@ -239,6 +243,19 @@ export default function TransactionForm({
   const userId = categories[0]?.user?.$id;
   if (!userId) throw new Error("User not found");
 
+  // Helpers to avoid duplicated defaultCategory update logic
+  async function setPayeeDefaultCategory(
+    payeeId: string | undefined,
+    categoryId: string
+  ) {
+    if (!payeeId) return;
+    try {
+      await updatePayee(payeeId, { defaultCategory: categoryId });
+    } catch (e) {
+      console.error("Failed to update payee default category", e);
+    }
+  }
+
   async function onSubmit(values: TransactionFormData) {
     console.log("Submitting transaction form with values:", values);
     setError(null);
@@ -277,14 +294,15 @@ export default function TransactionForm({
       } as TransactionDB;
 
       if (transactionToEdit?.$id) {
+        // Update the transaction
         await updateTransaction(String(transactionToEdit.$id), transactionData);
       } else {
         // Create the primary transaction first
         await createTransaction(transactionData);
 
         // If enabled and this is a transfer between accounts, create the opposing transaction
-        if (createOpposing && watchedPayee?.isAccount) {
-          const sourceAccountId = String(watchedPayee.value); // From account
+        if (createOpposing && values.payee?.isAccount) {
+          const sourceAccountId = String(values.payee.value); // From account
           const destinationAccountId = String(values.account); // To account
 
           // Find or create a payee for the destination account
@@ -328,8 +346,16 @@ export default function TransactionForm({
           } as TransactionDB;
 
           await createTransaction(opposingTransactionData);
+
+          // Ensure opposing account payee default category reflects transfer
+          await setPayeeDefaultCategory(
+            opposingPayeeId || undefined,
+            selectedCategory.$id
+          );
         }
       }
+
+      await setPayeeDefaultCategory(values.payee?.id, selectedCategory.$id);
 
       router.refresh();
       onCancel();
