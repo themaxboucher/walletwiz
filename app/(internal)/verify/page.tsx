@@ -1,13 +1,47 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import AuthCard from "@/components/auth/AuthCard";
-import { LoaderCircle } from "lucide-react";
+import { CircleCheck, LoaderCircle } from "lucide-react";
 import FormAlert from "@/components/FormAlert";
 import { updateVerification } from "@/lib/appwrite/client";
+import { toast } from "sonner";
 
-function VerifyContent() {
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    const message = error.message.toLowerCase();
+
+    // Common Appwrite error patterns
+    if (message.includes("invalid") && message.includes("secret")) {
+      return "This verification link has expired or is invalid. Please request a new verification email.";
+    }
+
+    if (message.includes("already verified")) {
+      return "Your email has already been verified. You can now log in to your account.";
+    }
+
+    if (message.includes("user not found")) {
+      return "This verification link is invalid. Please check your email or request a new verification link.";
+    }
+
+    if (message.includes("network") || message.includes("connection")) {
+      return "Unable to connect to our servers. Please check your internet connection and try again.";
+    }
+
+    if (message.includes("timeout")) {
+      return "The verification request timed out. Please try again.";
+    }
+
+    // Generic error messages for common scenarios
+    if (message.includes("invalid verification link")) {
+      return "This verification link is invalid or has expired. Please request a new verification email from your account settings.";
+    }
+  }
+
+  return "An unexpected error occurred while verifying your email. Please try again or contact support if the problem persists.";
+}
+
+export default function VerifyPage() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
   );
@@ -28,13 +62,13 @@ function VerifyContent() {
         await updateVerification(userId, secret);
         setStatus("success");
         router.refresh(); // Potential fix to "already verified" bug
-        // Redirect to login after 3 seconds
-        setTimeout(() => {
-          router.push("/dashboard");
-        }, 3000);
+        toast("Email verified successfully!", {
+          icon: <CircleCheck className="text-primary size-5" />,
+        });
+        router.push("/onboarding/accounts");
       } catch (err) {
         setStatus("error");
-        setError(err instanceof Error ? err.message : "Failed to verify email");
+        setError(getErrorMessage(err));
       }
     };
 
@@ -42,43 +76,20 @@ function VerifyContent() {
   }, [searchParams, router]);
 
   return (
-    <AuthCard
-      title="Email Verification"
-      description={
-        status === "loading"
-          ? "Verifying your email..."
-          : status === "success"
-          ? "Email verified successfully! Redirecting to dashboard..."
-          : "Failed to verify email"
-      }
-    >
-      <div className="flex flex-col items-center justify-center gap-4">
-        {status === "loading" && (
-          <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
-        )}
+    <div className="flex flex-col items-center justify-center gap-4">
+      {status === "loading" ||
+        (status === "success" && (
+          <LoaderCircle className="size-8 animate-spin text-primary" />
+        ))}
 
-        {status === "error" && (
+      {status === "error" && (
+        <div className="max-w-md w-full">
           <FormAlert
             message={error ?? "An unknown error occurred."}
             type="error"
           />
-        )}
-
-        {status === "success" && (
-          <FormAlert
-            message="Email verified successfully! Redirecting to dashboard..."
-            type="success"
-          />
-        )}
-      </div>
-    </AuthCard>
-  );
-}
-
-export default function VerifyPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <VerifyContent />
-    </Suspense>
+        </div>
+      )}
+    </div>
   );
 }

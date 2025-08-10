@@ -15,8 +15,6 @@ import {
 } from "@/lib/appwrite/client";
 import { TextField } from "../ui/form-fields/TextField";
 import { PasswordField } from "../ui/form-fields/PasswordField";
-import { toast } from "sonner";
-import { CircleCheck } from "lucide-react";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
@@ -31,6 +29,7 @@ type SignupFormData = z.infer<typeof formSchema>;
 
 export default function SignupForm() {
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm<SignupFormData>({
@@ -60,9 +59,9 @@ export default function SignupForm() {
       // Send verification email
       await sendVerificationEmail();
 
-      toast("Account created successfully", {
-        icon: <CircleCheck className="text-primary size-5" />,
-      });
+      setSuccess(
+        `We've sent a verification link to ${data.email}. Please click it to activate your account.`
+      );
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
@@ -110,6 +109,7 @@ export default function SignupForm() {
         />
         <PasswordField form={form} name="password" label="Password" />
         {error && <FormAlert message={error} type="error" />}
+        {success && <FormAlert message={success} type="success" />}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
           {!loading && "Create an account"}

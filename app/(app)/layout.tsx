@@ -1,9 +1,6 @@
 import Logo from "@/components/Logo";
 import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
-
-// Import the new client component
-import EmailVerificationDialog from "@/components/auth/EmailVerificationDialog";
 import AccountMenu from "@/components/dashboard/AccountMenu";
 
 export default async function AppLayout({
@@ -11,14 +8,16 @@ export default async function AppLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Block routes if user is not logged in
   const loggedIn = await getLoggedInUser();
+
+  // Block routes if user is not logged in
   if (!loggedIn) redirect("/login");
+
+  // Redirect to check-email if user is logged in but not verified
+  if (loggedIn && !loggedIn.$emailVerification) redirect("/confirm-email");
 
   return (
     <div className="min-h-screen max-w-full">
-      <EmailVerificationDialog user={loggedIn} />
-
       <div className="flex flex-col max-w-full">
         <header className="flex h-14 justify-between items-center gap-4 border-b border-border bg-card px-4 lg:h-[60px] lg:px-6">
           <Logo />

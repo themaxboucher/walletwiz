@@ -9,7 +9,8 @@ export default async function AuthLayout({
 }>) {
   // Block routes if user is logged in
   const loggedIn = await getLoggedInUser();
-  if (loggedIn) redirect("/dashboard");
+  // Only redirect verified users to the dashboard. Allow newly signed-up (unverified) users to stay.
+  if (loggedIn?.$emailVerification) redirect("/dashboard");
 
   return (
     <>
