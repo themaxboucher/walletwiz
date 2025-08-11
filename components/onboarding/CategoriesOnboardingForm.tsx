@@ -1,28 +1,19 @@
 import { categories } from "@/constants";
-import { Button } from "../ui/button";
-import CategoryChip from "./CategoryChip";
+import CategoryChip from "../settings/CategoryChip";
 import { useEffect, useState } from "react";
-import { CircleCheck, CircleX, LoaderCircle } from "lucide-react";
 import { Label } from "../ui/label";
-import {
-  getCategories,
-  updateCategories,
-} from "@/lib/actions/category.actions";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 interface CategoriesFormProps {
   user: User;
+  onChange?: (selected: Category[]) => void;
+  selectedCategories: Category[];
 }
 
-export default function CategoriesForm({ user }: CategoriesFormProps) {
-  const [selected, setSelected] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [initialUserCategories, setInitialUserCategories] = useState<
-    Category[]
-  >([]);
-  const [fetching, setFetching] = useState<boolean>(true);
-  const router = useRouter();
+export default function CategoriesOnboardingForm({
+  onChange,
+  selectedCategories,
+}: CategoriesFormProps) {
+  const [selected, setSelected] = useState<Category[]>(selectedCategories);
 
   const incomeCategories = categories.filter(
     (c) => c.type === "income" && c.name !== "Other Income"
@@ -31,86 +22,28 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
     (c) => c.type === "expense" && c.name !== "Other Expense"
   );
 
+  // Notify parent of selection changes after commit
   useEffect(() => {
-    async function fetchUserCategories() {
-      setFetching(true);
-      if (!user?.$id) return;
-      try {
-        const userCategories = await getCategories(user.$id);
-        setSelected(userCategories);
-        setInitialUserCategories(userCategories);
-      } catch (e) {
-        // Optionally handle error
-      } finally {
-        setFetching(false);
-      }
-    }
-    fetchUserCategories();
-  }, [user]);
+    onChange?.(selected);
+  }, [selected, onChange]);
 
   function isSelected(category: Category) {
     return selected.some((c) => c.name === category.name);
   }
 
   function toggleCategory(category: Category) {
-    setSelected((prev) =>
-      isSelected(category)
+    setSelected((prev) => {
+      const nextSelected = isSelected(category)
         ? prev.filter((c) => c.name !== category.name)
-        : [...prev, category]
-    );
-  }
-
-  async function handleSave() {
-    const selectedIncome = selected.filter((c) => c.type === "income");
-    const selectedExpense = selected.filter((c) => c.type === "expense");
-    if (selectedIncome.length < 2) {
-      toast("Select at least one income category", {
-        icon: <CircleX className="text-destructive size-5" />,
-      });
-    }
-    if (selectedExpense.length < 4) {
-      toast("Select at least three expense categories", {
-        icon: <CircleX className="text-destructive size-5" />,
-      });
-    }
-    if (selectedIncome.length < 2 || selectedExpense.length < 4) {
-      return;
-    }
-    setLoading(true);
-    try {
-      const userCategories = await updateCategories(
-        user.$id,
-        selected,
-        initialUserCategories
-      );
-      setSelected(userCategories);
-      setInitialUserCategories(userCategories);
-      toast("Categories updated successfully", {
-        icon: <CircleCheck className="text-primary size-5" />,
-      });
-      router.refresh();
-    } catch (error) {
-      toast("Error updating categories", {
-        icon: <CircleX className="text-destructive size-5" />,
-      });
-      console.error("Error updating categories:", error);
-    } finally {
-      setLoading(false);
-    }
+        : [...prev, category];
+      return nextSelected;
+    });
   }
 
   const selectedIncome = incomeCategories.filter(isSelected);
   const unselectedIncome = incomeCategories.filter((c) => !isSelected(c));
   const selectedExpense = expenseCategories.filter(isSelected);
   const unselectedExpense = expenseCategories.filter((c) => !isSelected(c));
-
-  if (fetching) {
-    return (
-      <div className="w-full h-96 flex justify-center items-center text-primary">
-        <LoaderCircle className="size-10 animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -178,11 +111,6 @@ export default function CategoriesForm({ user }: CategoriesFormProps) {
           </div>
         ))}
       </div>
-
-      <Button className="mb-6" disabled={loading} onClick={handleSave}>
-        {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
-        {!loading && "Save changes"}
-      </Button>
     </div>
   );
 }

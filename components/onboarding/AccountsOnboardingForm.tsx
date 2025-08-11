@@ -8,9 +8,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "../ui/form";
-import { createAccount, updateAccount } from "@/lib/actions/account.actions";
+import { createAccount } from "@/lib/actions/account.actions";
 import { createBrandfetchIconUrl } from "@/lib/utils";
-import { CircleX, Info, LoaderCircle, Trash2 } from "lucide-react";
+import { CircleX, Info, LoaderCircle, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,6 @@ import { SelectField } from "../ui/form-fields/SelectField";
 import { getAccountTypes } from "@/lib/actions/accountType.actions";
 import { toast } from "sonner";
 import { accountTypeIcons } from "@/constants";
-import DeleteAccountDialog from "./DeleteAccountDialog";
 
 // Define the Zod schema for the account form
 const accountFormSchema = z.object({
@@ -42,21 +41,18 @@ const accountFormSchema = z.object({
 type AccountFormData = z.infer<typeof accountFormSchema>;
 
 interface AccountFormProps {
-  accountToEdit?: Account | null;
-  onCancel?: () => void;
   userId: string;
+  onAdd: (account: Account) => void;
 }
 
-export default function AccountForm({
-  accountToEdit,
-  onCancel,
+export default function AccountsOnboardingForm({
   userId,
+  onAdd,
 }: AccountFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [accountTypes, setAccountTypes] = useState<AccountType[]>([]);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchAccountTypes() {
@@ -89,26 +85,12 @@ export default function AccountForm({
 
   const form = useForm<AccountFormData>({
     resolver: zodResolver(accountFormSchema),
-    defaultValues: accountToEdit
-      ? {
-          name: accountToEdit.name,
-          institution: accountToEdit.institution
-            ? {
-                value: accountToEdit.institution.$id!,
-                label: accountToEdit.institution.name,
-                domain: accountToEdit.institution.domain,
-                id: accountToEdit.institution.$id!,
-              }
-            : null,
-          type: accountToEdit.type?.$id ?? "",
-          currentBalance: accountToEdit.currentBalance || undefined,
-        }
-      : {
-          name: "",
-          institution: null,
-          type: "",
-          currentBalance: undefined,
-        },
+    defaultValues: {
+      name: "",
+      institution: null,
+      type: "",
+      currentBalance: undefined,
+    },
   });
 
   async function onSubmit(values: AccountFormData) {
@@ -135,16 +117,13 @@ export default function AccountForm({
         currentBalance: values.currentBalance || undefined,
       };
 
-      if (accountToEdit?.$id) {
-        await updateAccount(String(accountToEdit.$id), accountData);
-      } else {
-        await createAccount(accountData, userId);
-      }
+      const createdAccount = await createAccount(accountData, userId);
 
-      router.refresh();
-      if (onCancel) {
-        onCancel();
-      }
+      // Update an accounts state
+      onAdd(createdAccount);
+
+      // Reset form fields
+      form.reset();
     } catch (error) {
       console.error("Error saving account:", error);
       setError(
@@ -200,39 +179,17 @@ export default function AccountForm({
 
         {error && <FormAlert message={error} type="error" />}
         <div className="flex justify-between mt-4">
-          {accountToEdit && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setDeleteDialogOpen(true)}
-              disabled={loading}
-            >
-              <Trash2 className="h-4 w-4" />
-              Delete Account
-            </Button>
-          )}
-          <div className={`flex gap-2 ${!accountToEdit ? "ml-auto" : ""}`}>
-            {onCancel && (
-              <Button type="button" variant="outline" onClick={onCancel}>
-                Cancel
-              </Button>
+          <Button type="submit" size="sm" className="w-full" disabled={loading}>
+            {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
+            {!loading && (
+              <>
+                <Plus className="size-3.5 opacity-75" />
+                <span>Add</span>
+              </>
             )}
-            <Button type="submit" disabled={loading}>
-              {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
-              {!loading && "Save"}
-            </Button>
-          </div>
+          </Button>
         </div>
       </form>
-
-      {accountToEdit && (
-        <DeleteAccountDialog
-          open={deleteDialogOpen}
-          onOpenChange={setDeleteDialogOpen}
-          accountId={accountToEdit.$id!}
-          onAccountDeleted={onCancel}
-        />
-      )}
     </Form>
   );
 }

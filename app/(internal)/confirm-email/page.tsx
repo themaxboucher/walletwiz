@@ -79,7 +79,9 @@ export default function CheckEmailPage() {
           <div className="rounded-full bg-primary/10 p-3 mb-2">
             <MailCheck className="text-primary size-6" />
           </div>
-          <CardTitle className="text-2xl">Confirm your email</CardTitle>
+          <CardTitle className="text-2xl">
+            You're almost there! Check you email to begin.
+          </CardTitle>
           <CardDescription className="text-center max-w-[25rem]">
             We've sent a verification link to{" "}
             <span className="font-medium">{user.email}</span>. Please click it

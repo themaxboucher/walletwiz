@@ -4,9 +4,8 @@ import { ID, Query } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite/server";
 import { cookies } from "next/headers";
 import { parseStringify } from "../utils";
-import { defaultCategories, defaultAccounts } from "@/constants";
+import { defaultCategories } from "@/constants";
 import { createCategory } from "./category.actions";
-import { createAccount } from "./account.actions";
 
 const {
   APPWRITE_DATABASE_ID: DATABASE_ID,
@@ -93,6 +92,11 @@ export const signup = async ({
         userId: newUserAccount.$id,
       }
     );
+
+    // Create default categories for the new user
+    for (const category of defaultCategories) {
+      await createCategory(category, newUser.$id);
+    }
 
     // Create session after successful signup
     const session = await account.createEmailPasswordSession(email, password);

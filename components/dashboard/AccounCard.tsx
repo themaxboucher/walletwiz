@@ -10,13 +10,11 @@ interface AccountItemProps {
   transactions?: Transaction[];
 }
 
-export default function AccountItem({
+export default function AccountCard({
   account,
   onClick,
   transactions = [],
 }: AccountItemProps) {
-  const [deleteOpen, setDeleteOpen] = useState(false);
-
   // Calculate the sum of all transactions for this account
   const accountTransactions = transactions.filter(
     (tx) => tx.account?.$id === account.$id
@@ -44,7 +42,7 @@ export default function AccountItem({
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-xl border-2 transition-all duration-100 ease-out shadow-xl hover:shadow-2xl hover:-translate-y-1 cursor-pointer aspect-[1.75] w-full max-w-md text-white",
+        "group relative overflow-hidden rounded-xl border-2 transition-all duration-100 ease-out shadow-xl hover:shadow-2xl hover:-translate-y-1 aspect-[1.75] w-full max-w-md text-white",
         getCardColorClasses()
       )}
       onClick={onClick}
@@ -120,25 +118,29 @@ export default function AccountItem({
                     : account.type.name}
                 </div>
               )}
-              <span className="text-white/50">|</span>
-              {balancesMatch ? (
-                <div className="flex items-center gap-1.5">
-                  <CircleCheck className="size-4 text-white/90" />
-                  <p className="text-xs text-white/90">
-                    Balance matches transactions
-                  </p>
-                </div>
-              ) : (
-                <div className="flex items-center gap-1.5">
-                  <Info className="size-4 text-white/90" />
-                  <p className="text-xs text-white/90">
-                    <span className="font-semibold">
-                      {balanceDifference < 0 && "-"}
-                      {formatCurrency(Math.abs(balanceDifference))}
-                    </span>{" "}
-                    missing from transactions
-                  </p>
-                </div>
+              {transactions && (
+                <>
+                  <span className="text-white/50">|</span>
+                  {balancesMatch ? (
+                    <div className="flex items-center gap-1.5">
+                      <CircleCheck className="size-4 text-white/90" />
+                      <p className="text-xs text-white/90">
+                        Balance matches transactions
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1.5">
+                      <Info className="size-4 text-white/90" />
+                      <p className="text-xs text-white/90">
+                        <span className="font-semibold">
+                          {balanceDifference < 0 && "-"}
+                          {formatCurrency(Math.abs(balanceDifference))}
+                        </span>{" "}
+                        missing from transactions
+                      </p>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
