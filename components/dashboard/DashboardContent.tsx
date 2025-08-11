@@ -146,7 +146,11 @@ export default function DashboardContent({
               periodText={periodText}
             />
           </div>
-          <Balance totalBalance={totalBalance} chartData={filteredChartData} />
+          <Balance
+            totalBalance={totalBalance}
+            chartData={filteredChartData}
+            transactions={filteredTransactions}
+          />
           <Transactions
             transactions={filteredTransactions}
             categories={categories}
