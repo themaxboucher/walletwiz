@@ -46,7 +46,7 @@ export default function CategoriesOnboardingContent({
   }
 
   return (
-    <div className="w-full max-w-4xl space-y-8">
+    <div className="w-full max-w-4xl space-y-8 min-h-[28rem] flex flex-col justify-between my-4">
       <div className="flex flex-col items-center text-center gap-1">
         <h1 className="text-2xl font-medium">Select your categories</h1>
         <p className="text-sm text-muted-foreground mt-1">
