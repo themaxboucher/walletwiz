@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
@@ -29,8 +30,8 @@ type SignupFormData = z.infer<typeof formSchema>;
 
 export default function SignupForm() {
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const form = useForm<SignupFormData>({
     resolver: zodResolver(formSchema),
@@ -56,12 +57,9 @@ export default function SignupForm() {
       // Create Appwrite client session in the browser
       await createClientSession(data.email, data.password);
 
-      // Send verification email
+      // Send verification email then redirect to confirm email page
       await sendVerificationEmail();
-
-      setSuccess(
-        `We've sent a verification link to ${data.email}. Please click it to activate your account.`
-      );
+      router.push("/confirm-email");
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
@@ -109,7 +107,6 @@ export default function SignupForm() {
         />
         <PasswordField form={form} name="password" label="Password" />
         {error && <FormAlert message={error} type="error" />}
-        {success && <FormAlert message={success} type="success" />}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
           {!loading && "Create an account"}

@@ -13,13 +13,14 @@ import {
 import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { sendVerificationEmail } from "@/lib/appwrite/client";
 import { LoaderCircle, MailCheck } from "lucide-react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function CheckEmailPage() {
   const [user, setUser] = useState<any | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [userError, setUserError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,11 +36,20 @@ export default function CheckEmailPage() {
     fetchUser();
   }, []);
 
-  // Redirect to dashboard if the user is logged in and has verified their email
-  if (user && user.$emailVerification) redirect("/dashboard");
+  // Handle redirects after user state has been resolved
+  useEffect(() => {
+    if (loadingUser) return;
+    if (user && user.$emailVerification) {
+      router.replace("/dashboard");
+    } else if (!user) {
+      router.replace("/login");
+    }
+  }, [loadingUser, user, router]);
 
-  // If the user is not logged in, redirect to login page
-  if (!user) redirect("/login");
+  // Redirect to home page if user fetch failed
+  useEffect(() => {
+    if (userError) router.replace("/");
+  }, [userError, router]);
 
   // Add state for loading and success/error message for resending
   const [resending, setResending] = useState(false);
@@ -67,11 +77,6 @@ export default function CheckEmailPage() {
     return <LoaderCircle className="text-primary size-8 animate-spin" />;
   }
 
-  // Redirect to home page if user fetch failed
-  if (userError || !user) {
-    redirect("/");
-  }
-
   return (
     <Card className="mx-auto max-w-md w-full">
       <CardContent className="flex flex-col items-center text-center gap-3">
@@ -80,12 +85,14 @@ export default function CheckEmailPage() {
             <MailCheck className="text-primary size-6" />
           </div>
           <CardTitle className="text-2xl">
-            You're almost there! Check you email to begin.
+            You're ready to go!
+            <br />
+            Check your email to begin.
           </CardTitle>
-          <CardDescription className="text-center max-w-[25rem]">
+          <CardDescription className="text-center">
             We've sent a verification link to{" "}
-            <span className="font-medium">{user.email}</span>. Please click it
-            to activate your account.
+            <span className="font-medium">{user.email}</span>.<br /> Please
+            click it to activate your account.
           </CardDescription>
         </CardHeader>
         <div>
