@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import AccountsOnboardingForm from "./AccountsOnboardingForm";
 import CardStack from "../dashboard/CardStack";
 
@@ -16,10 +16,67 @@ export default function AccountsOnboardingContent({
   accounts: initialAccounts,
 }: AccountsOnboardingContentProps) {
   const [accounts, setAccounts] = useState<Account[]>(initialAccounts);
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const handleAddAccount = (newAccount: Account) => {
     setAccounts((prev) => [...prev, newAccount]);
   };
+
+  const handleScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } =
+        scrollContainerRef.current;
+      const isBottom = scrollTop + clientHeight >= scrollHeight - 1; // 1px tolerance
+      const isTop = scrollTop <= 1; // 1px tolerance
+      setIsAtBottom(isBottom);
+      setIsAtTop(isTop);
+    }
+  };
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (scrollContainer) {
+      scrollContainer.addEventListener("scroll", handleScroll);
+      // Check initial position
+      handleScroll();
+
+      return () => {
+        scrollContainer.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, [accounts]); // Re-run when accounts change to check new scroll position
+
+  useLayoutEffect(() => {
+    const element = scrollContainerRef.current;
+    if (!element) return;
+
+    const updateEdgeStates = () => {
+      const { scrollTop, scrollHeight, clientHeight } = element;
+      const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
+      const atTop = scrollTop <= 1;
+      setIsAtTop(atTop);
+      setIsAtBottom(atBottom);
+    };
+
+    // After layout/measure, compute once
+    requestAnimationFrame(updateEdgeStates);
+
+    // Recompute on size/content changes
+    const mutationObserver = new MutationObserver(() => {
+      requestAnimationFrame(updateEdgeStates);
+    });
+    mutationObserver.observe(element, { childList: true, subtree: true });
+
+    const onResize = () => requestAnimationFrame(updateEdgeStates);
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      mutationObserver.disconnect();
+      window.removeEventListener("resize", onResize);
+    };
+  }, [accounts]);
 
   const canContinue = accounts.length >= 1;
 
@@ -32,7 +89,7 @@ export default function AccountsOnboardingContent({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 align-middle sm:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 items-center sm:grid-cols-2 gap-10">
         <AccountsOnboardingForm userId={user.$id} onAdd={handleAddAccount} />
         {accounts.length == 0 && (
           <div className="aspect-[1.75] w-full max-w-md border-2 border-dashed rounded-xl flex justify-center items-center">
@@ -42,10 +99,27 @@ export default function AccountsOnboardingContent({
           </div>
         )}
         {accounts.length > 0 && (
-          <div className="relative max-h-80 overflow-y-auto no-scrollbar pt-4 px-4 mb-2">
-            <CardStack accounts={accounts} className="-mb-16" />
-            <div className="absolute z-99 top-0 left-0 right-0 w-full h-4 bg-gradient-to-b from-background to-transparent pointer-events-none" />
-            <div className="sticky z-99 bottom-0 left-0 right-0 w-full h-16 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+          <div
+            ref={scrollContainerRef}
+            className="relative h-full max-h-80 overflow-y-auto no-scrollbar mb-2"
+          >
+            <div
+              className={`sticky z-50 top-0 left-0 right-0 w-full h-12 bg-gradient-to-b from-background to-transparent pointer-events-none transition-opacity duration-300 ${
+                isAtTop ? "opacity-0" : "opacity-100"
+              }`}
+            />
+            <div className="px-6">
+              <CardStack
+                accounts={accounts}
+                className="-mb-12 -mt-9"
+                shadows={false}
+              />
+            </div>
+            <div
+              className={`sticky z-50 bottom-0 left-0 right-0 w-full h-12 bg-gradient-to-t from-background to-transparent pointer-events-none transition-opacity duration-300 ${
+                isAtBottom ? "opacity-0" : "opacity-100"
+              }`}
+            />
           </div>
         )}
       </div>

@@ -13,12 +13,14 @@ interface AccountItemProps {
   account: Account;
   onClick?: () => void;
   transactions?: Transaction[];
+  shadow?: boolean;
 }
 
 export default function AccountCard({
   account,
   onClick,
   transactions,
+  shadow = true,
 }: AccountItemProps) {
   // Calculate balance difference using utility function
   const { balanceDifference, balancesMatch } = calculateBalanceDifference(
@@ -41,7 +43,8 @@ export default function AccountCard({
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-xl border-2 transition-all duration-100 ease-out shadow-xl hover:shadow-2xl hover:-translate-y-1 aspect-[1.75] w-full max-w-md text-white",
+        "group relative overflow-hidden rounded-xl border-2 transition-all duration-100 ease-out hover:-translate-y-1 aspect-[1.75] w-full max-w-md text-white",
+        shadow && "shadow-xl hover:shadow-2xl",
         getCardColorClasses()
       )}
       onClick={onClick}

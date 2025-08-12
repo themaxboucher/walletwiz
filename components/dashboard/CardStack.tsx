@@ -3,12 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import AccountCard from "./AccountCard";
+import { cn } from "@/lib/utils";
 
 interface CardStackProps {
   accounts: Account[];
   transactions?: Transaction[];
   onCardClick?: (account: Account) => void;
   className?: string;
+  shadows?: boolean;
 }
 
 export default function CardStack({
@@ -16,6 +18,7 @@ export default function CardStack({
   transactions,
   onCardClick,
   className,
+  shadows = true,
 }: CardStackProps) {
   const [stackOrder, setStackOrder] = useState<string[]>(
     accounts.map((account) => account.$id).filter(Boolean) as string[]
@@ -80,7 +83,11 @@ export default function CardStack({
             key={account.$id}
             ref={isTopCard ? topCardRef : undefined}
             layout
-            className="absolute flex flex-col items-center w-full hover:cursor-pointer"
+            className={cn(
+              "absolute flex flex-col items-center w-full",
+              !isTopCard && "hover:cursor-pointer",
+              Boolean(onCardClick) && "hover:cursor-pointer"
+            )}
             style={{
               top: `${stackIndex * cardOffset}px`,
               zIndex: stackIndex + 1,
@@ -106,6 +113,7 @@ export default function CardStack({
                   : undefined
               }
               transactions={transactions}
+              shadow={shadows}
             />
           </motion.div>
         );
