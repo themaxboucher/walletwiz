@@ -49,8 +49,8 @@ export default function AccountCard({
       )}
       onClick={onClick}
     >
-      <div className="p-5 flex flex-col justify-between gap-5 h-[calc(100%-3.25rem)]">
-        <div className="flex items-center justify-between gap-4 mb-4">
+      <div className="p-5 flex flex-col justify-between h-[calc(100%-3.25rem)]">
+        <div className="flex items-center justify-between gap-4 mb-2">
           <div className="font-semibold text-white/95">{account.name}</div>
           <div className="flex items-center gap-3 min-w-0 w-fit">
             <div className="text-sm font-medium truncate">

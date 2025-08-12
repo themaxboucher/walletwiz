@@ -89,7 +89,7 @@ export default function AccountsOnboardingContent({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 items-center sm:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 items-center md:grid-cols-2 gap-10">
         <AccountsOnboardingForm userId={user.$id} onAdd={handleAddAccount} />
         {accounts.length == 0 && (
           <div className="aspect-[1.75] w-full max-w-md border-2 border-dashed rounded-xl flex justify-center items-center">

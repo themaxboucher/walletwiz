@@ -16,13 +16,13 @@ export default async function OnboardingLayout({
   if (loggedIn && !loggedIn.$emailVerification) redirect("/confirm-email");
 
   return (
-    <>
-      <header className="w-full flex justify-center items-center px-8 py-6 absolute">
-        <Logo href={null} />
+    <div className="w-full">
+      <header className="w-full flex justify-center items-center px-8 py-6 absolute top-0 left-0 right-0">
+        <Logo />
       </header>
-      <div className="w-full h-screen flex flex-col justify-center items-center gap-6 px-6">
+      <div className="w-full min-h-screen flex flex-col justify-center items-center gap-6 px-6 py-20">
         {children}
       </div>
-    </>
+    </div>
   );
 }
