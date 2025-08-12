@@ -84,8 +84,9 @@ export default function AccountsOnboardingContent({
     <div className="w-full max-w-4xl space-y-10 min-h-[28rem] flex flex-col justify-between my-4">
       <div className="flex flex-col items-center text-center gap-1">
         <h1 className="text-2xl font-medium">Add your financial accounts</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Add at least one bank account or credit card to get started.
+        <p className="text-sm text-muted-foreground mt-1 max-w-md">
+          Add at least one bank account or credit card to get started. You can
+          always add more later.
         </p>
       </div>
 

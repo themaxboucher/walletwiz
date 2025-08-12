@@ -28,7 +28,9 @@ export default function CategoriesOnboardingContent({
   const selectedExpense = selectedCategories.filter(
     (c: Category) => c.type === "expense"
   );
-  const canContinue = selectedIncome.length >= 3 && selectedExpense.length >= 3;
+  // Check if at least 3 income and 3 expense categories are selected.
+  // Since 'Other' categories are selected by default, we need to check if there are at least 4 categories of each type.
+  const canContinue = selectedIncome.length >= 4 && selectedExpense.length >= 4;
 
   async function handleContinue() {
     if (!canContinue || loading) return;
@@ -49,8 +51,9 @@ export default function CategoriesOnboardingContent({
     <div className="w-full max-w-4xl space-y-8 min-h-[28rem] flex flex-col justify-between my-4">
       <div className="flex flex-col items-center text-center gap-1">
         <h1 className="text-2xl font-medium">Select your categories</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Choose categories relevant to your income and expenses.
+        <p className="text-sm text-muted-foreground mt-1 max-w-md">
+          Choose at least 3 income and 3 expense categories to classify your
+          transactions. You can always change them and add more later.
         </p>
       </div>
 
