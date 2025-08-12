@@ -11,11 +11,13 @@ import { FormFieldWrapper } from "./FormFieldWrapper";
 import { UseFormReturn, ControllerRenderProps } from "react-hook-form";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface SelectFieldOption {
   value: string;
   label: string;
   icon?: LucideIcon;
+  imageSrc?: string;
   color?: string;
   group?: string;
 }
@@ -70,7 +72,16 @@ export function SelectField({
               <SelectValue placeholder={placeholder}>
                 {selectedOption && (
                   <div className="flex items-center gap-2">
-                    {selectedOption.icon ? (
+                    {selectedOption.imageSrc ? (
+                      <Image
+                        width={20}
+                        height={20}
+                        src={selectedOption.imageSrc}
+                        alt={`${selectedOption.label} logo`}
+                        className="size-5 rounded-[0.188rem] object-cover"
+                        unoptimized
+                      />
+                    ) : selectedOption.icon ? (
                       <selectedOption.icon
                         className={cn("size-4", selectedOption.color)}
                       />
@@ -93,7 +104,16 @@ export function SelectField({
                         value={option.value}
                         className="flex items-center gap-2"
                       >
-                        {option.icon ? (
+                        {option.imageSrc ? (
+                          <Image
+                            width={20}
+                            height={20}
+                            src={option.imageSrc}
+                            alt={`${option.label} logo`}
+                            className="size-5 rounded-[0.188rem] object-cover"
+                            unoptimized
+                          />
+                        ) : option.icon ? (
                           <option.icon className={cn("size-4", option.color)} />
                         ) : null}
                         <span>{option.label}</span>
@@ -107,7 +127,16 @@ export function SelectField({
                       value={option.value}
                       className="flex items-center gap-2"
                     >
-                      {option.icon ? (
+                      {option.imageSrc ? (
+                        <Image
+                          width={20}
+                          height={20}
+                          src={option.imageSrc}
+                          alt={`${option.label} logo`}
+                          className="size-5 rounded-[0.188rem] object-cover"
+                          unoptimized
+                        />
+                      ) : option.icon ? (
                         <option.icon className={cn("size-4", option.color)} />
                       ) : null}
                       <span className="truncate">{option.label}</span>
