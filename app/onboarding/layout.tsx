@@ -15,6 +15,9 @@ export default async function OnboardingLayout({
   // Redirect to check-email if user is logged in but not verified
   if (loggedIn && !loggedIn.$emailVerification) redirect("/confirm-email");
 
+  // Redirect to dashboard if the user has completed onboarding
+  if (loggedIn && loggedIn.hasCompletedOnboarding) redirect("/dashboard");
+
   return (
     <div className="w-full">
       <header className="w-full flex justify-center items-center px-8 py-6 absolute top-0 left-0 right-0">

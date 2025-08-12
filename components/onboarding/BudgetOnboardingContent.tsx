@@ -8,12 +8,15 @@ import { useMemo, useState } from "react";
 import { updateCategory } from "@/lib/actions/category.actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { markOnboardingCompleted } from "@/lib/actions/user.actions";
 
 interface BudgetOnboardingContentProps {
+  user: User;
   categories: Category[];
 }
 
 export default function BudgetOnboardingContent({
+  user,
   categories,
 }: BudgetOnboardingContentProps) {
   const router = useRouter();
@@ -47,6 +50,8 @@ export default function BudgetOnboardingContent({
         });
       });
       await Promise.all(updates);
+      // Mark onboarding as completed on the user document
+      await markOnboardingCompleted(user.$id);
       router.push("/dashboard");
     } catch (e) {
       toast("Error saving budget", {

@@ -91,6 +91,8 @@ declare interface User {
   $databaseId: string;
   $collectionId: string;
   $emailVerification: boolean;
+  hasCompletedOnboarding?: boolean;
+  hasSeenDashboard?: boolean;
 }
 
 // Override the relationship fields in the main types with strings for the document IDs

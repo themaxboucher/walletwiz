@@ -90,6 +90,8 @@ export const signup = async ({
       {
         ...userData,
         userId: newUserAccount.$id,
+        hasCompletedOnboarding: false,
+        hasSeenDashboard: false,
       }
     );
 
@@ -279,4 +281,32 @@ export const deleteAccount = async (authUserId: string, docUserId: string) => {
     console.error("Error deleting user account:", error);
     throw error;
   }
+};
+
+// Update boolean flags on the user document by document ID
+export const setUserFlags = async (
+  docUserId: string,
+  flags: Partial<Pick<User, "hasCompletedOnboarding" | "hasSeenDashboard">>
+) => {
+  try {
+    const { database } = await createAdminClient();
+    const updated = await database.updateDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      docUserId,
+      flags
+    );
+    return parseStringify(updated);
+  } catch (error) {
+    console.error("Error updating user flags:", error);
+    throw error;
+  }
+};
+
+export const markOnboardingCompleted = async (docUserId: string) => {
+  return setUserFlags(docUserId, { hasCompletedOnboarding: true });
+};
+
+export const markDashboardSeen = async (docUserId: string) => {
+  return setUserFlags(docUserId, { hasSeenDashboard: true });
 };

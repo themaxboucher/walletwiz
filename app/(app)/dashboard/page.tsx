@@ -22,6 +22,7 @@ export default async function DashboardPage() {
       transactions={transactions}
       categories={sortedCategories}
       accounts={accounts}
+      showWelcome={!!user.hasCompletedOnboarding && !user.hasSeenDashboard}
     />
   );
 }
