@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
-import AccountCard from "./AccounCard";
+import AccountCard from "./AccountCard";
 
 interface CardStackProps {
   accounts: Account[];

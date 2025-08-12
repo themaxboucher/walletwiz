@@ -1,8 +1,13 @@
 import { accountTypeIcons, cardColors } from "@/constants";
 import { Landmark, Info, CircleCheck } from "lucide-react";
-import { createBrandfetchIconUrl, formatCurrency, cn } from "@/lib/utils";
+import {
+  createBrandfetchIconUrl,
+  formatCurrency,
+  cn,
+  calculateBalanceDifference,
+} from "@/lib/utils";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 
 interface AccountItemProps {
   account: Account;
@@ -13,19 +18,13 @@ interface AccountItemProps {
 export default function AccountCard({
   account,
   onClick,
-  transactions = [],
+  transactions,
 }: AccountItemProps) {
-  // Calculate the sum of all transactions for this account
-  const accountTransactions = transactions.filter(
-    (tx) => tx.account?.$id === account.$id
+  // Calculate balance difference using utility function
+  const { balanceDifference, balancesMatch } = calculateBalanceDifference(
+    account,
+    transactions || []
   );
-  const transactionSum = accountTransactions.reduce(
-    (sum, tx) => sum + tx.amount,
-    0
-  );
-  const currentBalance = account.currentBalance || 0;
-  const balanceDifference = currentBalance - transactionSum;
-  const balancesMatch = Math.abs(balanceDifference) < 0.01; // Account for floating point precision
 
   // Get card color based on institution's cardColor
   const getCardColorClasses = () => {
@@ -131,7 +130,7 @@ export default function AccountCard({
                   ) : (
                     <div className="flex items-center gap-1.5">
                       <Info className="size-4 text-white/90" />
-                      <p className="text-xs text-white/90">
+                      <p className="text-xs text-white/90 max-w-60 truncate">
                         <span className="font-semibold">
                           {balanceDifference < 0 && "-"}
                           {formatCurrency(Math.abs(balanceDifference))}
