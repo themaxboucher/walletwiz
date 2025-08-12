@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CircleCheck, LoaderCircle } from "lucide-react";
 import FormAlert from "@/components/FormAlert";
@@ -41,12 +41,14 @@ function getErrorMessage(error: unknown): string {
   return "An unexpected error occurred while verifying your email. Please try again or contact support if the problem persists.";
 }
 
-export default function VerifyPage() {
+// Separate component that uses useSearchParams() - must be wrapped in Suspense
+// This is required in Next.js 15 to handle client-side rendering bailout properly
+function VerifyContent() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
   );
   const [error, setError] = useState<string | null>(null);
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams(); // This hook requires Suspense boundary
   const router = useRouter();
 
   useEffect(() => {
@@ -77,10 +79,9 @@ export default function VerifyPage() {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      {status === "loading" ||
-        (status === "success" && (
-          <LoaderCircle className="size-8 animate-spin text-primary" />
-        ))}
+      {(status === "loading" || status === "success") && (
+        <LoaderCircle className="size-8 animate-spin text-primary" />
+      )}
 
       {status === "error" && (
         <div className="max-w-md w-full">
@@ -91,5 +92,21 @@ export default function VerifyPage() {
         </div>
       )}
     </div>
+  );
+}
+
+// Main component that wraps VerifyContent in Suspense boundary
+// This is required in Next.js 15 when using useSearchParams() to prevent build errors
+export default function VerifyPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-col items-center justify-center gap-4">
+          <LoaderCircle className="size-8 animate-spin text-primary" />
+        </div>
+      }
+    >
+      <VerifyContent />
+    </Suspense>
   );
 }
