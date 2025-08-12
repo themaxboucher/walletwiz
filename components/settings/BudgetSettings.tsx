@@ -1,4 +1,3 @@
-import { defaultCategories } from "@/constants";
 import BudgetForm from "./BudgetForm";
 import { Separator } from "../ui/separator";
 

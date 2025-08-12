@@ -352,18 +352,20 @@ export function getRangeStartDate(
 }
 
 /**
- * Sorts categories so 'Other Income' and 'Other Expense' are at the end, and the rest alphabetically.
+ * Sorts categories so 'Other Income' and 'Other Expense(s)' are at the end, and the rest alphabetically.
  */
 export function sortCategories(categories: Category[]): Category[] {
+  const isOtherIncome = (cat: Category) => cat.name === "Other Income";
+  const isOtherExpense = (cat: Category) => cat.name === "Other Expense";
+
   const mainCategories = categories
-    .filter(
-      (cat) => cat.name !== "Other Income" && cat.name !== "Other Expense"
-    )
+    .filter((cat) => !isOtherIncome(cat) && !isOtherExpense(cat))
     .sort((a, b) => a.name.localeCompare(b.name));
+
   return [
     ...mainCategories,
-    ...categories.filter((cat) => cat.name === "Other Income"),
-    ...categories.filter((cat) => cat.name === "Other Expense"),
+    ...categories.filter(isOtherIncome),
+    ...categories.filter(isOtherExpense),
   ];
 }
 
@@ -498,3 +500,36 @@ export const getAccountIcon = (account: Account): AccountIconResult => {
     value: "Landmark",
   };
 };
+
+/**
+ * Calculates the difference between an account's current balance and the sum of its transactions.
+ * @param account - The account object
+ * @param transactions - Array of all transactions
+ * @returns Object containing balance difference and whether balances match
+ */
+export function calculateBalanceDifference(
+  account: Account,
+  transactions: Transaction[]
+): { balanceDifference: number; balancesMatch: boolean } {
+  // Filter transactions for this specific account
+  const accountTransactions = transactions.filter(
+    (tx) => tx.account?.$id === account.$id
+  );
+
+  // Calculate sum of all transactions for this account
+  const transactionSum = accountTransactions.reduce(
+    (sum, tx) => sum + tx.amount,
+    0
+  );
+
+  // Get current balance from account
+  const currentBalance = account.currentBalance || 0;
+
+  // Calculate difference
+  const balanceDifference = currentBalance - transactionSum;
+
+  // Check if balances match (account for floating point precision)
+  const balancesMatch = Math.abs(balanceDifference) < 0.01;
+
+  return { balanceDifference, balancesMatch };
+}

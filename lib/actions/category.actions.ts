@@ -95,6 +95,11 @@ export const updateCategories = async (
     (cat: Category) => !selected.some((c: Category) => c.name === cat.name)
   );
 
+  // If there are no changes, avoid unnecessary work
+  if (toAdd.length === 0 && toDelete.length === 0) {
+    return getCategories(userId);
+  }
+
   // Get user's current categories (including $id for 'Other Income' and 'Other Expense')
   const userCategories = await getCategories(userId);
   const otherIncome = userCategories.find(

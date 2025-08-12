@@ -61,6 +61,7 @@ import {
   WalletCards,
   ShoppingBasket,
   ArrowRightLeft,
+  PartyPopper,
 } from "lucide-react";
 
 export const categoryColors: Record<CategoryColor, string> = {
@@ -142,6 +143,7 @@ export const categoryIcons: Record<string, LucideIcon> = {
   Bubbles,
   Coins,
   ArrowRightLeft,
+  PartyPopper,
 };
 
 export const accountTypeIcons: Record<string, LucideIcon> = {
@@ -159,52 +161,10 @@ export const accountTypeIcons: Record<string, LucideIcon> = {
 
 export const defaultCategories: Category[] = [
   {
-    name: "Salary",
-    color: "blue",
-    iconName: "Briefcase",
-    type: "income",
-  },
-  {
     name: "Other Income",
     color: "green",
     iconName: "BanknoteArrowUp",
     type: "income",
-  },
-  {
-    name: "Housing",
-    color: "red",
-    iconName: "Home",
-    type: "expense",
-  },
-  {
-    name: "Groceries",
-    color: "blue",
-    iconName: "ShoppingCart",
-    type: "expense",
-  },
-  {
-    name: "Utilities",
-    color: "yellow",
-    iconName: "Lightbulb",
-    type: "expense",
-  },
-  {
-    name: "Transport",
-    color: "violet",
-    iconName: "Car",
-    type: "expense",
-  },
-  {
-    name: "Shopping",
-    color: "pink",
-    iconName: "ShoppingBag",
-    type: "expense",
-  },
-  {
-    name: "Entertainment",
-    color: "orange",
-    iconName: "Music",
-    type: "expense",
   },
   {
     name: "Other Expense",
@@ -217,21 +177,6 @@ export const defaultCategories: Category[] = [
     color: "blue",
     iconName: "ArrowRightLeft",
     type: "transfer",
-  },
-];
-
-export const defaultAccounts: AccountDB[] = [
-  {
-    name: "Checking",
-    type: process.env.ACCOUNTTYPE_CHECKING_ID!,
-  },
-  {
-    name: "Savings",
-    type: process.env.ACCOUNTTYPE_SAVINGS_ID!,
-  },
-  {
-    name: "Credit Card",
-    type: process.env.ACCOUNTTYPE_CREDIT_CARD_ID!,
   },
 ];
 
@@ -531,6 +476,12 @@ export const categories: Category[] = [
     name: "Cleaning",
     color: "yellow",
     iconName: "Bubbles",
+    type: "expense",
+  },
+  {
+    name: "Fun",
+    color: "pink",
+    iconName: "PartyPopper",
     type: "expense",
   },
   {

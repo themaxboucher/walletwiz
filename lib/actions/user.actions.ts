@@ -4,9 +4,8 @@ import { ID, Query } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite/server";
 import { cookies } from "next/headers";
 import { parseStringify } from "../utils";
-import { defaultCategories, defaultAccounts } from "@/constants";
+import { defaultCategories } from "@/constants";
 import { createCategory } from "./category.actions";
-import { createAccount } from "./account.actions";
 
 const {
   APPWRITE_DATABASE_ID: DATABASE_ID,
@@ -91,23 +90,14 @@ export const signup = async ({
       {
         ...userData,
         userId: newUserAccount.$id,
+        hasCompletedOnboarding: false,
+        hasSeenDashboard: false,
       }
     );
 
     // Create default categories for the new user
     for (const category of defaultCategories) {
       await createCategory(category, newUser.$id);
-    }
-
-    // Create default accounts for the new user
-    for (const account of defaultAccounts) {
-      await createAccount(
-        {
-          ...account,
-          name: `${firstName}'s ${account.name}`,
-        },
-        newUser.$id
-      );
     }
 
     // Create session after successful signup
@@ -291,4 +281,32 @@ export const deleteAccount = async (authUserId: string, docUserId: string) => {
     console.error("Error deleting user account:", error);
     throw error;
   }
+};
+
+// Update boolean flags on the user document by document ID
+export const setUserFlags = async (
+  docUserId: string,
+  flags: Partial<Pick<User, "hasCompletedOnboarding" | "hasSeenDashboard">>
+) => {
+  try {
+    const { database } = await createAdminClient();
+    const updated = await database.updateDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      docUserId,
+      flags
+    );
+    return parseStringify(updated);
+  } catch (error) {
+    console.error("Error updating user flags:", error);
+    throw error;
+  }
+};
+
+export const markOnboardingCompleted = async (docUserId: string) => {
+  return setUserFlags(docUserId, { hasCompletedOnboarding: true });
+};
+
+export const markDashboardSeen = async (docUserId: string) => {
+  return setUserFlags(docUserId, { hasSeenDashboard: true });
 };

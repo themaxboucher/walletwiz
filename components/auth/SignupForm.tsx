@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
@@ -15,8 +16,6 @@ import {
 } from "@/lib/appwrite/client";
 import { TextField } from "../ui/form-fields/TextField";
 import { PasswordField } from "../ui/form-fields/PasswordField";
-import { toast } from "sonner";
-import { CircleCheck } from "lucide-react";
 
 const formSchema = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
@@ -32,6 +31,7 @@ type SignupFormData = z.infer<typeof formSchema>;
 export default function SignupForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const form = useForm<SignupFormData>({
     resolver: zodResolver(formSchema),
@@ -57,12 +57,9 @@ export default function SignupForm() {
       // Create Appwrite client session in the browser
       await createClientSession(data.email, data.password);
 
-      // Send verification email
+      // Send verification email then redirect to confirm email page
       await sendVerificationEmail();
-
-      toast("Account created successfully", {
-        icon: <CircleCheck className="text-primary size-5" />,
-      });
+      router.push("/confirm-email");
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";

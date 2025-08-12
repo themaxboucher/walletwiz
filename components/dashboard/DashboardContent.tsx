@@ -20,12 +20,14 @@ import {
 import Budget from "./Budget";
 import Accounts from "./Accounts";
 import TimeRangeSelector from "./TimeRangeSelector";
+import WelcomeDialog from "./WelcomeDialog";
 
 interface DashboardContentProps {
   user: User;
   transactions: Transaction[];
   categories: Category[];
   accounts: Account[];
+  showWelcome?: boolean;
 }
 
 export default function DashboardContent({
@@ -33,7 +35,9 @@ export default function DashboardContent({
   transactions,
   categories,
   accounts,
+  showWelcome,
 }: DashboardContentProps) {
+  const [welcomeOpen] = useState<boolean>(!!showWelcome);
   // State for last date and range
   const [lastDate, setLastDate] = useState<Date>(new Date());
   const [selectedRange, setSelectedRange] = useState<string>("1M");
@@ -108,10 +112,12 @@ export default function DashboardContent({
 
   return (
     <>
+      <WelcomeDialog userId={user.$id} show={welcomeOpen} />
+
       <div className="flex flex-col md:flex-row justify-between md:items-end gap-4">
         <div className="space-y-0.5">
           <h1 className="text-lg font-bold md:text-xl">
-            <Greeting />, {user.firstName}
+            <Greeting />, {user.firstName} 👋
           </h1>
           <p className="text-muted-foreground text-sm">
             Here's what's happening with your money.
@@ -146,7 +152,11 @@ export default function DashboardContent({
               periodText={periodText}
             />
           </div>
-          <Balance totalBalance={totalBalance} chartData={filteredChartData} />
+          <Balance
+            totalBalance={totalBalance}
+            chartData={filteredChartData}
+            transactions={transactions}
+          />
           <Transactions
             transactions={filteredTransactions}
             categories={categories}
