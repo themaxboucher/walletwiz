@@ -18,7 +18,7 @@ export default async function OnboardingLayout({
   return (
     <>
       <header className="w-full flex justify-center items-center px-8 py-6 absolute">
-        <Logo />
+        <Logo href={null} />
       </header>
       <div className="w-full h-screen flex flex-col justify-center items-center gap-6 px-6">
         {children}

@@ -1,10 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import InfoBadge from "./InfoBadge";
+import type { ReactNode } from "react";
 
-export default function Logo() {
-  return (
-    <Link href="/" className="flex items-center gap-[0.4rem]">
+type LogoProps = {
+  href?: string | null;
+};
+
+export default function Logo({ href = "/" }: LogoProps) {
+  const content: ReactNode = (
+    <>
       <Image
         src="/walletwiz-logo.svg"
         alt="WalletWiz Logo"
@@ -14,6 +19,20 @@ export default function Logo() {
       />
       <div className="text-lg font-extrabold">WalletWiz</div>
       <InfoBadge>BETA</InfoBadge>
+    </>
+  );
+
+  if (href === null) {
+    return (
+      <div className="flex items-center gap-[0.4rem] hover:cursor-default">
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <Link href={href} className="flex items-center gap-[0.4rem]">
+      {content}
     </Link>
   );
 }
