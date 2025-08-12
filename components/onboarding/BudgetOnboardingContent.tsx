@@ -10,12 +10,10 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface BudgetOnboardingContentProps {
-  user: User;
   categories: Category[];
 }
 
 export default function BudgetOnboardingContent({
-  user,
   categories,
 }: BudgetOnboardingContentProps) {
   const router = useRouter();
@@ -67,11 +65,7 @@ export default function BudgetOnboardingContent({
         </p>
       </div>
       <div className="m-auto w-full max-w-md">
-        <BudgetOnboardingForm
-          user={user}
-          categories={categories}
-          onChange={setValues}
-        />
+        <BudgetOnboardingForm categories={categories} onChange={setValues} />
       </div>
 
       <div className="flex justify-between items-start gap-3 pt-2">

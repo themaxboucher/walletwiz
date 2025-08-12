@@ -11,5 +11,5 @@ export default async function BudgetOnboardingPage() {
 
   const categories = await getCategories(user.$id);
 
-  return <BudgetOnboardingContent user={user} categories={categories} />;
+  return <BudgetOnboardingContent categories={categories} />;
 }

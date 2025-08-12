@@ -8,7 +8,7 @@ import { Form } from "../ui/form";
 import { categoryIcons, categoryColors } from "@/constants";
 import { useEffect, useMemo } from "react";
 import FormAlert from "../FormAlert";
-import { cn } from "@/lib/utils";
+import { cn, sortCategories } from "@/lib/utils";
 
 // Define the Zod schema for the budget form
 const budgetFormSchema = z.record(
@@ -23,19 +23,20 @@ const budgetFormSchema = z.record(
 type BudgetFormData = z.infer<typeof budgetFormSchema>;
 
 interface BudgetFormProps {
-  user: User;
   categories: Category[];
   onChange?: (values: Record<string, number | undefined>) => void;
 }
 
-export default function BudgetForm({
-  user,
-  categories,
-  onChange,
-}: BudgetFormProps) {
+export default function BudgetForm({ categories, onChange }: BudgetFormProps) {
   const error: string | null = null;
 
-  const expenseCategories = categories.filter((cat) => cat.type === "expense");
+  const sortedCategories = useMemo(
+    () => sortCategories(categories),
+    [categories]
+  );
+  const expenseCategories = sortedCategories.filter(
+    (cat) => cat.type === "expense"
+  );
   const defaultValues = useMemo(
     () =>
       expenseCategories.reduce(

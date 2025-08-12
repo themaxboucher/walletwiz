@@ -352,18 +352,20 @@ export function getRangeStartDate(
 }
 
 /**
- * Sorts categories so 'Other Income' and 'Other Expense' are at the end, and the rest alphabetically.
+ * Sorts categories so 'Other Income' and 'Other Expense(s)' are at the end, and the rest alphabetically.
  */
 export function sortCategories(categories: Category[]): Category[] {
+  const isOtherIncome = (cat: Category) => cat.name === "Other Income";
+  const isOtherExpense = (cat: Category) => cat.name === "Other Expense";
+
   const mainCategories = categories
-    .filter(
-      (cat) => cat.name !== "Other Income" && cat.name !== "Other Expense"
-    )
+    .filter((cat) => !isOtherIncome(cat) && !isOtherExpense(cat))
     .sort((a, b) => a.name.localeCompare(b.name));
+
   return [
     ...mainCategories,
-    ...categories.filter((cat) => cat.name === "Other Income"),
-    ...categories.filter((cat) => cat.name === "Other Expense"),
+    ...categories.filter(isOtherIncome),
+    ...categories.filter(isOtherExpense),
   ];
 }
 
