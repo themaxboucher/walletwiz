@@ -155,7 +155,7 @@ export default function DashboardContent({
           <Balance
             totalBalance={totalBalance}
             chartData={filteredChartData}
-            transactions={filteredTransactions}
+            transactions={transactions}
           />
           <Transactions
             transactions={filteredTransactions}

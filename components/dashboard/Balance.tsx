@@ -26,7 +26,7 @@ export default function Balance({
   chartData,
   transactions,
 }: BalanceProps) {
-  const enoughTransactions = transactions.length >= 3;
+  const enoughTransactions = transactions.length >= 5;
 
   return (
     <Card>
@@ -43,12 +43,16 @@ export default function Balance({
         {enoughTransactions && (
           <HoverCard>
             <HoverCardTrigger asChild>
-              <Info className="size-6 text-muted-foreground cursor-pointer" />
+              <Info className="size-5 text-muted-foreground cursor-pointer" />
             </HoverCardTrigger>
-            <HoverCardContent align="end" className="w-80">
-              <p className="text-sm leading-relaxed">
-                The balance chart reflects your transaction history. It is only
-                fully accurate if all of your transactions have been added.
+            <HoverCardContent
+              align="end"
+              className="w-full max-w-68 flex gap-2 py-2 px-3"
+            >
+              <Info className="size-4 min-w-4 mt-[0.2rem] text-muted-foreground" />
+              <p className="text-xs leading-relaxed">
+                The chart is fully accurate only if you’ve entered all
+                transactions for this period.
               </p>
             </HoverCardContent>
           </HoverCard>
