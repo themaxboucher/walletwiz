@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuSub,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/lib/actions/user.actions";
@@ -16,7 +15,6 @@ import {
   Settings,
   HelpCircle,
   LogOut,
-  Sparkle,
   Heart,
   MessageCircle,
   CircleCheck,
@@ -24,6 +22,7 @@ import {
 } from "lucide-react";
 import { ThemeSelector } from "../ThemeSelector";
 import SettingsDialog from "../settings/SettingsDialog";
+import SupportDialog from "./SupportDialog";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -32,6 +31,7 @@ export default function AccountMenu(props: { user: User }) {
   const [settingsSection, setSettingsSection] = useState<string | undefined>(
     undefined
   );
+  const [supportOpen, setSupportOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -101,7 +101,10 @@ export default function AccountMenu(props: { user: User }) {
             <Settings className="mr-1 size-4" />
             Settings
           </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => setSupportOpen(true)}
+          >
             <HelpCircle className="mr-1 size-4" />
             Support
           </DropdownMenuItem>
@@ -141,6 +144,7 @@ export default function AccountMenu(props: { user: User }) {
         section={settingsSection}
         user={props.user}
       />
+      <SupportDialog open={supportOpen} onOpenChange={setSupportOpen} />
     </>
   );
 }
