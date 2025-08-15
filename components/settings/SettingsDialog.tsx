@@ -57,10 +57,10 @@ export default function SettingsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full !max-w-[65rem] h-[80vh] grid grid-cols-4 grid-rows-1 gap-0 p-0 overflow-hidden">
+      <DialogContent className="w-full !max-w-[55rem] h-[80vh] grid grid-cols-4 grid-rows-1 gap-0 p-0 overflow-hidden">
         <DialogTitle className="sr-only">Settings</DialogTitle>
         <SidebarProvider>
-          <Sidebar>
+          <Sidebar className="w-54">
             <SidebarContent>
               <SidebarGroup>
                 <SidebarMenu>
