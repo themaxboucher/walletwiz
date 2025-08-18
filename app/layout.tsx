@@ -13,9 +13,9 @@ const fontSans = FontSans({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://walletwiz.io/"),
-  title: "WalletWiz | Free Personal Finance Tracker & Budgeting App",
+  title: "WalletWiz | Track and budget your money.",
   description:
-    "WalletWiz is a free personal finance tracker and budgeting app. Track spending, set savings goals, and manage all your accounts in one place—no spreadsheets needed.",
+    "WalletWiz let's you see all your income and expenses in one beautiful and simple dashboard, so you always know where your money is going.",
   keywords: [
     "free personal finance tracker",
     "budgeting app",
@@ -29,9 +29,9 @@ export const metadata: Metadata = {
     "real-time balance tracker",
   ],
   openGraph: {
-    title: "WalletWiz | Free Personal Finance Tracker & Budgeting App",
+    title: "WalletWiz | Track and budget your money.",
     description:
-      "WalletWiz is a free personal finance tracker and budgeting app. Track spending, set savings goals, and manage all your accounts in one place—no spreadsheets needed.",
+      "WalletWiz let's you see all your income and expenses in one beautiful and simple dashboard, so you always know where your money is going.",
     url: "https://walletwiz.io/",
     siteName: "WalletWiz",
     images: [
