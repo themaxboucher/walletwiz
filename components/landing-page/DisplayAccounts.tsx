@@ -15,7 +15,7 @@ export default function DisplayAccounts() {
             alt={inst.name}
             width={120}
             height={120}
-            className="object-contain rounded-full border-2 border-white shadow-md"
+            className="object-contain rounded-lg border-2 border-card shadow-md"
             unoptimized // Necessary for brandfetch.io hotlinking guidelines
           />
         </div>

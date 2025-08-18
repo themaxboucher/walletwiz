@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
 import { abbreviateNumber, formatCurrency } from "@/lib/utils";
+import { chartColor } from "@/constants";
 
 interface ChartDataPoint {
   date: string;
@@ -19,9 +20,6 @@ interface ChartDataPoint {
 interface BalanceChartProps {
   chartData: ChartDataPoint[];
 }
-
-// Define the balance chart color as the primary color
-const chartColor = "oklch(0.716 0.1739 155.45)";
 
 export default function BalanceChart({ chartData }: BalanceChartProps) {
   const chartConfig = {

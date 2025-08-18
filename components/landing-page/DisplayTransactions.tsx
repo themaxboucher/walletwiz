@@ -22,7 +22,7 @@ export default function DisplayTransactions() {
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             <TableHead className="py-3 px-6 text-muted-foreground">
-              Merchant
+              Payee
             </TableHead>
             <TableHead className="py-3 text-muted-foreground">Amount</TableHead>
             <TableHead className="py-3 text-muted-foreground">
@@ -53,7 +53,7 @@ export default function DisplayTransactions() {
               </TableCell>
               <TableCell
                 className={cn(
-                  "py-3 font-medium",
+                  "py-3 font-medium text-left",
                   tx.amount > 0 && "text-primary"
                 )}
               >

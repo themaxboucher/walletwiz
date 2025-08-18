@@ -12,25 +12,25 @@ export default function DisplayBudget() {
       budget: 400,
     },
     {
-      name: "Transport",
-      color: "violet",
-      iconName: "Car",
-      type: "expense",
-      budget: 120,
-    },
-    {
       name: "Entertainment",
       color: "orange",
       iconName: "Music",
       type: "expense",
       budget: 150,
     },
+    {
+      name: "Transport",
+      color: "violet",
+      iconName: "Car",
+      type: "expense",
+      budget: 120,
+    },
   ];
 
   const categorySpending: Record<string, number> = {
     Groceries: 320,
     Transport: 90,
-    Entertainment: 110,
+    Entertainment: 60,
   };
 
   return (

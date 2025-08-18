@@ -1,10 +1,10 @@
 "use client";
 
-import BalanceChart from "../dashboard/BalanceChart";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { ChartContainer } from "../ui/chart";
 import { Area, AreaChart } from "recharts";
+import { chartColor } from "@/constants";
 
 export default function DisplayBalance() {
   const totalBalance = 7699.32;
@@ -22,7 +22,7 @@ export default function DisplayBalance() {
   const chartConfig = {
     balance: {
       label: "Balance",
-      color: "oklch(0.6635 0.1608 155.21)",
+      color: chartColor,
     },
   };
 
@@ -45,22 +45,14 @@ export default function DisplayBalance() {
           >
             <defs>
               <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="oklch(0.6635 0.1608 155.21)"
-                  stopOpacity={0.3}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="oklch(0.6635 0.1608 155.21)"
-                  stopOpacity={0}
-                />
+                <stop offset="5%" stopColor={chartColor} stopOpacity={0.3} />
+                <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
               </linearGradient>
             </defs>
             <Area
               type="monotone"
               dataKey="balance"
-              stroke="oklch(0.6635 0.1608 155.21)"
+              stroke={chartColor}
               fill="url(#balanceGradient)"
               strokeWidth={2.5}
             />
