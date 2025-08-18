@@ -72,7 +72,11 @@ export default function TransactionTable({
         </TableHeader>
         <TableBody>
           {paginated.map((tx) => (
-            <TableRow key={tx.$id} className="hover:bg-muted/40">
+            <TableRow
+              key={tx.$id}
+              className="hover:bg-muted/40 cursor-pointer"
+              onClick={() => onEditClick(tx)}
+            >
               <TableCell className="py-3 px-6 font-medium flex items-center gap-3">
                 {(() => {
                   const payeeAccountId = tx.payee?.account?.$id;
@@ -215,35 +219,6 @@ export default function TransactionTable({
               </TableCell>
               <TableCell className="py-3 text-muted-foreground">
                 {format(new Date(tx.date), "PP")}
-              </TableCell>
-              <TableCell className="py-3 px-6 text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-7 w-7">
-                      <MoreVertical className="w-4 h-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      className="font-medium"
-                      onClick={() => onEditClick(tx)}
-                    >
-                      <Edit className="w-4 h-4 mr-2" /> Edit
-                    </DropdownMenuItem>
-                    <DeleteTransactionDialog
-                      transactionId={String(tx.$id)}
-                      trigger={
-                        <DropdownMenuItem
-                          className="font-medium"
-                          variant="destructive"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" /> Delete
-                        </DropdownMenuItem>
-                      }
-                    />
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}
