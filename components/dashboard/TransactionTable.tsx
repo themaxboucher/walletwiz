@@ -8,13 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { MoreVertical, Edit, Trash2, Store, Landmark } from "lucide-react";
+import { Store, Landmark } from "lucide-react";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { format } from "date-fns";
@@ -24,7 +18,6 @@ import {
   createBrandfetchIconUrl,
   getLucideIconByName,
 } from "@/lib/utils";
-import DeleteTransactionDialog from "./DeleteTransactionDialog";
 import { cn } from "@/lib/utils";
 import { accountTypeIcons } from "@/constants";
 import Image from "next/image";
