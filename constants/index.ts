@@ -526,9 +526,9 @@ export const displayTransactions: Transaction[] = [
   {
     $id: "1",
     payee: {
-      name: "Starbucks",
-      brandId: "starbucks.com",
-      domain: "starbucks.com",
+      name: "Village Ice Cream",
+      brandId: "villageicecream.com",
+      domain: "villageicecream.com",
       defaultCategory: null,
     },
     amount: -4.25,
@@ -580,16 +580,16 @@ export const displayTransactions: Transaction[] = [
   {
     $id: "5",
     payee: {
-      name: "Rogers",
-      brandId: "rogers.com",
-      domain: "rogers.com",
+      name: "Costco",
+      brandId: "costco.com",
+      domain: "costco.com",
       defaultCategory: null,
     },
-    amount: -55.0,
+    amount: -555.0,
     category: {
-      name: "Utilities",
-      iconName: "Smartphone",
-      color: "yellow",
+      name: "Groceries",
+      iconName: "ShoppingCart",
+      color: "blue",
       type: "expense",
     },
     date: "2025-06-05",
@@ -617,12 +617,12 @@ export const displayTransactions: Transaction[] = [
 
 export const institutions = [
   {
-    name: "RBC",
-    domain: "rbc.com",
-  },
-  {
     name: "TD Canada Trust",
     domain: "td.com",
+  },
+  {
+    name: "RBC",
+    domain: "rbc.com",
   },
   {
     name: "Scotiabank",
@@ -635,26 +635,6 @@ export const institutions = [
   {
     name: "CIBC",
     domain: "cibc.com",
-  },
-  {
-    name: "National Bank",
-    domain: "fbngp.ca",
-  },
-  {
-    name: "Desjardins",
-    domain: "desjardins.com",
-  },
-  {
-    name: "EQ Bank",
-    domain: "eqbank.ca",
-  },
-  {
-    name: "Wealthsimple",
-    domain: "wealthsimple.com",
-  },
-  {
-    name: "Tangerine",
-    domain: "tangerine.ca",
   },
   {
     name: "Chase",
@@ -673,19 +653,29 @@ export const institutions = [
     domain: "citi.com",
   },
   {
+    name: "U.S. Bank",
+    domain: "usbank.com",
+  },
+  {
+    name: "Visa",
+    domain: "visa.com",
+  },
+  {
+    name: "Mastercard",
+    domain: "mastercard.com",
+  },
+  {
+    name: "American Express",
+    domain: "americanexpress.com",
+  },
+  {
+    name: "Discover",
+    domain: "discover.com",
+  },
+  {
     name: "Capital One",
     domain: "capitalone.com",
   },
-  {
-    name: "Ally",
-    domain: "ally.com",
-  },
-  {
-    name: "SoFi",
-    domain: "sofi.com",
-  },
-  {
-    name: "Robinhood",
-    domain: "robinhood.com",
-  },
 ];
+
+export const chartColor = "oklch(0.716 0.1739 155.45)";

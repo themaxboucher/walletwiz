@@ -1,5 +1,4 @@
 export const dynamic = "force-dynamic";
-import InfoBadge from "@/components/InfoBadge";
 import CTAButtons from "@/components/landing-page/CTAButtons";
 import DisplayAccounts from "@/components/landing-page/DisplayAccounts";
 import DisplayBalance from "@/components/landing-page/DisplayBalance";
@@ -10,47 +9,37 @@ import HeroImage from "@/components/landing-page/HeroImage";
 import Navbar from "@/components/landing-page/Navbar";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { getLoggedInUser } from "@/lib/actions/user.actions";
-import { CircleDollarSign, Sparkles, Zap } from "lucide-react";
-import ShrinkingHeroBg from "@/components/landing-page/ShrinkingHeroBg";
-import BackgroundGrid from "@/components/landing-page/BackgroundGrid";
+import Image from "next/image";
 
 export default async function Home() {
   const loggedIn = await getLoggedInUser();
 
   return (
-    <>
+    <div className="bg-white dark:bg-background">
+      <div className="absolute top-0 left-0 right-0 w-full h-20 rounded-b-full bg-primary/20 dark:bg-primary/10 mx-auto blur-3xl"></div>
       <Navbar loggedIn={loggedIn} />
       <main>
         {/* Hero */}
-        <section className="section-large pb-0 relative flex flex-col items-center justify-center max-h-[120vh] md:max-h-[140vh]">
-          {/* <ShrinkingHeroBg /> */}
-          <BackgroundGrid className="w-[100vw] inset-auto top-0" />
-          <div className="absolute top-0 w-[100vw] h-full bg-gradient-to-b from-background to-transparent to-5% overflow-hidden"></div>
-          <div className="absolute top-0 w-[100vw] h-full bg-gradient-to-t from-25% from-primary/20 to-transparent overflow-hidden"></div>
-          <div className="absolute inset-x-auto top-15 w-[80vw] md:w-[60vw] z-10 h-[40vh] bg-background rounded-[100%] blur-3xl" />
-          <div className="relative z-10 w-full max-w-[82rem] mx-auto flex flex-col items-center text-center overflow-hidden">
+        <section className="section-large pb-0 relative flex flex-col items-center justify-center">
+          <div className="relative z-10 w-full max-w-[82rem] mx-auto flex flex-col items-center text-center">
             <div className="flex flex-col items-center px-4 sm:px-8">
-              <div className="uppercase text-primary text-sm font-semibold rounded-xl flex items-center gap-2 mb-5">
-                <CircleDollarSign className="size-4 text-primary" />
-                <h1>Free Personal Finance Tracker</h1>
-              </div>
-              <h2 className="heading-1 md:text-5xl lg:text-6xl max-w-[50rem]">
-                Track, budget, and master your money with ease.
-              </h2>
-              <p className="mt-5 max-w-[42rem] md:text-lg text-muted-foreground">
-                WalletWiz gives you a clear, real-time view of your finances, so
-                you can spend smarter, save more, and stress less. No
-                spreadsheets, no confusion.
+              <h1 className="heading-1 md:text-5xl lg:text-6xl max-w-[50rem]">
+                Track and budget your money{" "}
+                <span className="text-primary">with ease.</span>
+              </h1>
+              <p className="mt-5 max-w-[39rem] md:text-lg text-muted-foreground font-medium">
+                See all your income and expenses in one beautiful and simple
+                dashboard, so you always know where your money is going.
               </p>
             </div>
-
             <CTAButtons loggedIn={loggedIn} />
-            <div className="mt-12 w-full flex justify-center">
+            <div className="mt-14 w-full flex justify-center">
               <HeroImage />
             </div>
           </div>
@@ -62,115 +51,127 @@ export default async function Home() {
           className="section-large pt-30 flex flex-col items-center text-center"
         >
           <div className="max-w-lg mb-12 flex flex-col items-center">
-            <div className="uppercase text-primary text-sm font-semibold rounded-xl flex items-center gap-2 mb-5">
-              <Sparkles className="size-4 text-primary" />
-              <h2>Features</h2>
-            </div>
-            <h2 className="heading-2">
-              Everything you need to master your finances.
-            </h2>
-            <p className="mt-4 md:text-lg text-muted-foreground">
-              WalletWiz brings all your accounts, transactions, and budgets
-              together, so you can finally feel in control of your money.
-            </p>
+            <h2 className="heading-2">How it works</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-9 gap-5 w-full">
-            <Card className="col-span-1 md:col-span-5 flex flex-col py-0 overflow-hidden gap-0 bg-transparent h-[27rem]">
-              <div className="p-6 bg-gradient-to-r from-blue-500/20 to-transparent to-80% relative overflow-hidden h-full">
+            <Card className="bg-muted/20 col-span-1 md:col-span-4 flex flex-col py-0 overflow-hidden gap-0 h-[25rem]">
+              <div className="p-6 relative overflow-hidden h-full">
+                <div className="absolute z-10 bottom-0 left-0 right-0 w-full h-12 bg-gradient-to-t from-white dark:from-background to-transparent" />
+                <div className="absolute z-10 bottom-0 left-0 right-0 w-full h-12 bg-gradient-to-t from-muted/20 to-transparent" />
+                <DisplayAccounts />
+              </div>
+              <CardHeader className="py-6 text-left gap-2.5">
+                <div className="flex gap-2 items-center">
+                  <CardTitle className="heading-4 flex items-center gap-2">
+                    <span className="size-5.5 bg-primary/15 text-sm font-bold text-primary rounded-full flex items-center justify-center">
+                      1
+                    </span>{" "}
+                    Add your accounts
+                  </CardTitle>
+                </div>
+                <CardDescription className="text-base">
+                  Add your bank accounts and credit cards (direct bank
+                  integration coming soon).
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            <Card className="bg-muted/20 col-span-1 md:col-span-5 flex flex-col py-0 overflow-hidden gap-0 h-[25rem]">
+              <div className="p-6 relative overflow-hidden h-full">
+                <div className="absolute z-10 bottom-0 left-0 right-0 w-full h-12 bg-gradient-to-t from-white dark:from-background to-transparent" />
+                <div className="absolute z-10 bottom-0 left-0 right-0 w-full h-12 bg-gradient-to-t from-muted/20 to-transparent" />
+                <DisplayBudget />
+              </div>
+              <CardHeader className="py-6 text-left gap-2.5">
+                <CardTitle className="heading-4 flex items-center gap-2">
+                  <span className="size-5.5 bg-primary/15 text-sm font-bold text-primary rounded-full flex items-center justify-center">
+                    2
+                  </span>{" "}
+                  Set budgets
+                </CardTitle>
+                <CardDescription className="text-base">
+                  Set spending limits for different categories and track your
+                  progress.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            <Card className="bg-muted/20 col-span-1 md:col-span-5 flex flex-col py-0 overflow-hidden gap-0 h-[25rem]">
+              <div className="p-6 relative overflow-hidden h-full">
+                <div className="absolute z-10 bottom-0 left-0 right-0 w-full h-12 bg-gradient-to-t from-white dark:from-background to-transparent" />
+                <div className="absolute z-10 bottom-0 left-0 right-0 w-full h-12 bg-gradient-to-t from-muted/20 to-transparent" />
                 <Card className="pt-0 absolute top-6 md:top-10 left-6 md:left-10 -right-4">
                   <DisplayTransactions />
                 </Card>
-                <BackgroundGrid />
               </div>
-              <CardHeader className="py-6 border-t border-border text-left gap-2 bg-card">
-                <CardTitle className="heading-4">
-                  Track Every Transaction
+              <CardHeader className="py-6 text-left gap-2.5">
+                <CardTitle className="heading-4 flex items-center gap-2">
+                  <span className="size-5.5 bg-primary/15 text-sm font-bold text-primary rounded-full flex items-center justify-center">
+                    3
+                  </span>{" "}
+                  Log your transactions
                 </CardTitle>
-                <CardDescription>
-                  See exactly where your money goes. WalletWiz automatically
-                  organizes your spending, so you never miss a detail and always
-                  know what's happening with your finances.
+                <CardDescription className="text-base">
+                  Easily add and keep track of your transactions.
                 </CardDescription>
               </CardHeader>
             </Card>
-            <Card className="col-span-1 md:col-span-4 flex flex-col py-0 overflow-hidden gap-0 bg-transparent h-[27rem]">
-              <div className="p-6 bg-gradient-to-b from-orange-500/20 to-transparent relative overflow-hidden h-full">
+            <Card className="bg-muted/20 col-span-1 md:col-span-4 flex flex-col py-0 overflow-hidden gap-0 h-[25rem]">
+              <div className="p-6 relative overflow-hidden h-full">
+                <div className="absolute z-10 bottom-0 left-0 right-0 w-full h-12 bg-gradient-to-t from-white dark:from-background to-transparent" />
+                <div className="absolute z-10 bottom-0 left-0 right-0 w-full h-12 bg-gradient-to-t from-muted/20 to-transparent" />
                 <DisplayBalance />
-                <BackgroundGrid />
               </div>
-              <CardHeader className="py-6 border-t border-border text-left gap-2 bg-card">
-                <CardTitle className="heading-4">
-                  Monitor Your Balance
+              <CardHeader className="py-6 text-left gap-2.5">
+                <CardTitle className="heading-4 flex items-center gap-2">
+                  <span className="size-5.5 bg-primary/15 text-sm font-bold text-primary rounded-full flex items-center justify-center">
+                    4
+                  </span>{" "}
+                  Track your money
                 </CardTitle>
-                <CardDescription>
-                  Get a real-time snapshot of your account balances. No more
-                  logging into multiple banks or guessing how much you have
-                  left. WalletWiz keeps it all in one place.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <Card className="col-span-1 md:col-span-4 flex flex-col py-0 overflow-hidden gap-0 bg-transparent h-[27rem]">
-              <div className="p-6 bg-gradient-to-t from-purple-500/20 to-transparent relative overflow-hidden h-full">
-                <DisplayAccounts />
-                <BackgroundGrid />
-              </div>
-              <CardHeader className="py-6 border-t border-border text-left gap-2 bg-card">
-                <div className="flex gap-2 items-center">
-                  <CardTitle className="heading-4">
-                    Connect Your Accounts
-                  </CardTitle>
-                  <InfoBadge>Soon</InfoBadge>
-                </div>
-                <CardDescription>
-                  Link your bank accounts and cards for a complete financial
-                  overview. WalletWiz brings all your balances and transactions
-                  together, so you can manage everything from one dashboard.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <Card className="col-span-1 md:col-span-5 flex flex-col py-0 overflow-hidden gap-0 bg-transparent h-[27rem]">
-              <div className="p-6 bg-gradient-to-tl from-yellow-500/20 to-transparent relative overflow-hidden h-full">
-                <DisplayBudget />
-                <BackgroundGrid />
-              </div>
-              <CardHeader className="py-6 border-t border-border text-left gap-2 bg-card">
-                <CardTitle className="heading-4">
-                  Build Budgets That Work
-                </CardTitle>
-                <CardDescription>
-                  Set spending limits, track your progress, and reach your
-                  savings goals. WalletWiz makes budgeting simple.
+                <CardDescription className="text-base">
+                  Get the full picture of your finances by seeing your balances,
+                  budgets, and transactions all in one place.
                 </CardDescription>
               </CardHeader>
             </Card>
           </div>
         </section>
-
-        {/* CTA */}
         <section className="section-large pt-0">
-          <div className=" p-10 sm:p-18 flex flex-col items-center text-center relative rounded-2xl overflow-hidden w-full border border-border shadow-xs">
-            <BackgroundGrid />
-            <div className="absolute inset-x-auto top-10 w-[80vw] md:w-[60vw] -z-1 h-[40vh] bg-background rounded-[100%] blur-3xl opacity-50" />
-            <div className="absolute inset-0 -z-2 size-full bg-gradient-to-t from-primary/20 to-primary/5" />
-            <div className="max-w-lg flex flex-col items-center text-center">
-              <div className="uppercase text-primary text-sm font-semibold rounded-xl flex items-center gap-2 mb-5">
-                <Zap className="size-4 text-primary" />
-                <h2>Get Started</h2>
+          <Card className="w-full bg-muted/20 p-6">
+            <CardContent className="flex flex-col lg:flex-row gap-12 py-8">
+              <div>
+                <Image
+                  src="/max-profile.jpg"
+                  alt="Max Boucher"
+                  width={128}
+                  height={128}
+                  className="rounded-3xl size-32 object-cover shadow -rotate-4"
+                />
               </div>
-
-              <h2 className="heading-2">
-                Simple. Fast. Free. Take control of your money today.
-              </h2>
-              <p className="mt-4 md:text-lg text-muted-foreground">
-                Sign up for free and see how easy it is to take control of your
-                finances with WalletWiz.
-              </p>
-            </div>
-            <CTAButtons loggedIn={loggedIn} />
-          </div>
+              <div className="font-medium text-muted-foreground text-lg space-y-2">
+                <p>Hi 👋 I'm Max.</p>
+                <p>
+                  I built WalletWiz because I wanted a simple way to track my
+                  money. I hope you find it useful too!
+                </p>
+                <p>
+                  I'm currently in the process of building the app, so please
+                  bear with me as I fix bugs and add features.
+                </p>
+                <p>
+                  If you have any feedback, please feel free to reach out to me
+                  at{" "}
+                  <a className="link" href="mailto:maxime@maximeboucher.com">
+                    maxime@maximeboucher.com
+                  </a>
+                  .
+                </p>
+                <p className="font-semibold text-lg">- Max</p>
+              </div>
+            </CardContent>
+          </Card>
         </section>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

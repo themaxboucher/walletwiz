@@ -130,18 +130,20 @@ export default function TransactionTable({
                     </div>
                   );
                 })()}
-                {(() => {
-                  const payeeAccountId = tx.payee?.account?.$id;
-                  const payeeAccount = payeeAccountId
-                    ? accounts.find((a) => a.$id === payeeAccountId)
-                    : undefined;
-                  return (
-                    payeeAccount?.name ||
-                    tx.payee?.account?.name ||
-                    tx.payee?.name ||
-                    "Unknown payee"
-                  );
-                })()}
+                <span className="truncate max-w-34">
+                  {(() => {
+                    const payeeAccountId = tx.payee?.account?.$id;
+                    const payeeAccount = payeeAccountId
+                      ? accounts.find((a) => a.$id === payeeAccountId)
+                      : undefined;
+                    return (
+                      payeeAccount?.name ||
+                      tx.payee?.account?.name ||
+                      tx.payee?.name ||
+                      "Unknown payee"
+                    );
+                  })()}
+                </span>
               </TableCell>
               <TableCell
                 className={cn(

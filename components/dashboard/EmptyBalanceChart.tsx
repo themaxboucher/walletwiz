@@ -2,9 +2,7 @@
 
 import { Area, AreaChart, CartesianGrid } from "recharts";
 import { ChartContainer } from "../ui/chart";
-
-// Define the balance chart color as the primary color to match BalanceChart
-const chartColor = "oklch(0.716 0.1739 155.45)";
+import { chartColor } from "@/constants";
 
 // Static, slightly upward-trending random-walk data with realistic fluctuations
 // Dates are ISO strings to work with the existing tick/label formatters
