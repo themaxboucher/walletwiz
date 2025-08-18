@@ -13,14 +13,12 @@ interface TransactionsProps {
   transactions: Transaction[];
   categories: Category[];
   accounts: Account[];
-  filteredOut?: boolean;
 }
 
 export default function Transactions({
   transactions,
   categories,
   accounts,
-  filteredOut = false,
 }: TransactionsProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] =
@@ -55,15 +53,9 @@ export default function Transactions({
       {transactions.length === 0 ? (
         <EmptyState
           icon={<Receipt className="size-5 text-primary" />}
-          title={
-            filteredOut
-              ? "No transactions in this period"
-              : "No transactions yet"
-          }
+          title={"No transactions yet"}
           description={
-            filteredOut
-              ? "Try selecting a different date or time range to see your transactions."
-              : "Start tracking your finances by adding your first transaction."
+            "Start tracking your finances by adding your first transaction."
           }
           buttonText="Add Transaction"
           onAddClick={() => handleOpenDialog()}

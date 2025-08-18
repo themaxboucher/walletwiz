@@ -158,12 +158,9 @@ export default function DashboardContent({
             transactions={transactions}
           />
           <Transactions
-            transactions={filteredTransactions}
+            transactions={transactions}
             categories={categories}
             accounts={accounts}
-            filteredOut={
-              transactions.length > 0 && filteredTransactions.length === 0
-            }
           />
         </div>
         <div className="col-span-1 flex flex-col gap-5">
