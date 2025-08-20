@@ -31,7 +31,7 @@ export default function Logo({ href = "/" }: LogoProps) {
   }
 
   return (
-    <Link href={href} className="flex items-center gap-[0.4rem]">
+    <Link href={href} className="flex items-center gap-[0.4rem] m-0">
       {content}
     </Link>
   );
