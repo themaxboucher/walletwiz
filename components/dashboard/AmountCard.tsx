@@ -1,4 +1,4 @@
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, percentageChange } from "@/lib/utils";
 import { Card, CardHeader, CardTitle } from "../ui/card";
 import {
   ArrowUp,
@@ -10,13 +10,17 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatNumber } from "@/lib/utils";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
 import AmountCountUp from "./AmountCountUp";
 
 interface AmountCardProps {
   title: string;
   amount: number;
-  percentageChange?: number;
+  previousAmount?: number;
   periodText: string;
 }
 
@@ -29,11 +33,16 @@ const iconMap: Record<string, LucideIcon> = {
 export default function AmountCard({
   title,
   amount,
-  percentageChange,
+  previousAmount,
   periodText,
 }: AmountCardProps) {
-  const isPositiveChange =
-    percentageChange !== undefined && percentageChange >= 0;
+  const percentChange = previousAmount
+    ? percentageChange(amount, previousAmount)
+    : undefined;
+
+  const amountChange = previousAmount ? amount - previousAmount : undefined;
+
+  const isPositiveChange = percentChange !== undefined && percentChange >= 0;
 
   let isGoodChange = isPositiveChange;
   if (title === "Expenses") {
@@ -57,11 +66,14 @@ export default function AmountCard({
           <div className="text-2xl font-semibold">
             <AmountCountUp amount={amount} formattingFn={formatCurrency} />
           </div>
-          {percentageChange !== undefined && (
-            <Tooltip>
-              <TooltipTrigger>
+          {percentChange !== undefined && amountChange !== undefined && (
+            <HoverCard>
+              <HoverCardTrigger asChild>
                 <div
-                  className={cn("flex gap-1.5 items-center", changeColor.text)}
+                  className={cn(
+                    "flex gap-1.5 items-center cursor-pointer",
+                    changeColor.text
+                  )}
                 >
                   <div
                     className={cn(
@@ -76,11 +88,16 @@ export default function AmountCard({
                     )}
                   </div>
                   <span className="text-xs font-semibold">
-                    {formatNumber(Math.abs(percentageChange))}%
+                    {formatNumber(Math.abs(percentChange))}%
                   </span>
                 </div>
-              </TooltipTrigger>
-              <TooltipContent className="text-xs bg-card border border-border text-forground shadow-sm flex gap-1.5">
+              </HoverCardTrigger>
+              <HoverCardContent
+                side="top"
+                align="center"
+                sideOffset={6}
+                className="text-xs flex gap-1.5 py-1.5 px-3 w-full shadow-sm"
+              >
                 <div
                   className={cn(
                     "flex justify-center items-center rounded-full size-3.5 -ml-1.5",
@@ -94,15 +111,15 @@ export default function AmountCard({
                     <ArrowDown className="size-2.5" />
                   )}
                 </div>
-                <div>
+                <div className="-my-[0.08rem]">
                   <span className={cn("font-medium", changeColor.text)}>
-                    {formatNumber(Math.abs(percentageChange))}%
+                    {formatCurrency(Math.abs(amountChange))}
                   </span>{" "}
-                  {isPositiveChange ? "increase" : "decrease"}
-                  <br /> vs. last {periodText}
+                  {isPositiveChange ? "more" : "less"}
+                  <br /> than last {periodText}
                 </div>
-              </TooltipContent>
-            </Tooltip>
+              </HoverCardContent>
+            </HoverCard>
           )}
         </div>
       </CardHeader>

@@ -13,7 +13,7 @@ import {
   createTransaction,
   updateTransaction,
 } from "@/lib/actions/transaction.actions";
-import { CircleX, LoaderCircle } from "lucide-react";
+import { CircleX, LoaderCircle, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
@@ -28,6 +28,7 @@ import {
   createPayee,
   updatePayee,
 } from "@/lib/actions/payee.actions";
+import DeleteTransactionDialog from "./DeleteTransactionDialog";
 
 // Define the Zod schema for the transaction form
 const transactionFormSchema = z.object({
@@ -65,6 +66,7 @@ export default function TransactionForm({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [createOpposing, setCreateOpposing] = useState<boolean>(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
   // Refine schema dynamically using the categories prop
   const refinedTransactionFormSchema = transactionFormSchema.superRefine(
@@ -518,16 +520,38 @@ export default function TransactionForm({
         />
 
         {error && <FormAlert message={error} type="error" />}
-        <div className="flex justify-end gap-2 mt-4 col-span-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={loading}>
-            {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
-            {!loading && "Save"}
-          </Button>
+        <div className="flex justify-between mt-4">
+          {transactionToEdit && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(true)}
+              disabled={loading}
+            >
+              <Trash2 className="h-4 w-4" />
+              Delete Transaction
+            </Button>
+          )}
+          <div className={`flex gap-2 ${!transactionToEdit ? "ml-auto" : ""}`}>
+            <Button type="button" variant="outline" onClick={onCancel}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {loading && <LoaderCircle className="h-4 w-4 animate-spin" />}
+              {!loading && "Save"}
+            </Button>
+          </div>
         </div>
       </form>
+
+      {transactionToEdit && (
+        <DeleteTransactionDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          transactionId={transactionToEdit.$id!}
+          onTransactionDeleted={onCancel}
+        />
+      )}
     </Form>
   );
 }

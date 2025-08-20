@@ -8,13 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { MoreVertical, Edit, Trash2, Store, Landmark } from "lucide-react";
+import { Store, Landmark } from "lucide-react";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { format } from "date-fns";
@@ -24,7 +18,6 @@ import {
   createBrandfetchIconUrl,
   getLucideIconByName,
 } from "@/lib/utils";
-import DeleteTransactionDialog from "./DeleteTransactionDialog";
 import { cn } from "@/lib/utils";
 import { accountTypeIcons } from "@/constants";
 import Image from "next/image";
@@ -57,23 +50,31 @@ export default function TransactionTable({
       <Table className={cn(transactions.length > pageSize && "border-b")}>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            <TableHead className="py-3 px-6 text-muted-foreground">
+            <TableHead className="py-3 pl-6 text-muted-foreground w-[30%]">
               Payee
             </TableHead>
-            <TableHead className="py-3 text-muted-foreground">Amount</TableHead>
-            <TableHead className="py-3 text-muted-foreground">
+            <TableHead className="py-3 text-muted-foreground w-[15%]">
+              Amount
+            </TableHead>
+            <TableHead className="py-3 text-muted-foreground w-[25%]">
               Account
             </TableHead>
-            <TableHead className="py-3 text-muted-foreground">
+            <TableHead className="py-3 text-muted-foreground w-[20%]">
               Category
             </TableHead>
-            <TableHead className="py-3 text-muted-foreground">Date</TableHead>
+            <TableHead className="py-3 pr-6 text-muted-foreground w-[10%]">
+              Date
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {paginated.map((tx) => (
-            <TableRow key={tx.$id} className="hover:bg-muted/40">
-              <TableCell className="py-3 px-6 font-medium flex items-center gap-3">
+            <TableRow
+              key={tx.$id}
+              className="hover:bg-muted/40 cursor-pointer"
+              onClick={() => onEditClick(tx)}
+            >
+              <TableCell className="py-4 pl-6 pr-4 font-medium flex items-center gap-3">
                 {(() => {
                   const payeeAccountId = tx.payee?.account?.$id;
                   const payeeAccount = payeeAccountId
@@ -130,7 +131,7 @@ export default function TransactionTable({
                     </div>
                   );
                 })()}
-                <span className="truncate max-w-34">
+                <span className="truncate">
                   {(() => {
                     const payeeAccountId = tx.payee?.account?.$id;
                     const payeeAccount = payeeAccountId
@@ -147,14 +148,14 @@ export default function TransactionTable({
               </TableCell>
               <TableCell
                 className={cn(
-                  "py-3 font-medium",
+                  "p-4 font-medium",
                   tx.amount > 0 && "text-primary"
                 )}
               >
                 {tx.amount > 0 ? "+" : ""}
                 {formatCurrency(tx.amount)}
               </TableCell>
-              <TableCell className="py-3">
+              <TableCell className="p-4">
                 {(() => {
                   if (!tx.account?.name) return "-";
 
@@ -164,7 +165,7 @@ export default function TransactionTable({
 
                   if (brandDomain) {
                     return (
-                      <span className="inline-flex items-center gap-2 max-w-[8rem]">
+                      <span className="inline-flex items-center gap-2">
                         <Image
                           width={18}
                           height={18}
@@ -205,7 +206,7 @@ export default function TransactionTable({
                   );
                 })()}
               </TableCell>
-              <TableCell className="py-3">
+              <TableCell className="p-4">
                 <CategoryBadge
                   color={tx.category.color}
                   iconName={tx.category.iconName}
@@ -213,37 +214,8 @@ export default function TransactionTable({
                   {tx.category.name}
                 </CategoryBadge>
               </TableCell>
-              <TableCell className="py-3 text-muted-foreground">
+              <TableCell className="py-4 pr-6 pl-4 text-muted-foreground">
                 {format(new Date(tx.date), "PP")}
-              </TableCell>
-              <TableCell className="py-3 px-6 text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-7 w-7">
-                      <MoreVertical className="w-4 h-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      className="font-medium"
-                      onClick={() => onEditClick(tx)}
-                    >
-                      <Edit className="w-4 h-4 mr-2" /> Edit
-                    </DropdownMenuItem>
-                    <DeleteTransactionDialog
-                      transactionId={String(tx.$id)}
-                      trigger={
-                        <DropdownMenuItem
-                          className="font-medium"
-                          variant="destructive"
-                          onSelect={(e) => e.preventDefault()}
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" /> Delete
-                        </DropdownMenuItem>
-                      }
-                    />
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}

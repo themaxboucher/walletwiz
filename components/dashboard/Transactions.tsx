@@ -1,9 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Receipt } from "lucide-react";
+import { ListFilter, Plus, Receipt } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardHeader, CardTitle } from "../ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import TransactionTable from "./TransactionTable";
 import TransactionDialog from "./TransactionDialog";
 import EmptyState from "./EmptyState";
@@ -13,18 +19,17 @@ interface TransactionsProps {
   transactions: Transaction[];
   categories: Category[];
   accounts: Account[];
-  filteredOut?: boolean;
 }
 
 export default function Transactions({
   transactions,
   categories,
   accounts,
-  filteredOut = false,
 }: TransactionsProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] =
     useState<Transaction | null>(null);
+  const [hideTransfers, setHideTransfers] = useState(false);
 
   const handleOpenDialog = (transaction?: Transaction) => {
     setEditingTransaction(transaction || null);
@@ -38,31 +43,57 @@ export default function Transactions({
 
   const pageSize = 8;
 
+  // Filter out transfer transactions if hideTransfers is true
+  const filteredTransactions = hideTransfers
+    ? transactions.filter((tx) => tx.category.type !== "transfer")
+    : transactions;
+
   return (
-    <Card className={cn("pb-4", transactions.length <= pageSize && "pb-0")}>
+    <Card
+      className={cn("pb-4", filteredTransactions.length <= pageSize && "pb-0")}
+    >
       <div className="flex justify-between pr-6">
         <CardHeader className="w-full">
           <CardTitle>Transactions</CardTitle>
         </CardHeader>
-        {transactions.length > 0 && (
-          <Button size="sm" onClick={() => handleOpenDialog()}>
-            <Plus className="size-3.5 opacity-75" />
-            <span>Add Transaction</span>
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {transactions.length > 0 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="bg-transparent">
+                  <ListFilter className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-48">
+                <DropdownMenuCheckboxItem
+                  checked={hideTransfers}
+                  onCheckedChange={setHideTransfers}
+                >
+                  Hide transfers
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+          {filteredTransactions.length > 0 && (
+            <Button size="sm" onClick={() => handleOpenDialog()}>
+              <Plus className="size-3.5 opacity-75" />
+              <span>Add Transaction</span>
+            </Button>
+          )}
+        </div>
       </div>
 
-      {transactions.length === 0 ? (
+      {filteredTransactions.length === 0 ? (
         <EmptyState
           icon={<Receipt className="size-5 text-primary" />}
           title={
-            filteredOut
-              ? "No transactions in this period"
+            hideTransfers
+              ? "No non-transfer transactions"
               : "No transactions yet"
           }
           description={
-            filteredOut
-              ? "Try selecting a different date or time range to see your transactions."
+            hideTransfers
+              ? "All transactions are transfers. Uncheck 'Hide transfers' to see them."
               : "Start tracking your finances by adding your first transaction."
           }
           buttonText="Add Transaction"
@@ -70,7 +101,7 @@ export default function Transactions({
         />
       ) : (
         <TransactionTable
-          transactions={transactions}
+          transactions={filteredTransactions}
           accounts={accounts}
           pageSize={pageSize}
           onEditClick={handleOpenDialog}

@@ -111,13 +111,15 @@ export default function AccountCard({
                   ) : (
                     <Landmark className="size-4 text-white/80" />
                   )}
-                  {account.type.name === "Other"
-                    ? account.type.type === "credit"
-                      ? "Credit Card"
-                      : account.type.type === "depository"
-                      ? "Depository"
-                      : account.type.name
-                    : account.type.name}
+                  <span className="truncate">
+                    {account.type.name === "Other"
+                      ? account.type.type === "credit"
+                        ? "Credit Card"
+                        : account.type.type === "depository"
+                        ? "Depository"
+                        : account.type.name
+                      : account.type.name}
+                  </span>
                 </div>
               )}
               {transactions && (
@@ -126,7 +128,7 @@ export default function AccountCard({
                   {balancesMatch ? (
                     <div className="flex items-center gap-1.5">
                       <CircleCheck className="size-4 text-white/90" />
-                      <p className="text-xs text-white/90">
+                      <p className="text-xs text-white/90 truncate">
                         Balance matches transactions
                       </p>
                     </div>

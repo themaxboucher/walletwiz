@@ -9,7 +9,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { CircleX, LoaderCircle } from "lucide-react";
 import { useState } from "react";
@@ -19,12 +18,16 @@ import { toast } from "sonner";
 
 interface DeleteTransactionDialogProps {
   transactionId: string;
-  trigger: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onTransactionDeleted?: () => void;
 }
 
 export default function DeleteTransactionDialog({
   transactionId,
-  trigger,
+  open,
+  onOpenChange,
+  onTransactionDeleted,
 }: DeleteTransactionDialogProps) {
   const router = useRouter();
   const [deleting, setDeleting] = useState(false);
@@ -33,6 +36,8 @@ export default function DeleteTransactionDialog({
     setDeleting(true);
     try {
       await deleteTransaction(transactionId);
+      onOpenChange?.(false);
+      onTransactionDeleted?.();
       router.refresh();
     } catch (error) {
       toast("Error deleting transaction", {
@@ -45,8 +50,7 @@ export default function DeleteTransactionDialog({
   };
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="sm:max-w-[425px]">
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Transaction</AlertDialogTitle>
