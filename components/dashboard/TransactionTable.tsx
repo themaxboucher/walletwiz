@@ -50,17 +50,21 @@ export default function TransactionTable({
       <Table className={cn(transactions.length > pageSize && "border-b")}>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            <TableHead className="py-3 px-6 text-muted-foreground">
+            <TableHead className="py-3 pl-6 text-muted-foreground w-[30%]">
               Payee
             </TableHead>
-            <TableHead className="py-3 text-muted-foreground">Amount</TableHead>
-            <TableHead className="py-3 text-muted-foreground">
+            <TableHead className="py-3 text-muted-foreground w-[15%]">
+              Amount
+            </TableHead>
+            <TableHead className="py-3 text-muted-foreground w-[25%]">
               Account
             </TableHead>
-            <TableHead className="py-3 text-muted-foreground">
+            <TableHead className="py-3 text-muted-foreground w-[20%]">
               Category
             </TableHead>
-            <TableHead className="py-3 text-muted-foreground">Date</TableHead>
+            <TableHead className="py-3 pr-6 text-muted-foreground w-[10%]">
+              Date
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -70,7 +74,7 @@ export default function TransactionTable({
               className="hover:bg-muted/40 cursor-pointer"
               onClick={() => onEditClick(tx)}
             >
-              <TableCell className="py-3 px-6 font-medium flex items-center gap-3">
+              <TableCell className="py-4 pl-6 pr-4 font-medium flex items-center gap-3">
                 {(() => {
                   const payeeAccountId = tx.payee?.account?.$id;
                   const payeeAccount = payeeAccountId
@@ -127,7 +131,7 @@ export default function TransactionTable({
                     </div>
                   );
                 })()}
-                <span className="truncate max-w-34">
+                <span className="truncate">
                   {(() => {
                     const payeeAccountId = tx.payee?.account?.$id;
                     const payeeAccount = payeeAccountId
@@ -144,14 +148,14 @@ export default function TransactionTable({
               </TableCell>
               <TableCell
                 className={cn(
-                  "py-3 font-medium",
+                  "p-4 font-medium",
                   tx.amount > 0 && "text-primary"
                 )}
               >
                 {tx.amount > 0 ? "+" : ""}
                 {formatCurrency(tx.amount)}
               </TableCell>
-              <TableCell className="py-3">
+              <TableCell className="p-4">
                 {(() => {
                   if (!tx.account?.name) return "-";
 
@@ -161,7 +165,7 @@ export default function TransactionTable({
 
                   if (brandDomain) {
                     return (
-                      <span className="inline-flex items-center gap-2 max-w-[8rem]">
+                      <span className="inline-flex items-center gap-2">
                         <Image
                           width={18}
                           height={18}
@@ -202,7 +206,7 @@ export default function TransactionTable({
                   );
                 })()}
               </TableCell>
-              <TableCell className="py-3">
+              <TableCell className="p-4">
                 <CategoryBadge
                   color={tx.category.color}
                   iconName={tx.category.iconName}
@@ -210,7 +214,7 @@ export default function TransactionTable({
                   {tx.category.name}
                 </CategoryBadge>
               </TableCell>
-              <TableCell className="py-3 text-muted-foreground">
+              <TableCell className="py-4 pr-6 pl-4 text-muted-foreground">
                 {format(new Date(tx.date), "PP")}
               </TableCell>
             </TableRow>
