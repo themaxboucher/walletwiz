@@ -12,7 +12,6 @@ import {
   calculateTotalAccountBalance,
   calculatePreviousPeriodMetrics,
   getPeriodText,
-  percentageChange,
   filterByRange,
   generateBalanceChartData,
   getRangeStartDate,
@@ -99,11 +98,6 @@ export default function DashboardContent({
     [transactions, chartFromDate, chartToDate]
   );
 
-  // Calculate percentage changes for income, expenses, and net change
-  const incomePercentageChange = percentageChange(income, previousIncome);
-  const expensesPercentageChange = percentageChange(expenses, previousExpenses);
-  const savedPercentageChange = percentageChange(netChange, previousNetChange);
-
   // Calculate period text for AmountCard tooltip
   const periodText = useMemo(
     () => getPeriodText({ from: chartFromDate, to: chartToDate }),
@@ -136,19 +130,19 @@ export default function DashboardContent({
             <AmountCard
               title="Income"
               amount={income}
-              percentageChange={incomePercentageChange}
+              previousAmount={previousIncome}
               periodText={periodText}
             />
             <AmountCard
               title="Expenses"
               amount={expenses}
-              percentageChange={expensesPercentageChange}
+              previousAmount={previousExpenses}
               periodText={periodText}
             />
             <AmountCard
               title="Saved"
               amount={netChange}
-              percentageChange={savedPercentageChange}
+              previousAmount={previousNetChange}
               periodText={periodText}
             />
           </div>
