@@ -70,7 +70,7 @@ export default function BudgetOnboardingContent({
           change these and set more later.
         </p>
       </div>
-      <div className="m-auto w-full max-w-md">
+      <div className="m-auto w-full max-w-md max-h-85 pr-2 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/40">
         <BudgetOnboardingForm categories={categories} onChange={setValues} />
       </div>
 

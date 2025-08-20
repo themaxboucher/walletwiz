@@ -137,18 +137,23 @@ export default function BudgetForm({ user }: BudgetFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4 max-w-md"
+      >
         {expenseCategories.map((category) => {
           const Icon = categoryIcons[category.iconName];
           return (
-            <div key={category.name} className="flex items-center gap-4">
-              <div className="flex items-center gap-2 min-w-[120px]">
+            <div key={category.name} className="flex items-center gap-8">
+              <div className="flex items-center gap-2 min-w-32 max-w-32">
                 {Icon && (
                   <Icon
                     className={cn("h-4 w-4", categoryColors[category.color])}
                   />
                 )}
-                <span className="text-sm font-medium">{category.name}</span>
+                <span className="text-sm font-medium truncate">
+                  {category.name}
+                </span>
               </div>
               <NumberField
                 form={form}
