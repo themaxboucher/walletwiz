@@ -65,6 +65,7 @@ declare interface Payee {
   user?: User; // Relationship field
   defaultCategory?: Category | null; // Relationship field
   account?: Account | null; // Relationship field
+  lastUsed?: string | null;
 }
 
 declare interface Transaction {

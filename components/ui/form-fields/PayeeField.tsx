@@ -106,38 +106,32 @@ export function PayeeField({
       setPayeeLoading(true);
       try {
         const previousPayees = await getPayees(userId);
-        // Sort by $updatedAt in descending order (latest first)
-        const sortedPayees = (previousPayees || []).sort(
-          (
-            a: Payee & { $updatedAt: string },
-            b: Payee & { $updatedAt: string }
-          ) =>
-            new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
-        );
-        const options: ComboboxOption[] = sortedPayees.map((payee: Payee) => {
-          if (payee.account) {
-            return {
-              value: payee.account.$id,
-              label: payee.account.name,
-              domain:
-                payee.account.type?.brandDomain ||
-                payee.account.institution?.domain,
-              id: payee.$id,
-              isAccount: true,
-              defaultCategoryId: payee.defaultCategory?.$id,
-              accountTypeIconName: payee.account.type?.iconName,
-            };
-          } else {
-            return {
-              value: payee.brandId || payee.name,
-              label: payee.name,
-              domain: payee.domain,
-              id: payee.$id,
-              isAccount: false,
-              defaultCategoryId: payee.defaultCategory?.$id,
-            };
+        const options: ComboboxOption[] = (previousPayees || []).map(
+          (payee: Payee) => {
+            if (payee.account) {
+              return {
+                value: payee.account.$id,
+                label: payee.account.name,
+                domain:
+                  payee.account.type?.brandDomain ||
+                  payee.account.institution?.domain,
+                id: payee.$id,
+                isAccount: true,
+                defaultCategoryId: payee.defaultCategory?.$id,
+                accountTypeIconName: payee.account.type?.iconName,
+              };
+            } else {
+              return {
+                value: payee.brandId || payee.name,
+                label: payee.name,
+                domain: payee.domain,
+                id: payee.$id,
+                isAccount: false,
+                defaultCategoryId: payee.defaultCategory?.$id,
+              };
+            }
           }
-        });
+        );
         setPreviousPayeeOptions(options);
 
         // If we have fewer than 5 previous payees, append static options
