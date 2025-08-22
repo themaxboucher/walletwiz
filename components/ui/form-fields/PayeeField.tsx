@@ -85,14 +85,19 @@ export function PayeeField({
       domain: "walmart.com",
     },
     {
+      value: "Costco",
+      label: "Costco",
+      domain: "costco.com",
+    },
+    {
+      value: "Shell",
+      label: "Shell",
+      domain: "shell.com",
+    },
+    {
       value: "Starbucks",
       label: "Starbucks",
       domain: "starbucks.com",
-    },
-    {
-      value: "Apple",
-      label: "Apple",
-      domain: "apple.com",
     },
   ];
 
@@ -101,49 +106,50 @@ export function PayeeField({
       setPayeeLoading(true);
       try {
         const previousPayees = await getPayees(userId);
-        if (previousPayees && previousPayees.length > 0) {
-          // Sort by $updatedAt in descending order (latest first)
-          const sortedPayees = previousPayees.sort(
-            (
-              a: Payee & { $updatedAt: string },
-              b: Payee & { $updatedAt: string }
-            ) =>
-              new Date(b.$updatedAt).getTime() -
-              new Date(a.$updatedAt).getTime()
-          );
-          const options: ComboboxOption[] = sortedPayees.map((payee: Payee) => {
-            if (payee.account) {
-              return {
-                value: payee.account.$id,
-                label: payee.account.name,
-                domain:
-                  payee.account.type?.brandDomain ||
-                  payee.account.institution?.domain,
-                id: payee.$id,
-                isAccount: true,
-                defaultCategoryId: payee.defaultCategory?.$id,
-                accountTypeIconName: payee.account.type?.iconName,
-              };
-            } else {
-              return {
-                value: payee.brandId || payee.name,
-                label: payee.name,
-                domain: payee.domain,
-                id: payee.$id,
-                isAccount: false,
-                defaultCategoryId: payee.defaultCategory?.$id,
-              };
-            }
-          });
-          setPreviousPayeeOptions(options);
-          setPayeeOptions(options);
+        // Sort by $updatedAt in descending order (latest first)
+        const sortedPayees = (previousPayees || []).sort(
+          (
+            a: Payee & { $updatedAt: string },
+            b: Payee & { $updatedAt: string }
+          ) =>
+            new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
+        );
+        const options: ComboboxOption[] = sortedPayees.map((payee: Payee) => {
+          if (payee.account) {
+            return {
+              value: payee.account.$id,
+              label: payee.account.name,
+              domain:
+                payee.account.type?.brandDomain ||
+                payee.account.institution?.domain,
+              id: payee.$id,
+              isAccount: true,
+              defaultCategoryId: payee.defaultCategory?.$id,
+              accountTypeIconName: payee.account.type?.iconName,
+            };
+          } else {
+            return {
+              value: payee.brandId || payee.name,
+              label: payee.name,
+              domain: payee.domain,
+              id: payee.$id,
+              isAccount: false,
+              defaultCategoryId: payee.defaultCategory?.$id,
+            };
+          }
+        });
+        setPreviousPayeeOptions(options);
+
+        // If we have fewer than 5 previous payees, append static options
+        if (options.length < 5) {
+          const combinedOptions = [...options, ...staticPayeeOptions];
+          setPayeeOptions(combinedOptions);
         } else {
-          // If no previous payees, use static options
-          setPreviousPayeeOptions(staticPayeeOptions);
-          setPayeeOptions(staticPayeeOptions);
+          setPayeeOptions(options);
         }
       } catch (error) {
-        setPreviousPayeeOptions(staticPayeeOptions);
+        // On error, fall back to static options only
+        setPreviousPayeeOptions([]);
         setPayeeOptions(staticPayeeOptions);
       } finally {
         setPayeeLoading(false);
@@ -156,7 +162,16 @@ export function PayeeField({
   const fetchPayeeOptions = async (query: string) => {
     // If the query is empty, reset to previously selected payees
     if (!query || query.length < 1) {
-      setPayeeOptions(previousPayeeOptions);
+      // If we have fewer than 5 previous payees, include static options
+      if (previousPayeeOptions.length < 5) {
+        const combinedOptions = [
+          ...previousPayeeOptions,
+          ...staticPayeeOptions,
+        ];
+        setPayeeOptions(combinedOptions);
+      } else {
+        setPayeeOptions(previousPayeeOptions);
+      }
       setPayeeLoading(false);
       return;
     }
