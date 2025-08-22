@@ -381,7 +381,7 @@ export function PayeeField({
                                   )}
                                   alt={`${option.label} logo`}
                                   className={cn(
-                                    "size-5 object-cover",
+                                    "size-5 min-w-5 object-cover",
                                     option.isAccount
                                       ? "rounded-[0.188rem]"
                                       : "rounded-full"
