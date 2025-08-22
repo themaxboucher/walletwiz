@@ -106,7 +106,21 @@ export function PayeeField({
       setPayeeLoading(true);
       try {
         const previousPayees = await getPayees(userId);
-        const options: ComboboxOption[] = (previousPayees || []).map(
+
+        // Separate account payees from regular payees
+        const accountPayees = previousPayees.filter(
+          (payee: Payee) => payee.account
+        );
+        const regularPayees = previousPayees.filter(
+          (payee: Payee) => !payee.account
+        );
+
+        // Only show account payees if there are multiple accounts
+        const filteredPreviousPayees =
+          accountPayees.length > 1
+            ? [...accountPayees, ...regularPayees]
+            : regularPayees;
+        const options: ComboboxOption[] = (filteredPreviousPayees || []).map(
           (payee: Payee) => {
             if (payee.account) {
               return {
