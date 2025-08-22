@@ -9,6 +9,7 @@ import { updateCategory } from "@/lib/actions/category.actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { markOnboardingCompleted } from "@/lib/actions/user.actions";
+import { BlurFade } from "../magicui/blur-fade";
 
 interface BudgetOnboardingContentProps {
   user: User;
@@ -33,7 +34,7 @@ export default function BudgetOnboardingContent({
       ),
     [categories, values]
   );
-  const canFinish = budgetedExpenseCategories.length >= 2;
+  const canFinish = budgetedExpenseCategories.length >= 1;
 
   async function handleFinish() {
     if (!canFinish || loading) return;
@@ -64,15 +65,23 @@ export default function BudgetOnboardingContent({
   return (
     <div className="w-full max-w-4xl space-y-10 min-h-[28rem] flex flex-col justify-between my-4">
       <div className="flex flex-col items-center text-center gap-1">
-        <h1 className="text-2xl font-medium">Set your budget</h1>
-        <p className="text-sm text-muted-foreground mt-1 max-w-md">
-          Set your budget for at least 2 expense categories. You can always
-          change these and set more later.
-        </p>
+        <BlurFade direction="up" className="space-y-2">
+          <h1 className="heading-3">Set your budget</h1>
+          <p className="text-sm text-muted-foreground mt-1 max-w-md">
+            Set spending limits for your expense categories.
+          </p>
+        </BlurFade>
+        <div className="flex items-center gap-1.5 mt-6">
+          <div className="h-1.5 w-8 bg-primary/20 rounded-full" />
+          <div className="h-1.5 w-8 bg-primary/20 rounded-full" />
+          <div className="h-1.5 w-8 bg-primary rounded-full" />
+        </div>
       </div>
-      <div className="m-auto w-full max-w-md max-h-85 pr-2 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/40">
-        <BudgetOnboardingForm categories={categories} onChange={setValues} />
-      </div>
+      <BlurFade direction="up" delay={0.2}>
+        <div className="m-auto w-full max-w-md max-h-85 py-1 pr-2 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/40">
+          <BudgetOnboardingForm categories={categories} onChange={setValues} />
+        </div>
+      </BlurFade>
 
       <div className="flex justify-between items-start gap-3 pt-2">
         <Button asChild variant="outline">
@@ -83,7 +92,7 @@ export default function BudgetOnboardingContent({
 
         <Button onClick={handleFinish} disabled={!canFinish || loading}>
           {loading ? (
-            <LoaderCircle className="h-4 w-4 animate-spin" />
+            <LoaderCircle className="size-4 animate-spin" />
           ) : (
             "Finish"
           )}
