@@ -85,14 +85,19 @@ export function PayeeField({
       domain: "walmart.com",
     },
     {
+      value: "Costco",
+      label: "Costco",
+      domain: "costco.com",
+    },
+    {
+      value: "Shell",
+      label: "Shell",
+      domain: "shell.com",
+    },
+    {
       value: "Starbucks",
       label: "Starbucks",
       domain: "starbucks.com",
-    },
-    {
-      value: "Apple",
-      label: "Apple",
-      domain: "apple.com",
     },
   ];
 
@@ -101,17 +106,22 @@ export function PayeeField({
       setPayeeLoading(true);
       try {
         const previousPayees = await getPayees(userId);
-        if (previousPayees && previousPayees.length > 0) {
-          // Sort by $updatedAt in descending order (latest first)
-          const sortedPayees = previousPayees.sort(
-            (
-              a: Payee & { $updatedAt: string },
-              b: Payee & { $updatedAt: string }
-            ) =>
-              new Date(b.$updatedAt).getTime() -
-              new Date(a.$updatedAt).getTime()
-          );
-          const options: ComboboxOption[] = sortedPayees.map((payee: Payee) => {
+
+        // Separate account payees from regular payees
+        const accountPayees = previousPayees.filter(
+          (payee: Payee) => payee.account
+        );
+        const regularPayees = previousPayees.filter(
+          (payee: Payee) => !payee.account
+        );
+
+        // Only show account payees if there are multiple accounts
+        const filteredPreviousPayees =
+          accountPayees.length > 1
+            ? [...accountPayees, ...regularPayees]
+            : regularPayees;
+        const options: ComboboxOption[] = (filteredPreviousPayees || []).map(
+          (payee: Payee) => {
             if (payee.account) {
               return {
                 value: payee.account.$id,
@@ -134,16 +144,20 @@ export function PayeeField({
                 defaultCategoryId: payee.defaultCategory?.$id,
               };
             }
-          });
-          setPreviousPayeeOptions(options);
-          setPayeeOptions(options);
+          }
+        );
+        setPreviousPayeeOptions(options);
+
+        // If we have fewer than 5 previous payees, append static options
+        if (options.length < 5) {
+          const combinedOptions = [...options, ...staticPayeeOptions];
+          setPayeeOptions(combinedOptions);
         } else {
-          // If no previous payees, use static options
-          setPreviousPayeeOptions(staticPayeeOptions);
-          setPayeeOptions(staticPayeeOptions);
+          setPayeeOptions(options);
         }
       } catch (error) {
-        setPreviousPayeeOptions(staticPayeeOptions);
+        // On error, fall back to static options only
+        setPreviousPayeeOptions([]);
         setPayeeOptions(staticPayeeOptions);
       } finally {
         setPayeeLoading(false);
@@ -156,7 +170,16 @@ export function PayeeField({
   const fetchPayeeOptions = async (query: string) => {
     // If the query is empty, reset to previously selected payees
     if (!query || query.length < 1) {
-      setPayeeOptions(previousPayeeOptions);
+      // If we have fewer than 5 previous payees, include static options
+      if (previousPayeeOptions.length < 5) {
+        const combinedOptions = [
+          ...previousPayeeOptions,
+          ...staticPayeeOptions,
+        ];
+        setPayeeOptions(combinedOptions);
+      } else {
+        setPayeeOptions(previousPayeeOptions);
+      }
       setPayeeLoading(false);
       return;
     }
@@ -264,6 +287,7 @@ export function PayeeField({
                   !selectedOption &&
                     "text-muted-foreground hover:text-muted-foreground"
                 )}
+                title={selectedOption?.label}
               >
                 <span className="flex items-center gap-2">
                   {selectedOption &&
@@ -352,6 +376,7 @@ export function PayeeField({
                               setOpen(false);
                             }}
                             className="group"
+                            title={option.label}
                           >
                             <span className="relative">
                               {option.domain ? (
@@ -364,7 +389,7 @@ export function PayeeField({
                                   )}
                                   alt={`${option.label} logo`}
                                   className={cn(
-                                    "size-5 object-cover",
+                                    "size-5 min-w-5 object-cover",
                                     option.isAccount
                                       ? "rounded-[0.188rem]"
                                       : "rounded-full"

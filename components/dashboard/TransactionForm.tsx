@@ -282,6 +282,7 @@ export default function TransactionForm({
           domain: values.payee?.domain,
           defaultCategory: selectedCategory.$id,
           user: userId,
+          lastUsed: new Date().toISOString(),
         } as PayeeDB;
       }
 

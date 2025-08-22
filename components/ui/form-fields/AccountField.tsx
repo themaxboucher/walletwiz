@@ -95,7 +95,10 @@ export function AccountField({
               className="w-full disabled:opacity-100"
               disabled={disabled}
             >
-              <SelectValue placeholder={placeholder}>
+              <SelectValue
+                placeholder={placeholder}
+                title={selectedAccount?.name}
+              >
                 {selectedAccount && (
                   <div className="flex items-center gap-2">
                     {renderAccountIcon(selectedAccount, 20)}
@@ -112,6 +115,7 @@ export function AccountField({
                   key={account.$id}
                   value={account.$id!}
                   className="flex items-center gap-2"
+                  title={account.name}
                 >
                   {renderAccountIcon(account, 18)}
                   <span className="truncate">{account.name}</span>

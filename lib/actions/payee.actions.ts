@@ -34,7 +34,11 @@ export const getPayees = async (userId: string, limit: number = 5000) => {
     const payees = await database.listDocuments(
       DATABASE_ID!,
       PAYEE_COLLECTION_ID!,
-      [Query.equal("user", userId), Query.limit(limit)]
+      [
+        Query.equal("user", userId),
+        Query.orderDesc("lastUsed"),
+        Query.limit(limit),
+      ]
     );
     return parseStringify(payees.documents);
   } catch (error) {
@@ -58,6 +62,22 @@ export const updatePayee = async (
     return parseStringify(payee);
   } catch (error) {
     console.error("Error updating payee:", error);
+    throw error;
+  }
+};
+
+export const updatePayeeLastUsed = async (payeeId: string) => {
+  try {
+    const { database } = await createAdminClient();
+    const payee = await database.updateDocument(
+      DATABASE_ID!,
+      PAYEE_COLLECTION_ID!,
+      payeeId,
+      { lastUsed: new Date().toISOString() }
+    );
+    return parseStringify(payee);
+  } catch (error) {
+    console.error("Error updating payee last used:", error);
     throw error;
   }
 };

@@ -4,6 +4,7 @@ import { ID, Query } from "node-appwrite";
 import { createAdminClient } from "../appwrite/server";
 import { parseStringify } from "../utils";
 import { adjustAccountBalance } from "./account.actions";
+import { updatePayeeLastUsed } from "./payee.actions";
 
 const {
   APPWRITE_DATABASE_ID: DATABASE_ID,
@@ -24,6 +25,11 @@ export const createTransaction = async (transaction: TransactionDB) => {
     // Add the transaction amount to the account balance
     if (transaction.account) {
       await adjustAccountBalance(transaction.account, transaction.amount);
+    }
+
+    // Update the payee's lastUsed field
+    if (typeof transaction.payee === "string") {
+      await updatePayeeLastUsed(transaction.payee);
     }
 
     return parseStringify(newTransaction);
@@ -123,6 +129,11 @@ export const updateTransaction = async (
         const difference = newAmount - originalAmount;
         await adjustAccountBalance(originalAccountId, difference);
       }
+    }
+
+    // Update the payee's lastUsed field
+    if (typeof transaction.payee === "string") {
+      await updatePayeeLastUsed(transaction.payee);
     }
 
     return parseStringify(updatedTransaction);
