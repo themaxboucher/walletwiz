@@ -151,6 +151,7 @@ export function InstitutionField({
                   !selectedOption &&
                     "text-muted-foreground hover:text-muted-foreground"
                 )}
+                title={selectedOption?.label}
               >
                 <span className="flex items-center gap-2">
                   {selectedOption &&
@@ -218,6 +219,7 @@ export function InstitutionField({
                               }
                               setOpen(false);
                             }}
+                            title={option.label}
                           >
                             {option.domain ? (
                               <Image

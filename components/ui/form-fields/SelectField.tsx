@@ -69,7 +69,10 @@ export function SelectField({
               className="w-full disabled:opacity-100"
               disabled={disabled}
             >
-              <SelectValue placeholder={placeholder}>
+              <SelectValue
+                placeholder={placeholder}
+                title={selectedOption?.label}
+              >
                 {selectedOption && (
                   <div className="flex items-center gap-2">
                     {selectedOption.imageSrc ? (
@@ -103,6 +106,7 @@ export function SelectField({
                         key={option.value}
                         value={option.value}
                         className="flex items-center gap-2"
+                        title={option.label}
                       >
                         {option.imageSrc ? (
                           <Image

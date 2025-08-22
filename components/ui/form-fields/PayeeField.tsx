@@ -279,6 +279,7 @@ export function PayeeField({
                   !selectedOption &&
                     "text-muted-foreground hover:text-muted-foreground"
                 )}
+                title={selectedOption?.label}
               >
                 <span className="flex items-center gap-2">
                   {selectedOption &&
@@ -367,6 +368,7 @@ export function PayeeField({
                               setOpen(false);
                             }}
                             className="group"
+                            title={option.label}
                           >
                             <span className="relative">
                               {option.domain ? (
