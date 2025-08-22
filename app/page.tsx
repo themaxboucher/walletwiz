@@ -36,7 +36,7 @@ export default async function Home() {
       <Navbar loggedIn={loggedIn} />
       <main>
         {/* Hero */}
-        <section className="section-large pb-0 relative flex flex-col items-center justify-center">
+        <section className="section-large pb-0 relative flex flex-col items-center justify-center pt-10 sm:pt-20">
           <div className="relative z-10 w-full max-w-[82rem] mx-auto flex flex-col items-center text-center">
             <div className="flex flex-col items-center px-4 sm:px-8">
               <BlurFade direction="up">
