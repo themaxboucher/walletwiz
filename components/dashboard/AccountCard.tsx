@@ -37,21 +37,23 @@ export default function AccountCard({
       return cardColors[account.institution.cardColor];
     }
     // Default fallback color
-    return "bg-gradient-to-br from-zinc-600 to-zinc-800 border-zinc-500";
+    return cardColors.gray;
   };
 
   return (
     <div
       className={cn(
         "group relative overflow-hidden rounded-xl border-2 transition-all duration-100 ease-out hover:-translate-y-1 aspect-[1.75] w-full max-w-md text-white",
-        shadow && "shadow-xl hover:shadow-2xl",
+        shadow && "shadow hover:shadow-xl",
         getCardColorClasses()
       )}
       onClick={onClick}
     >
       <div className="p-5 flex flex-col justify-between h-[calc(100%-3.25rem)]">
         <div className="flex items-center justify-between gap-4 mb-2">
-          <div className="font-semibold text-white/95">{account.name}</div>
+          <div className="font-semibold text-white/95 truncate">
+            {account.name}
+          </div>
           <div className="flex items-center gap-3 min-w-0 w-fit">
             <div className="text-sm font-medium truncate">
               {account.mask && (
@@ -150,7 +152,7 @@ export default function AccountCard({
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-13 bg-gradient-to-r from-white/20 to-white/8" />
+        <div className="absolute bottom-0 left-0 right-0 h-13 bg-white/25" />
       </div>
     </div>
   );

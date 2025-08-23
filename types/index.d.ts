@@ -42,19 +42,22 @@ declare interface Category {
   user?: User; // Relationship field
 }
 
+declare type CardColor =
+  | "black"
+  | "gray"
+  | "red"
+  | "yellow"
+  | "orange"
+  | "blue"
+  | "violet"
+  | "pink"
+  | "green";
+
 declare interface FinancialInstitution {
   $id?: string;
   name: string;
   domain: string;
-  cardColor?:
-    | "red"
-    | "yellow"
-    | "orange"
-    | "blue"
-    | "violet"
-    | "pink"
-    | "green"
-    | null;
+  cardColor?: CardColor | null;
 }
 
 declare interface Payee {
