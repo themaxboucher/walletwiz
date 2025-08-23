@@ -106,10 +106,6 @@ export default function BudgetForm({ user }: BudgetFormProps) {
       });
       router.refresh();
     } catch (error) {
-      console.error("Error saving budgets:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to save budgets"
-      );
       toast("Error saving budget", {
         icon: <CircleX className="text-destructive size-5" />,
       });

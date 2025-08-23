@@ -10,13 +10,12 @@ import { z } from "zod";
 import { Form } from "../ui/form";
 import { createAccount, updateAccount } from "@/lib/actions/account.actions";
 import { createBrandfetchIconUrl } from "@/lib/utils";
-import { CircleX, Info, LoaderCircle, Trash2 } from "lucide-react";
+import { Info, LoaderCircle, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
 import { SelectField } from "../ui/form-fields/SelectField";
 import { getAccountTypes } from "@/lib/actions/accountType.actions";
-import { toast } from "sonner";
 import { accountTypeIcons } from "@/constants";
 import DeleteAccountDialog from "./DeleteAccountDialog";
 
@@ -146,13 +145,9 @@ export default function AccountForm({
         onCancel();
       }
     } catch (error) {
-      console.error("Error saving account:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to save account"
+        "An error occurred while saving the account. Please try again later."
       );
-      toast("Error saving account", {
-        icon: <CircleX className="text-destructive size-5" />,
-      });
     } finally {
       setLoading(false);
     }
