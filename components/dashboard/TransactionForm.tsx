@@ -13,11 +13,10 @@ import {
   createTransaction,
   updateTransaction,
 } from "@/lib/actions/transaction.actions";
-import { CircleX, LoaderCircle, Trash2 } from "lucide-react";
+import { LoaderCircle, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import FormAlert from "../FormAlert";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { SelectField } from "../ui/form-fields/SelectField";
 import { PayeeField } from "../ui/form-fields/PayeeField";
 import { AccountField } from "../ui/form-fields/AccountField";
@@ -363,13 +362,9 @@ export default function TransactionForm({
       router.refresh();
       onCancel();
     } catch (error) {
-      console.error("Error saving transaction:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to save transaction"
+        "An error occurred while saving the transaction. Please try again later."
       );
-      toast("Error saving transaction", {
-        icon: <CircleX className="text-destructive size-5" />,
-      });
     } finally {
       setLoading(false);
     }
