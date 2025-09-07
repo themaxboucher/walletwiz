@@ -578,9 +578,9 @@ export const displayTransactions: Transaction[] = [
   {
     $id: "5",
     payee: {
-      name: "Costco",
-      brandId: "costco.com",
-      domain: "costco.com",
+      name: "Safeway",
+      brandId: "safeway.com",
+      domain: "safeway.com",
       defaultCategory: null,
     },
     amount: -555.0,
