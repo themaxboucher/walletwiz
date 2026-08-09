@@ -213,8 +213,8 @@ export default async function Home() {
                   <p>
                     If you have any feedback, please feel free to reach out to
                     me at{" "}
-                    <a className="link" href="mailto:maxime@maximeboucher.com">
-                      maxime@maximeboucher.com
+                    <a className="link" href="mailto:max@maxboucher.com">
+                      max@maxboucher.com
                     </a>
                     .
                   </p>
